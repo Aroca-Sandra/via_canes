@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vía Canes|Tienda</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="sticky-top">
+<div class="navbar-top">
+<a href="/via_canes/index.html" class="logo-container text-decoration-none">
+<img src="img/logo.png" alt="Logo" class="logo-img">
+<span class="logo-text">Vía Canes</span>
+</a>
+<div class="search-container">
+<i class="fa fa-search search-icon"></i>
+<input type="text" class="custom-search-input" placeholder="¿Qué necesita tu mascota hoy?">
+</div>
+<div class="utility-icons">
+<a href="html/auth.html" class="util-item">
+<i class="fa fa-user"></i> <span>Cuenta</span>
+</a>
+<button class="util-item border-0 bg-transparent position-relative p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoLateral">
+<i class="fa fa-shopping-cart fs-5"></i>
+<span>Carrito</span>
+<span id="contador-carrito" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="display:none;">0</span>
+</button>
+<a href="html/ayuda.html" class="util-item">
+<i class="fa fa-phone"></i> <span>Ayuda</span>
+</a>
+</div>
+</div>
+<div class="categories-row">
+<a href="html/productos.html?tipo=especie&valor=Perros" class="cat-item">
+<div class="img-circle"><img src="img/p-perro.png" alt="Perros" class="cat-img"></div>
+<span>Perros</span></a>
+<a href="#" class="cat-item">
+<div class="img-circle"><img src="img/p-gato.png" alt="Gatos" class="cat-img"></div>
+<span>Gatos</span></a>
+<a href="#" class="cat-item">
+<div class="img-circle"><img src="img/p-otros.png" alt="Otros" class="cat-img"></div>
+<span>Otra Especie</span></a>
+<a href="#" class="cat-item">
+<div class="img-circle"><img src="img/p-higiene.png" alt="Higiene" class="cat-img"></div>
+<span>Higiene</span></a>
+<a href="#" class="cat-item">
+<div class="img-circle"><img src="img/salud.png" alt="Salud" class="cat-img"></div>
+<span>Salud</span></a>
+<a href="#" class="cat-item">
+<div class="img-circle"><img src="img/servicios-p.png" alt="Servicios" class="cat-img"></div>
+<span>Servicios</span></a>
+<a href="#" class="cat-item">
+<div class="img-circle"><img src="img/calendario.png" alt="Citas" class="cat-img"></div>
+<span>Citas</span></a>
+<a href="html/promociones.html" class="cat-item">
+<div class="img-circle"><img src="img/ofertas.png" alt="Promociones" class="cat-img"></div>
+<span>Promociones</span></a>
+</div>
+</header>
+<section class="hero">
+<h1>Lo mejor para tu mejor amigo</h1>
+<p>Productos premium y servicios especializados para mascotas.</p>
+<a href="html/promociones.html" class="btn-main text-decoration-none">Ver promociones</a>
+</section>
+
+<main class="container mt-4" id="storeSection">
+<section class="productos mb-5">
+<h3 class="mb-4 text-center fw-bold">Productos destacados 🐾</h3>
+<div class="row g-4" id="productGrid">
+<div class="col-12 text-center py-5">
+<div class="spinner-border text-primary" role="status">
+<span class="visually-hidden">Cargando...</span>
+</div>
+<p class="text-muted mt-3">Cargando productos...</p>
+</div>
+</div>
+</section>
+
+<section class="servicios mb-5">
+<h3 class="mb-4 text-center fw-bold">Nuestros Servicios</h3>
+<div class="row g-4 text-center" id="servicesGrid">
+<div class="col-12 text-center py-5">
+<div class="spinner-border text-primary" role="status">
+<span class="visually-hidden">Cargando...</span>
+</div>
+<p class="text-muted mt-3">Cargando servicios...</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="main-footer">
+<div class="footer-grid">
+<div class="footer-col">
+<p>Pasión por el bienestar animal.</p>
+<div class="logo-text" style="color: white; margin-bottom: 1rem;">Vía Canes</div>
+<p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">El destino preferido para los amantes de las mascotas que buscan calidad, confianza y un toque de alegría en cada servicio.</p>
+<div class="social-icons">
+<h4>Síguenos</h4>
+<i class="fa-brands fa-facebook"></i>
+<i class="fa-brands fa-instagram"></i>
+<i class="fa-solid fa-envelope"></i>
+</div>
+</div>
+<div class="footer-col">
+<h3>Explorar</h3>
+<ul>
+<li><a href="#">Tienda Online</a></li>
+<li><a href="#">Baño y Estética</a></li>
+<li><a href="#">Agendar Cita</a></li>
+<li><a href="#">Paseos</a></li>
+<li><a href="#">Guardería</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h3>Soporte</h3>
+<ul>
+<li><a href="#">Contacto</a></li>
+<li><a href="#">Ayuda</a></li>
+<a href="#">Términos</a>
+<li><a href="#">Preguntas Frecuentes</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h3>Ubicación</h3>
+<p style="opacity: 0.7; font-size: 0.9rem;">Carrera 56 3</p>
+<div style="margin-top: 1rem; display: flex; align-items: center; gap: 8px; color: var(--accent);">
+<i class="fa-solid fa-map-location-dot"></i>
+<span>Ver en el mapa</span>
+</div>
+</div>
+</div>
+<div class="text-center mt-5 pt-4 border-top opacity-50 small">
+© 2026 Vía Canes — Todos los derechos reservados.
+</div>
+</footer>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carritoLateral">
+<div class="offcanvas-header border-bottom">
+<h5 class="offcanvas-title fw-bold">
+<i class="fa fa-shopping-cart me-2"></i>Tu Carrito
+</h5>
+<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+</div>
+<div class="offcanvas-body d-flex flex-column">
+<div id="cart-items" class="flex-grow-1">
+<p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
+</div>
+<div class="border-top pt-3 mt-3">
+<div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+<span>Total:</span>
+<span id="cart-total">$0</span>
+</div>
+<a href="html/carrito.html" class="btn btn-primary w-100 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2" id="btn-checkout" style="pointer-events: none; opacity: 0.6;">
+<i class="fa fa-credit-card"></i> Continuar
+</a>
+</div>
+</div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
+<div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+<div class="d-flex">
+<div class="toast-body" id="toastMsg">Operación exitosa</div>
+<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+
+</div>
+</div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!--  Solo cargar el main.js de la tienda -->
+<script src="js/modulestienda/main.js" defer></script>
+
+</body>
+</html>
+

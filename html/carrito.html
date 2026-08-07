@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vía Canes - Mi Carrito</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    
+</head>
+<body>
+
+    <header class="sticky-top">
+        <div class="navbar-top">
+            <a href="/index.html" id="logoAdmin" class="logo-container text-decoration-none">
+                <img src="../img/logo.png" alt="Logo" class="logo-img">
+                <span class="logo-text">Vía Canes</span>
+            </a>
+
+            <div class="search-container">
+                <i class="fa fa-search search-icon"></i>
+                <input type="text" class="custom-search-input" placeholder="¿Qué necesita tu mascota hoy?">
+            </div>
+
+            <div class="utility-icons">
+                <a href="auth.html" class="util-item">
+                    <i class="fa fa-user"></i> <span>Cuenta</span>
+                </a>
+
+                <button class="util-item border-0 bg-transparent position-relative p-0" 
+                        type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoLateral">
+                    <i class="fa fa-shopping-cart fs-5"></i>
+                    <span>Carrito</span>
+                    <span id="contador-carrito" 
+                          class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle"
+                          style="display:none;">0</span>
+                </button>
+
+                <a href="mis-mascotas.html" class="util-item">
+                    <i class="fa-solid fa-paw"></i> <span>Mascotas</span>
+                </a>
+
+                <a href="ayuda.html" class="util-item">
+                    <i class="fa fa-phone"></i> <span>Ayuda</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="categories-row">
+            <a href="perros.html" class="cat-item">
+                <div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div>
+                <span>Perros</span>
+            </a>
+            <a href="gatos.html" class="cat-item">
+                <div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div>
+                <span>Gatos</span>
+            </a>
+            <a href="otros-animales.html" class="cat-item">
+                <div class="img-circle"><img src="../img/p-otros.png" alt="Otros" class="cat-img"></div>
+                <span>Otros</span>
+            </a>
+            <a href="higiene.html" class="cat-item">
+                <div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div>
+                <span>Higiene</span>
+            </a>
+            <a href="salud.html" class="cat-item">
+                <div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div>
+                <span>Salud</span>
+            </a>
+            <a href="servicios.html" class="cat-item">
+                <div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div>
+                <span>Servicios</span>
+            </a>
+            <a href="citas.html" class="cat-item">
+                <div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div>
+                <span>Citas</span>
+            </a>
+            <a href="promociones.html" class="cat-item">
+                <div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div>
+                <span>Promociones</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <section id="carrito-items" class="mb-4">
+                    <h4 class="fw-bold mb-4">Mi carrito</h4>
+                    
+                    <div id="lista-productos-carrito"></div>
+
+                    <div class="alert alert-light border text-center p-5 d-none" id="carrito-compras-vacio">
+                        <img src="../img/carrito-compras-vacio.png" alt="Vacío" style="width: 120px;" class="mb-3 opacity-50">
+                        <h3 class="fw-bold">Tu carrito está vacío</h3>
+                        <p class="text-muted">¡Tu mascota está esperando un regalo! 🐾</p>
+                        <a href="tienda.html" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ir a la tienda</a>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm p-4 border-0 rounded-4 sticky-top" style="top: 100px;">
+                    <h4 class="mb-4 fw-bold">Resumen</h4>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal (Neto):</span>
+                        <span id="subtotal" class="fw-bold text-dark">$0</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">IVA (19%):</span>
+                        <span id="iva" class="text-dark">$0</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Transporte:</span>
+                        <span class="text-success fw-bold">Gratis</span>
+                    </div>
+
+                    <div class="mt-4 mb-3 p-3 bg-light rounded-3 border-0 text-center">
+                        <small id="envio-msj" class="d-block mb-2 text-dark fw-bold">
+                            ¡Añade productos para envío gratis!
+                        </small>
+                        <div class="progress mb-1" style="height: 8px; border-radius: 10px; background-color: #e9ecef;">
+                            <div id="envio-barra" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <hr class="my-3 opacity-50">
+
+                    <div class="d-flex justify-content-between mb-4 align-items-center">
+                        <strong class="fs-5 text-dark">Total</strong>
+                        <strong id="total" class="fs-3 text-dark">$0</strong>
+                    </div>
+
+                    <button id="btn-finalizar" class="btn w-100 py-3 fw-bold rounded-3 fs-5 shadow-sm border-0 text-white"
+                            style="background-color: var(--primary, #0d6efd);">
+                        Comenzar pedido
+                    </button>
+
+                    <button id="btn-confirmar-vaciar" class="btn btn-link text-danger w-100 mt-3 text-decoration-none small fw-semibold">
+                        <i class="fa fa-trash-can me-1"></i> Vaciar mi carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="carritoLateral" style="width: 400px;">
+        <div class="offcanvas-header border-bottom py-3 bg-light">
+            <h5 class="offcanvas-title fw-bold text-dark">
+                <i class="fa fa-shopping-cart me-2 text-primary"></i>Tu Carrito
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        
+        <div class="offcanvas-body d-flex flex-column px-4">
+            <div id="lista-productos-flotante" class="flex-grow-1">
+                <p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
+            </div>
+            
+            <div class="border-top pt-4 mt-3 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted fw-bold">Total estimado:</span>
+                    <strong id="total-flotante" class="fs-4 text-dark">$0</strong>
+                </div>
+                
+                <a href="carrito.html" class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2">
+                    <i class="fa fa-credit-card"></i> Ver mi cesta completa
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-5 mt-5">
+        <div class="container">
+            <h5 class="fw-bold text-primary mb-3">Vía Canes</h5>
+            <p class="mb-4 small opacity-75">© 2026 Vía Canes - Tu mascota, nuestra prioridad</p>
+            <div class="d-flex justify-content-center gap-4 fs-4">
+                <a href="#" class="text-white opacity-75"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white opacity-75"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-white opacity-75"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/carrito.js"></script>
+</body>
+</html>

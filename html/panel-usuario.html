@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vía Canes - Panel Usuario</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/panel-usuario.css">
+</head>
+<body>
+<!-- HEADER COMPLETO -->
+<header class="sticky-top">
+<div class="navbar-top">
+<a href="../index.html" class="logo-container text-decoration-none">
+<img src="../img/logo.png" alt="Logo" class="logo-img">
+<span class="logo-text">Vía Canes</span>
+</a>
+<div class="search-container">
+<i class="fa fa-search search-icon"></i>
+<input type="text" class="custom-search-input" placeholder="¿Qué necesita tu mascota hoy?">
+</div>
+<div class="utility-icons">
+<div class="dropdown">
+<a href="#" class="text-dark position-relative" data-bs-toggle="dropdown">
+<i class="fa fa-bell fs-5"></i>
+<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">3</span>
+</a>
+<div class="dropdown-menu dropdown-menu-end p-3" style="width: 300px;">
+<h6 class="dropdown-header">Notificaciones</h6>
+<a class="dropdown-item" href="#">Recordatorio de cita veterinaria</a>
+<a class="dropdown-item" href="#">Tu pedido ha sido enviado</a>
+</div>
+</div>
+<div class="user-box" id="userToggle" style="cursor: pointer; position: relative;">
+<img src="https://i.pravatar.cc/100?img=12" class="user-avatar" id="headerAvatar" alt="Avatar">
+<div class="d-none d-sm-flex flex-column">
+<span class="fw-bold" id="headerUserName">Carlos Mendoza</span>
+<small class="text-warning fw-bold"><i class="fa fa-crown"></i> CLIENTE</small>
+</div>
+<i class="fa fa-chevron-down"></i>
+<div class="profile-dropdown" id="profileDropdown">
+<div class="p-3 border-bottom d-flex align-items-center gap-3">
+<img src="https://i.pravatar.cc/100?img=12" width="45" height="45" class="rounded-circle" id="dropdownAvatar">
+<div>
+<div class="fw-bold" id="dropdownUserName">Carlos Mendoza</div>
+<small class="text-muted" id="dropdownEmail">carlos.mendoza@correo.com</small>
+</div>
+</div>
+<a href="#" class="dropdown-item" onclick="mostrarPanel()"><i class="fa fa-th-large"></i>Mi Panel</a>
+<a href="#" class="dropdown-item" onclick="mostrarEditarPerfil()"><i class="fa fa-user-edit"></i>Editar Perfil</a>
+<a href="#" class="dropdown-item" onclick="mostrarMascotas()"><i class="fa fa-paw"></i>Mascotas</a>
+<a href="#" class="dropdown-item" onclick="mostrarCitas()"><i class="fa fa-calendar"></i>Citas</a>
+<a href="#" class="dropdown-item" onclick="mostrarPedidos()"><i class="fa fa-box"></i>Pedidos</a>
+<a href="#" onclick="cerrarSesion()" class="dropdown-item text-danger fw-bold"><i class="fa fa-sign-out-alt"></i>Cerrar sesión</a>
+</div>
+</div>
+<button class="util-item border-0 bg-transparent position-relative p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoLateral">
+<i class="fa fa-shopping-cart fs-5"></i>
+<span>Carrito</span>
+<span id="contador-carrito" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="display:none;">0</span>
+</button>
+<a href="ayuda.html" class="util-item"><i class="fa fa-phone"></i><span>Ayuda</span></a>
+</div>
+</div>
+<div class="categories-row">
+<a href="perros.html" class="cat-item"><div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div><span>Perros</span></a>
+<a href="gatos.html" class="cat-item"><div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div><span>Gatos</span></a>
+<a href="otros-animales.html" class="cat-item"><div class="img-circle"><img src="../img/p-otros.png" alt="Otros" class="cat-img"></div><span>Otros Animales</span></a>
+<a href="higiene.html" class="cat-item"><div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div><span>Higiene</span></a>
+<a href="salud.html" class="cat-item"><div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div><span>Salud</span></a>
+<a href="servicios.html" class="cat-item"><div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div><span>Servicios</span></a>
+<a href="citas.html" class="cat-item"><div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div><span>Citas</span></a>
+<a href="promociones.html" class="cat-item"><div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div><span>Promociones</span></a>
+</div>
+</header>
+
+<!-- WELCOME HERO SECTION-->
+<section class="welcome">
+<div class="welcome-card">
+<h5>¡Hola, <span id="welcomeUserName">Usuario</span>! 👋</h5>
+<p>Bienvenido a tu panel de control. Aquí podrás gestionar tus citas, pedidos y el historial médico de tus mascotas.</p>
+<div class="btn-custom-group">
+<button class="btn btn-light btn-custom-pill fw-bold">
+<i class="fa fa-calendar-plus me-2"></i> Agendar Cita
+</button>
+<button class="btn btn-outline-light btn-custom-pill fw-bold">
+<i class="fa fa-store me-2"></i> Ir a la Tienda
+</button>
+</div>
+</div>
+</section>
+
+<!-- ==========================================
+MAIN LAYOUT ARCHITECTURE
+========================================== -->
+<div class="main-container">
+
+<!-- SIDEBAR LEFT -->
+<aside>
+<!-- Sidebar Nav -->
+<nav class="sidebar-nav-list d-flex flex-column gap-1 bg-white p-2 rounded-4 shadow-sm">
+<a href="#" class="nav-item active" onclick="mostrarPanel()"><i class="fa fa-th-large"></i>Mi Panel</a>
+<a href="#" class="nav-item" onclick="mostrarEditarPerfil()"><i class="fa fa-user-edit"></i>Editar Perfil</a>
+<a href="#" class="nav-item" onclick="mostrarMascotas()"><i class="fa fa-paw"></i>Mascotas</a>
+<a href="#" class="nav-item" onclick="mostrarCitas()"><i class="fa fa-calendar"></i>Citas</a>
+<a href="#" class="nav-item" onclick="mostrarPedidos()"><i class="fa fa-box"></i>Pedidos</a>
+<a href="#" onclick="cerrarSesion()" class="nav-item logout-item text-danger fw-bold mt-3 border-top"><i class="fa fa-sign-out-alt"></i> Cerrar sesión</a>
+</nav>
+</aside>
+
+<!-- MAIN CONTENT RIGHT -->
+<main class="content-card">
+<!-- DASHBOARD -->
+<div id="view-dashboard">
+<h3 class="mb-4 fw-bold">Mi Panel</h3>
+
+<div class="row g-4">
+<div class="col-12 col-xl-8">
+<div class="row g-3 mb-4">
+<!-- TARJETA MIS MASCOTAS -->
+<div class="col-12 col-md-4">
+<div class="card h-100 text-center p-4 shadow-sm border-0 bg-white rounded-4">
+<span class="text-uppercase text-muted fw-bold d-block mb-3" style="font-size:0.75rem;">Mis Mascotas</span>
+<div class="my-3 d-flex justify-content-center align-items-center bg-light rounded-circle mx-auto" style="width:70px;height:70px;">
+<i class="fa-solid fa-dog fa-2x text-primary"></i>
+</div>
+<h6 class="fw-extrabold text-dark mb-1" id="dashNombreMascota">Neron</h6>
+<p class="small text-muted mb-0" id="dashDetalleMascota">Perro • 5 años • Golden</p>
+<button class="btn btn-outline-dark w-100 rounded-pill btn-sm fw-bold mt-4" onclick="mostrarMascotas()">Ver / Editar</button>
+</div>
+</div>
+<div class="col-12 col-md-4">
+<div class="card h-100 text-center p-4 shadow-sm border-0 bg-white rounded-4">
+<span class="text-uppercase text-muted fw-bold d-block mb-3" style="font-size:0.75rem;">Citas Activas</span>
+<div id="dash-contenedor-citas">
+<div class="p-2 rounded-3 mb-2 bg-light border"><span class="small fw-bold d-block text-secondary">28/12 - Paseo</span><span class="badge bg-success text-white rounded-pill px-2 py-1 mt-1" style="font-size:0.7rem;">Confirmada</span></div>
+<div class="p-2 rounded-3 mb-0 bg-light border"><span class="small fw-bold d-block text-secondary">29/12 - Peluquería</span><span class="badge bg-warning text-dark rounded-pill px-2 py-1 mt-1" style="font-size:0.7rem;">Pendiente</span></div>
+</div>
+<button class="btn btn-warning text-dark w-100 rounded-pill btn-sm fw-bold mt-4" onclick="mostrarCitas()">Ver citas</button>
+</div>
+</div>
+<div class="col-12 col-md-4">
+<div class="card h-100 text-center p-4 shadow-sm border-0 bg-white rounded-4">
+<span class="text-uppercase text-muted fw-bold d-block mb-3" style="font-size:0.75rem;">Último Pedido</span>
+<div class="my-3 d-flex justify-content-center align-items-center bg-light rounded-circle mx-auto" style="width:70px;height:70px;">
+<i class="fa-solid fa-box-open fa-2x text-secondary"></i>
+</div>
+<h6 class="fw-bold text-dark mb-0">Alimento Premium</h6>
+<p class="small text-muted">Envío en camino</p>
+<button class="btn btn-dark w-100 rounded-pill btn-sm fw-bold text-white mt-4" onclick="mostrarPedidos()">Ver pedidos</button>
+</div>
+</div>
+</div>
+<div class="mb-3" style="max-width: 600px; margin: 0 auto;">
+<div class="card text-white border-0 p-3 d-flex flex-column justify-content-between text-center banner-promo-lateral" style="background: var(--gradient-primary); min-height: 100px; border-radius: 16px;">
+<div class="py-1">
+<span class="badge bg-white text-primary rounded-pill px-2 py-1 fw-bold mb-2" style="font-size: 0.65rem;">Beneficio Exclusivo</span>
+<h2 class="fw-black m-0" style="font-weight: 900; font-size: 2.2rem; line-height: 1;">20% OFF</h2>
+<p class="fw-medium mt-1 mb-0" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.9);">En tu próximo servicio de Guardería o Peluquería</p>
+</div>
+<button class="btn bg-white text-primary w-100 rounded-pill fw-bold py-1.5 shadow-sm mt-2" style="font-size: 0.75rem;" onclick="mostrarCitas()">¡Aprovechar Ahora!</button>
+</div>
+</div>
+<div class="card p-4 shadow-sm border-0 bg-white rounded-4">
+<h5 class="fw-bold text-dark mb-3">Servicio recomendado para ti</h5>
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-3 rounded-4 bg-primary-subtle">
+<div class="d-flex align-items-center gap-3">
+<div class="d-flex align-items-center justify-content-center bg-white rounded-3 shadow-sm" style="width:54px;height:54px;"><i class="fa-solid fa-sparkles text-primary fa-lg"></i></div>
+<div><h6 class="fw-bold m-0 text-dark">Baño y Peluquería Completa</h6><span class="badge bg-white text-success fw-bold border border-success-subtle mt-1">$45.000</span></div>
+</div>
+<div class="d-flex gap-2">
+<button class="btn bg-white text-dark btn-sm rounded-pill border fw-bold px-3">Detalles</button>
+<button class="btn btn-dark btn-sm rounded-pill px-4 text-white" onclick="mostrarCitas()">Reservar</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- USER PROFILE CARD (Movido a la columna derecha) -->
+<div class="col-12 col-xl-4">
+<div class="user-profile-card mb-3">
+<div class="card text-white border-0 p-4 p-md-3 shadow-sm rounded-4 h-100" style="background: #eef2f7; border-radius:24px;">
+<div class="row align-items-center text-center text-md-start">
+<div class="col-12 d-flex flex-column align-items-center mb-3">
+<img src="https://i.pravatar.cc/200?img=12" class="avatar-img mb-3 rounded-circle" id="sidebarAvatar" width="100" height="100">
+<h5 id="sidebarUserName" class="fw-bold mb-1">Carlos Mendoza</h5>
+<span class="client-badge badge bg-dark text-white rounded-pill px-3 py-1 small">
+<i class="fa fa-circle-check"></i> Cliente Activo
+</span>
+</div>
+<div class="profile-info-body p-3 bg-white">
+<div class="info-row d-flex align-items-center gap-3 py-2 border-bottom">
+<div class="icon-circle bg-primary-subtle text-primary p-2 rounded-circle" style="width:30px;height:30px;"><i class="fa fa-envelope"></i></div>
+<div><label class="text-muted d-block small fw-bold">CORREO</label><span id="sidebarEmail" class="small text-dark">usuario@correo.com</span></div>
+</div>
+<div class="info-row d-flex align-items-center gap-3 py-2 border-bottom">
+<div class="icon-circle bg-warning-subtle text-warning p-2 rounded-circle" style="width:30px;height:30px;"><i class="fa fa-phone"></i></div>
+<div><label class="text-muted d-block small fw-bold">CELULAR</label><span id="sidebarPhone" class="small text-dark">+57 311 400 0203</span></div>
+</div>
+<div class="info-row d-flex align-items-center gap-3 py-2 border-bottom">
+<div class="icon-circle bg-success-subtle text-success p-2 rounded-circle" style="width:30px;height:30px;"><i class="fa fa-map-marker-alt"></i></div>
+<div><label class="text-muted d-block small fw-bold">DIRECCIÓN</label><span id="sidebarAddress" class="small text-dark">Calle 45 #12-30, Bogotá</span></div>
+</div>
+<div class="info-row d-flex align-items-center gap-3 py-2">
+<div class="icon-circle bg-info-subtle text-info p-2 rounded-circle" style="width:30px;height:30px;"><i class="fa fa-id-card"></i></div>
+<div><label class="text-muted d-block small fw-bold">DOCUMENTO</label><span id="sidebarDocument" class="small text-dark">CC 51719852</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- VISTA MASCOTAS -->
+<div id="view-mascotas" class="d-none">
+<div class="content-card bg-white p-4 rounded-4 shadow-sm">
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+<div><h2 class="fw-bold mb-1">🐾 Mis Mascotas</h2><p class="text-muted mb-0">Administra los perfiles y cuidados de tus mascotas.</p></div>
+<button class="btn btn-warning rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalRegistroMascota"><i class="fa fa-plus text-dark"></i> Agregar Mascota</button>
+</div>
+<div class="row g-4" id="contenedor-mascotas">
+<div class="col-md-6 col-lg-4">
+<div class="card border-2 border-dashed rounded-4 h-100 shadow-sm d-flex align-items-center justify-content-center text-center p-4 add-pet-card" data-bs-toggle="modal" data-bs-target="#modalRegistroMascota" style="cursor:pointer;min-height:320px;">
+<div><i class="fa fa-circle-plus text-warning mb-3" style="font-size:4rem;"></i><h5 class="fw-bold text-dark">Añadir nueva mascota</h5><p class="text-muted mb-0">Registra un nuevo compañero</p></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- VISTA CITAS -->
+<div id="view-citas" class="d-none">
+<div class="content-card bg-white p-4 rounded-4 shadow-sm">
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+<div><h2 class="fw-bold mb-1">📅 Mis Citas</h2><p class="text-muted mb-0">Administra los turnos de atención e historial clínico.</p></div>
+<button class="btn btn-warning rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuevaCita"><i class="fa fa-calendar-plus me-1 text-dark"></i> Agendar Cita</button>
+</div>
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead class="table-light">
+<tr class="text-secondary small fw-bold text-uppercase">
+<th class="px-4 py-3" style="width:120px;">ID Cita</th>
+<th class="py-3">Mascota</th>
+<th class="py-3">Servicio</th>
+<th class="py-3">Fecha y Hora</th>
+<th class="py-3 text-center" style="width:150px;">Estado</th>
+<th class="px-4 py-3 text-end" style="width:100px;">Acciones</th>
+</tr>
+</thead>
+<tbody id="tabla-citas-cuerpo"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- VISTA PEDIDOS -->
+<div id="view-pedidos" class="d-none">
+<div class="content-card bg-white p-4 rounded-4 shadow-sm">
+<div class="mb-4"><h2 class="fw-bold mb-1">📦 Mis Pedidos</h2><p class="text-muted mb-0">Consulta el historial de tus compras y envíos.</p></div>
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead class="table-light">
+<tr class="text-secondary small fw-bold text-uppercase">
+<th class="px-4 py-3" style="width:140px;">ID Pedido</th>
+<th class="py-3">Fecha</th>
+<th class="py-3">Productos</th>
+<th class="py-3 text-end" style="width:150px;">Total</th>
+<th class="py-3 text-center" style="width:160px;">Estado</th>
+<th class="px-4 py-3 text-end" style="width:100px;">Detalles</th>
+</tr>
+</thead>
+<tbody id="tabla-pedidos-cuerpo"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- VISTA EDITAR PERFIL -->
+<div id="view-edit-profile" class="d-none">
+<form id="form-editar-perfil">
+<!-- Foto de Perfil -->
+<section class="card-section mb-4 bg-white p-4 rounded-4 shadow-sm border">
+<div class="card-header-custom d-flex align-items-center gap-2 mb-3">
+<div class="icon-box text-primary"><i class="fa fa-camera"></i></div>
+<h4 class="fw-bold mb-0 h5 text-dark">Foto de Perfil</h4>
+</div>
+<div class="d-flex align-items-center flex-wrap gap-4 mt-3">
+<div class="avatar-preview position-relative" style="width:120px;height:120px;">
+<img src="https://ui-avatars.com/api/?name=Carlos+Mendoza" id="avatarImg" class="w-100 h-100 rounded-circle object-fit-cover border shadow-sm">
+<button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute bottom-0 end-0" style="width:34px;height:34px;border:2px solid #fff;" onclick="document.getElementById('photoInput').click()">
+<i class="fa-solid fa-camera" style="font-size:0.85rem;"></i>
+</button>
+</div>
+<div class="avatar-btns">
+<div class="d-flex gap-2 flex-wrap">
+<button type="button" class="btn btn-warning text-dark rounded-pill px-4 btn-sm fw-bold" id="changePhotoBtn"><i class="fa fa-upload me-1"></i> Cambiar foto</button>
+<button type="button" class="btn btn-outline-danger rounded-pill px-4 btn-sm fw-bold" id="removePhotoBtn"><i class="fa-solid fa-trash-can me-1"></i> Eliminar</button>
+</div>
+<small class="text-muted d-block mt-2">Formatos: JPG, PNG. Máximo 2MB.</small>
+<input type="file" id="photoInput" name="foto_usuario" hidden accept="image/*">
+<input type="hidden" id="usrEliminarFotoFlag" value="0">
+</div>
+</section>
+
+<!-- Datos Personales -->
+<section class="card-section mb-4 bg-white p-4 rounded-4 shadow-sm border">
+<div class="card-header-custom d-flex align-items-center gap-2 mb-3">
+<div class="icon-box text-primary"><i class="fa fa-user"></i></div>
+<h3 class="fw-bold mb-0 h5 text-dark">Datos Personales</h3>
+</div>
+<div class="row g-3">
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Tipo Documento</label>
+<select id="id_tipo_id" name="tipo_documento" class="form-select bg-light" required>
+<option value="1">Cédula de Ciudadanía</option>
+<option value="2">Tarjeta de Identidad</option>
+<option value="3">Cédula de Extranjería</option>
+<option value="4">Pasaporte</option>
+<option value="5">NIT</option>
+<option value="6">NUIP</option>
+</select>
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Número de Identificación</label>
+<input type="text" class="form-control bg-light" maxlength="15" id="nuevoDocumento" name="numero_documento" required placeholder="Ej: 51719852">
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Nombres</label>
+<input type="text" class="form-control bg-light" id="nuevoNombre" name="nombres" required placeholder="Ej: Carlos">
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Apellidos</label>
+<input type="text" class="form-control bg-light" id="nuevoApellido" name="apellidos" required placeholder="Ej: Mendoza">
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Correo Electrónico</label>
+<input type="email" class="form-control bg-light" maxlength="100" id="nuevoCorreo" name="email" required placeholder="carlos@correo.com">
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Celular de Contacto</label>
+<input type="tel" class="form-control bg-light" pattern="[0-9]{10}" maxlength="10" id="nuevoTelefono" name="celular" required placeholder="Ej: 3114000203">
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Localidad</label>
+<select id="id_localidad" class="form-select bg-light" name="id_localidad" required>
+<option value="1">USAQUÉN</option><option value="2">CHAPINERO</option><option value="3">SANTA FE</option>
+<option value="4">SAN CRISTÓBAL</option><option value="5">USME</option><option value="6">TUNJUELITO</option>
+<option value="7">BOSA</option><option value="8">KENNEDY</option><option value="9">FONTIBÓN</option>
+<option value="10">ENGATIVÁ</option><option value="11">SUBA</option><option value="12">BARRIOS UNIDOS</option>
+<option value="13">TEUSAQUILLO</option><option value="14">LOS MÁRTIRES</option><option value="15">ANTONIO NARIÑO</option>
+<option value="16">PUENTE ARANDA</option><option value="17">LA CANDELARIA</option><option value="18">RAFAEL URIBE URIBE</option>
+<option value="19">CIUDAD BOLÍVAR</option><option value="20">SUMAPAZ</option><option value="21">OTRA LOCALIDAD</option>
+</select>
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Dirección Residencial</label>
+<input type="text" class="form-control bg-light" id="nuevoDireccion" name="direccion" required placeholder="Ej: Calle 45 #12-30">
+</div>
+</div>
+</section>
+
+<!-- Seguridad -->
+<section class="card-section mb-4 bg-white p-4 rounded-4 shadow-sm border">
+<div class="card-header-custom d-flex align-items-center gap-2 mb-2">
+<div class="icon-box text-primary"><i class="fa fa-shield-alt"></i></div>
+<h3 class="fw-bold mb-0 h5 text-dark">Seguridad</h3>
+</div>
+<p class="text-muted small mb-3">Deja vacíos estos campos si no deseas cambiar tu contraseña.</p>
+<div class="row g-3">
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Nueva Contraseña</label>
+<div class="input-group">
+<input type="password" class="form-control bg-light border-end-0" id="newPassword" name="nueva_contrasena" placeholder="Mínimo 6 caracteres">
+<button type="button" class="btn btn-outline-secondary bg-light border-start-0" onclick="togglePassword('newPassword','eye1')"><i class="fa-solid fa-eye" id="eye1"></i></button>
+</div>
+</div>
+<div class="col-md-6">
+<label class="fw-bold mb-2 small text-secondary">Confirmar Contraseña</label>
+<div class="input-group">
+<input type="password" class="form-control bg-light border-end-0" id="confirmPassword" name="confirmar_contrasena" placeholder="Repite la contraseña">
+<button type="button" class="btn btn-outline-secondary bg-light border-start-0" onclick="togglePassword('confirmPassword','eye2')"><i class="fa-solid fa-eye" id="eye2"></i></button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Preferencias -->
+<section class="card-section mb-4 bg-white p-4 rounded-4 shadow-sm border">
+<div class="d-flex align-items-center gap-2 mb-3">
+<div class="icon-box text-primary"><i class="fa fa-heart"></i></div>
+<div><h4 class="fw-bold mb-0 h5 text-dark">Preferencias</h4><small class="text-muted">Selecciona tus mascotas favoritas</small></div>
+</div>
+<div class="pet-options d-flex gap-2 flex-wrap mt-2">
+<button type="button" class="pet-chip btn btn-outline-secondary btn-sm rounded-pill px-4 py-1.5 fw-bold" id="pref-perro">🐕 Perro</button>
+<button type="button" class="pet-chip btn btn-outline-secondary btn-sm rounded-pill px-4 py-1.5 fw-bold" id="pref-gato">🐈 Gato</button>
+<button type="button" class="pet-chip btn btn-outline-secondary btn-sm rounded-pill px-4 py-1.5 fw-bold" id="pref-otros">🐾 Otros</button>
+</div>
+</section>
+
+<div class="footer-actions d-flex gap-2 justify-content-end mb-5 pt-2">
+<button type="button" class="btn btn-light rounded-pill px-4 fw-bold text-secondary" onclick="mostrarPanel()">Cancelar</button>
+<button type="submit" class="btn btn-warning text-dark rounded-pill px-4 fw-bold" id="saveBtn">Guardar Cambios <i class="fa-solid fa-check ms-1"></i></button>
+</div>
+</form>
+</div>
+</main>
+</div> <!-- Cierra .main-container -->
+
+<!-- MODAL REGISTRO MASCOTA  -->
+<div class="modal fade" id="modalRegistroMascota" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            
+            <div class="modal-header border-0 p-4 pb-2">
+                <h4 class="fw-bold mb-0" id="modalTitulo">🐾 Nueva Mascota</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <div class="modal-body px-4 pb-4">
+                <form id="formNuevaMascota" class="needs-validation" novalidate>
+                    <input type="hidden" name="id_usuario" value="1">
+                    <input type="hidden" id="mascotaIdEdit" name="id_mascota" value="">
+                    
+                    <!-- Foto Mascota -->
+                    <div class="text-center mb-4">
+                        <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-light overflow-hidden position-relative" style="width:140px;height:140px;cursor:pointer;border:2px solid #ddd;" onclick="document.getElementById('inputFoto').click()">
+                            <i class="fa fa-camera text-secondary fs-1" id="iconCamera"></i>
+                            <img id="imgPreview" src="" class="w-100 h-100 rounded-circle object-fit-cover" style="display:none;">
+                        </div>
+                        <small class="text-muted d-block mt-2">Click para subir foto</small>
+                        <input type="file" id="inputFoto" name="foto_mascota" hidden accept="image/*" onchange="previsualizarImagen(this)">
+                        <input type="hidden" id="mascotaFotoBase64">
+                    </div>
+
+                    <!-- CONTENEDOR PRINCIPAL DE LAS DOS COLUMNAS -->
+                    <div class="row g-4">
+                        
+                        <!-- COLUMNA 1: DATOS BÁSICOS, ESPECIE Y RAZA -->
+<!-- COLUMNA 1: DATOS BÁSICOS, ESPECIE Y RAZA -->
+<div class="col-md-6">
+    <!-- nombre_mascota -->
+    <div class="mb-3">
+        <label class="fw-bold mb-2 small text-dark" for="nombreMascota">Nombre de la Mascota</label>
+        <input type="text" class="form-control" id="nombreMascota" name="nombre_mascota" required placeholder="Ej: Neron">
+    </div>
+
+    <!-- id_especie -->
+    <div class="mb-3">
+        <label class="fw-bold mb-2 small text-dark">Especie</label>
+        <div class="d-flex gap-2 flex-wrap">
+            <input type="radio" class="btn-check" name="id_especie" id="perro" value="1" checked onclick="manejarCambioEspecie(this.value)">
+            <label class="btn btn-outline-primary rounded-pill px-3" for="perro">🐶 Perro</label>
+            
+            <input type="radio" class="btn-check" name="id_especie" id="gato" value="2" onclick="manejarCambioEspecie(this.value)">
+            <label class="btn btn-outline-primary rounded-pill px-3" for="gato">🐱 Gato</label>
+            
+            <input type="radio" class="btn-check" name="id_especie" id="otro" value="3" onclick="manejarCambioEspecie(this.value)">
+            <label class="btn btn-outline-primary rounded-pill px-3" for="otro">🐾 Otro</label>
+        </div>
+    </div>
+
+    <!-- Contenedor Detalle Especie (Oculto por defecto con d-none) -->
+    <div class="mb-3 d-none" id="contenedorEspecieDetalle">
+        <label class="fw-bold mb-2 small text-dark" for="especie_detalle">Especifique la especie:</label>
+        <input type="text" id="especie_detalle" name="especie_detalle" class="form-control" placeholder="Ej: Conejo, Ave...">
+    </div>
+
+    <!-- id_raza -->
+    <div class="mb-3" id="contenedorRazaMascota">
+        <label class="fw-bold mb-2 small text-dark" for="razaMascota">Raza</label>
+        <select class="form-select" id="razaMascota" name="id_raza" required onchange="verificarOtraRaza()">
+            <option value="" selected disabled>Selecciona una raza...</option>
+        </select>
+    </div>
+
+    <!-- Contenedor Detalle Raza (Oculto por defecto con d-none) -->
+    <div class="mb-3 d-none" id="contenedorRazaDetalle">
+        <label class="fw-bold mb-2 small text-dark" for="raza_detalle">Detalle raza:</label>
+        <input type="text" id="raza_detalle" name="raza_detalle" class="form-control" placeholder="Escriba la raza">
+    </div>
+</div>
+
+                        <!-- COLUMNA 2: CARACTERÍSTICAS FÍSICAS Y MÉDICAS -->
+                        <div class="col-md-6">
+                            <!-- id_sexoMascota  -->
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2 small text-dark" for="mascotaSelectSexo">Sexo</label>
+                                <select id="mascotaSelectSexo" name="id_sexoMascota" class="form-select" required>
+                                    <option value="" selected disabled>Selecciona el sexo...</option>
+                                    <option value="1">Macho</option>
+                                    <option value="2">Hembra</option>
+                                </select>
+                            </div>
+
+                            <!-- edad_mascota  -->
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputEdad">Edad</label>
+                                <input type="text" id="mascotaInputEdad" name="edad_mascota" class="form-control" placeholder="Ej: 3 años" required>
+                            </div>
+
+                            <!-- color_mascota  -->
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputColor">Color</label>
+                                <input type="text" id="mascotaInputColor" name="color_mascota" class="form-control" placeholder="Ej: Dorado" required>
+                            </div>
+
+                            <!-- peso_mascota  -->
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputPeso">Peso (Kg)</label>
+                                <input type="number" step="0.1" id="mascotaInputPeso" name="peso_mascota" class="form-control" placeholder="12.5" required>
+                            </div>
+
+                            <!-- observaciones_mascota  -->
+                            <div class="mb-3">
+                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputObservaciones">Observaciones Médicas</label>
+                                <textarea id="mascotaInputObservaciones" name="observaciones_mascota" class="form-control" rows="2" placeholder="Alergias, condiciones..."></textarea>
+                            </div>
+                        </div> <!-- Cierre correcto de Columna 2 -->
+                        
+                    </div> <!-- Fin del .row -->
+
+                    <!-- BOTONES DE ACCIÓN ACORDES AL DISEÑO -->
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" id="btnGuardarMascota" class="btn btn-warning text-dark rounded-pill px-4 fw-bold">Guardar Mascota</button>
+                    </div>
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL NUEVA CITA -->
+<div class="modal fade" id="modalNuevaCita" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content border-0 shadow-lg rounded-4">
+<div class="modal-header bg-dark text-white p-4 pb-3">
+<h5 class="modal-title fw-bold"><i class="fa-solid fa-clock me-2"></i>Agendar Turno</h5>
+<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<form id="formPanelCita">
+<input type="hidden" name="id_usuario" value="1">
+<input type="hidden" name="id_estado_cita" value="1">
+<div class="modal-body p-4 row g-3">
+<div class="col-12">
+<label class="form-label fw-bold small text-dark">Selecciona tu Mascota</label>
+<select id="citaSelectMascota" name="id_mascota" class="form-select" required></select>
+</div>
+<div class="col-12">
+<label class="form-label fw-bold small text-dark">Servicio</label>
+<select id="citaSelectServicio" name="id_servicio" class="form-select" required>
+<option value="" selected disabled>Selecciona el servicio...</option>
+<option value="1">Baño y peluquería</option><option value="2">Baño</option>
+<option value="3">Desparasitación</option><option value="4">Vacunación</option>
+<option value="5">Guardería</option><option value="6">Consulta veterinaria</option>
+<option value="7">Paseos</option>
+</select>
+</div>
+<div class="col-md-6">
+<label class="form-label fw-bold small text-dark">Fecha del Turno</label>
+<input type="date" id="citaInputFecha" name="fecha_cita" class="form-control" required>
+</div>
+<div class="col-md-6">
+<label class="form-label fw-bold small text-dark">Bloque Horario</label>
+<select id="citaSelectHora" name="hora_cita" class="form-select" required>
+<option value="" selected disabled>Selecciona hora...</option>
+  <option value="">Selecciona un horario...</option>
+  <option value="09:00:00">09:00 AM</option>
+  <option value="10:00:00">10:00 AM</option>
+  <option value="11:00:00">11:00 AM</option>
+  <option value="14:00:00">02:00 PM</option>
+  <option value="15:00:00">03:00 PM</option>
+  <option value="16:00:00">04:00 PM</option>
+</select>
+</div>
+<div class="col-12">
+<label class="form-label fw-bold small text-dark">Notas Adicionales</label>
+<textarea id="citaInputNotas" name="notas" class="form-control" rows="2" placeholder="Ej: Es nervioso con el agua..."></textarea>
+</div>
+</div>
+<div class="modal-footer bg-light p-3">
+<button type="button" class="btn btn-secondary rounded-pill fw-bold" data-bs-dismiss="modal">Cerrar</button>
+<button type="submit" class="btn btn-success rounded-pill fw-bold"><i class="fa-brands fa-whatsapp me-2"></i>Confirmar y Enviar</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/modulestienda/panel-usuario.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Vía Canes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-decor">
+            <a href="../index.html" id="logoAdmin" class="logo-container text-decoration-none">
+                <div class="auth-decor-content">
+                    <div class="auth-logo">
+                        <img src="../img/logo.png" alt="Logo">
+                        <span>Vía <em>Canes</em></span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=900" class="auth-decor-img" alt="Mascota">
+                    <h2>El cuidado que tu mascota merece</h2>
+                    <p>Gestiona citas, productos y la salud de tu mascota desde un solo lugar.</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="auth-form-panel">
+            <div class="auth-container">
+                <a href="../index.html" class="auth-back">
+                    <i class="fa fa-arrow-left"></i> Volver a la tienda
+                </a>
+                
+                <div class="auth-error" id="authError" style="display:none;"></div>
+                <div class="auth-success" id="authSuccess" style="display:none;"></div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="showForm('login')">
+                        Iniciar sesión
+                    </button>
+                    <button class="auth-tab" onclick="showForm('register')">
+                        Registrarse
+                    </button>
+                </div>
+
+                <form class="auth-form active" id="loginForm" onsubmit="event.preventDefault(); handleLogin(event);">
+                    <h1>Bienvenido</h1>
+                    <p class="auth-subtitle">Inicia sesión para continuar</p>
+                    
+                    <div class="auth-field">
+                        <label class="auth-label">Correo electrónico</label>
+                        <div class="auth-input-wrap">
+                            <i class="fa fa-envelope field-icon"></i>
+                            <input type="email" id="loginEmail" class="auth-input" placeholder="correo@ejemplo.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-field">
+                        <label class="auth-label">Contraseña</label>
+                        <div class="auth-input-wrap">
+                            <i class="fa fa-lock field-icon"></i>
+                            <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" required>
+                            <button type="button" class="auth-pw-toggle" onclick="togglePassword(this)">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-check">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Recordarme</label>
+                        <div style="margin-left:auto">
+                            <a href="#" onclick="showForm('recover')">¿Olvidaste tu contraseña?</a>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn-primary">
+                        <i class="fa fa-sign-in-alt"></i> Iniciar sesión
+                    </button>
+                </form>
+
+                <form class="auth-form" id="RegisterForm" onsubmit="event.preventDefault(); handleRegister(event);">
+                    <h1>Crear cuenta</h1>
+                    <p class="auth-subtitle">Únete a Vía Canes</p>
+
+                    <div class="auth-grid">
+                        <div class="auth-field">
+                            <label class="auth-label">Nombres</label>
+                            <div class="auth-input-wrap">
+                                <i class="fa fa-user field-icon"></i>
+                                <input type="text" id="regNames" class="auth-input" placeholder="Sandra" required>
+                            </div>
+                        </div>
+                        <div class="auth-field">
+                            <label class="auth-label">Apellidos</label>
+                            <div class="auth-input-wrap">
+                                <i class="fa fa-user field-icon"></i>
+                                <input type="text" id="regLastnames" class="auth-input" placeholder="Camargo" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-field">
+                        <label class="auth-label">Celular / WhatsApp</label>
+                        <div class="auth-input-wrap">
+                            <i class="fa fa-phone field-icon"></i>
+                            <input type="text" id="regPhone" class="auth-input" placeholder="311 400 0203" required>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-field">
+                        <label class="auth-label">Correo electrónico</label>
+                        <div class="auth-input-wrap">
+                            <i class="fa fa-envelope field-icon"></i>
+                            <input type="email" id="regEmail" class="auth-input" placeholder="tucorreo@ejemplo.com" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-field">
+                        <label class="auth-label">Contraseña</label>
+                        <div class="auth-input-wrap">
+                            <i class="fa fa-lock field-icon"></i>
+                            <input type="password" id="regPassword" class="auth-input" placeholder="Mayúscula, minúscula, número y símbolo Mínimo 6 caracteres " 
+                            pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$"
+                           title="La contraseña debe tener al menos 6 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial."
+    required>
+                            <button type="button" class="auth-pw-toggle" onclick="togglePassword(this)">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="pw-strength">
+                            <div id="pwBar1" class="pw-bar"></div>
+                            <div id="pwBar2" class="pw-bar"></div>
+                            <div id="pwBar3" class="pw-bar"></div>
+                            <div id="pwBar4" class="pw-bar"></div>
+                        </div>
+                        <div id="pwHint" class="pw-hint"></div>
+                    </div>
+                    
+                    <div class="auth-check">
+                        <input type="checkbox" id="regTerms" required>
+                        <label for="regTerms">
+                            Acepto los <a href="#">Términos</a> y la <a href="#">Política de Privacidad</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn-primary">
+                        <i class="fa fa-user-plus"></i> Crear cuenta
+                    </button>
+                </form>
+
+                <form class="auth-form" id="RecoverForm" onsubmit="event.preventDefault(); handleRecover(event);">
+                    <h1>Recuperar contraseña</h1>
+                    <p class="auth-subtitle">Te enviaremos un enlace</p>
+                    <div class="auth-field">
+                        <div class="auth-input-wrap">
+                            <i class="fa fa-envelope field-icon"></i>
+                            <input type="email" id="recovery-email" class="auth-input" placeholder="Correo" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn-primary">ENVIAR</button>
+                </form>
+                      <form class="auth-form" id="resetForm" onsubmit="event.preventDefault(); handleReset(event);">
+    <h1>Nueva contraseña</h1>
+    <p class="auth-subtitle">Ingresa tu nueva clave</p>
+    
+    <div class="auth-field">
+        <label class="auth-label">Código recibido</label>
+        <div class="auth-input-wrap">
+            <i class="fa fa-key field-icon"></i>
+            <input type="text" id="resetToken" class="auth-input" placeholder="000000" required>
+        </div>
+    </div>
+    
+    <div class="auth-field">
+        <label class="auth-label">Nueva contraseña</label>
+        <div class="auth-input-wrap">
+            <i class="fa fa-lock field-icon"></i>
+            <input type="password" id="resetPassword" class="auth-input" placeholder="Nueva contraseña (Mínimo 6 caracteres)" 
+                   pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$"
+                   title="La nueva contraseña debe tener al menos 6 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial."
+                   required>
+            <button type="button" class="auth-pw-toggle" onclick="togglePassword(this)">
+                <i class="fa fa-eye"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- ✨ AQUÍ ESTABA EL PROBLEMA: FALTABA EL BOTÓN DE ENVÍO (SUBMIT) ✨ -->
+    <button type="submit" class="auth-btn-primary" style="margin-top: 15px;">
+        <i class="fa fa-save"></i> Actualizar contraseña
+    </button>
+
+    <button type="button" class="auth-back-btn" onclick="showForm('login')" style="width: 100%; margin-top: 15px;">
+        Volver al inicio de sesión
+    </button>
+</form>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader" class="loader-overlay" style="display:none;">
+        <div class="loader-content">
+            <i class="fa-solid fa-dog loader-dog"></i>
+            <p class="loader-text">Cargando...</p>
+        </div>
+      </div>
+
+    <script src="../js/modulestienda/auth.js"></script>
+    
+
+</body>
+</html>
