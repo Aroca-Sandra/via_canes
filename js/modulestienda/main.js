@@ -437,7 +437,7 @@ function verificarSesionAdmin() {
 }
 
 // ==========================================
-// 5. BANNER DINÁMICO (CORREGIDO)
+// 5. BANNER DINÁMICO
 // ==========================================
 function mostrarBannerCategoria(filtros, totalProductos) {
     const banner = document.getElementById('categoryBanner');
