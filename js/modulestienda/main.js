@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         valor: urlParams.get('valor')
     };
 
-    console.log('🐾 Vía Canes - Cargando tienda con filtros:', filtros);
+    //console.log('🐾 Vía Canes - Cargando tienda con filtros:', filtros);
 
     // 2. Inicializar cargas
     cargarProductos(filtros);
