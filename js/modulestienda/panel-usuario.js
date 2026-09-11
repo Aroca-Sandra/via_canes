@@ -1,4 +1,4 @@
-// panel-usuario.js - VERSIÓN COMPLETA Y CORREGIDA
+// panel-usuario.js 
 const API_URL = '../api/panel-usuario_data.php';
 let usuarioActual = null;
 let cacheServicios = []; // ✅ Cache de servicios para WhatsApp

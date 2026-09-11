@@ -28,7 +28,7 @@ if (session_status() === PHP_SESSION_NONE) {
  $id_usuario = $_SESSION['id_usuario'] ?? 1;
  $id_rol = $_SESSION['id_rol'] ?? 1;
 
- $action = $_GET['action'] ?? $_POST['action'] ?? '';
+$action = $_GET['action'] ?? $_GET['accion'] ?? $_POST['action'] ?? $_POST['accion'] ?? '';
 
 function responder($data) {
     ob_end_clean();
@@ -367,101 +367,278 @@ try {
             $stmt->execute([$_POST['id_cita']]);
             responder(['success' => true, 'message' => 'Cita eliminada']);
             break;
-
+                    // ============================================================
+        // MASCOTAS POR CLIENTE (NUEVO)
         // ============================================================
+        case 'listar_mascotas_por_cliente':
+            // 1. Validamos que nos envíen el ID del cliente por POST
+            if (empty($_POST['id_usuario'])) {
+                responderError("El ID de usuario es obligatorio");
+            }
+
+            // 2. Buscamos las mascotas filtrando por el id_usuario
+            $stmt = $pdo->prepare("
+                SELECT id_mascota, nombre_mascota 
+                FROM mascota 
+                WHERE id_usuario = ? 
+                ORDER BY nombre_mascota ASC
+            ");
+            $stmt->execute([$_POST['id_usuario']]);
+            
+            // 3. Respondemos con el formato exacto que espera tu JS
+            responder(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+            break;
+
+
+                // ============================================================
         // PRODUCTOS
         // ============================================================
         case 'listar_productos':
+            // ✅ CORRECCIÓN: Se agrega GROUP_CONCAT para traer las especies y que el admin pueda verlas/editarlas
             $stmt = $pdo->query("
-                SELECT p.*, c.nombre as categoria, pr.nombre_empresa as proveedor, ep.nombre as estado
+                SELECT 
+                    p.*, 
+                    c.nombre AS categoria, 
+                    pr.nombre_empresa AS proveedor, 
+                    ep.nombre AS estado,
+                    GROUP_CONCAT(DISTINCT e.id_especie SEPARATOR ',') AS ids_especies,
+                    GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS nombres_especies
                 FROM productos p
                 LEFT JOIN categorias_producto c ON p.id_categoria = c.id_categoria
                 LEFT JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
                 LEFT JOIN estados_producto ep ON p.id_estado_producto = ep.id_estado_producto
+                LEFT JOIN producto_especie pe ON p.id_producto = pe.id_producto
+                LEFT JOIN especie e ON pe.id_especie = e.id_especie
+                GROUP BY p.id_producto
                 ORDER BY p.id_producto DESC
             ");
-            responder(['success' => true, 'data' => $stmt->fetchAll()]);
+            responder(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
             break;
 
         case 'productos_stock_bajo':
-            $stmt = $pdo->query("SELECT p.*, c.nombre as categoria FROM productos p LEFT JOIN categorias_producto c ON p.id_categoria = c.id_categoria WHERE p.stock <= 5 AND p.id_estado_producto = 1 ORDER BY p.stock ASC");
-            responder(['success' => true, 'data' => $stmt->fetchAll()]);
+            // ✅ CORRECCIÓN: Se agrega también la información de especies para consistencia
+            $stmt = $pdo->query("
+                SELECT 
+                    p.*, 
+                    c.nombre AS categoria,
+                    GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS especies
+                FROM productos p 
+                LEFT JOIN categorias_producto c ON p.id_categoria = c.id_categoria
+                LEFT JOIN producto_especie pe ON p.id_producto = pe.id_producto
+                LEFT JOIN especie e ON pe.id_especie = e.id_especie
+                WHERE p.stock <= 5 AND p.id_estado_producto = 1 
+                GROUP BY p.id_producto
+                ORDER BY p.stock ASC
+            ");
+            responder(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
             break;
 
         case 'guardar_producto':
-            $requeridos = ['nombre', 'costo_compra', 'precio_venta', 'id_categoria'];
-            foreach ($requeridos as $campo) {
-                if (empty($_POST[$campo])) responderError("El campo '$campo' es obligatorio");
+    $requeridos = ['nombre', 'costo_compra', 'precio_venta', 'id_categoria'];
+    foreach ($requeridos as $campo) {
+        if (empty($_POST[$campo])) responderError("El campo '$campo' es obligatorio");
+    }
+
+    $id_producto = $_POST['id_producto'] ?? null;
+    $esEdicion = !empty($id_producto);
+
+    $rutaImagen = null;
+    if (isset($_FILES['imagen_producto']) && $_FILES['imagen_producto']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../img/img.productosperros/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+        $ext = strtolower(pathinfo($_FILES['imagen_producto']['name'], PATHINFO_EXTENSION));
+        $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        if (!in_array($ext, $permitidos)) responderError('Formato no permitido');
+
+        $nombreImg = 'prod_' . uniqid() . '_' . rand(1000,9999) . '.' . $ext;
+        $rutaFinal = $uploadDir . $nombreImg;
+        if (!move_uploaded_file($_FILES['imagen_producto']['tmp_name'], $rutaFinal)) responderError('No se pudo guardar la imagen');
+        $rutaImagen = '../img/img.productosperros/' . $nombreImg;
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        if ($esEdicion) {
+            // EDICIÓN
+            $stmtOld = $pdo->prepare("SELECT imagen_url FROM productos WHERE id_producto = ?");
+            $stmtOld->execute([$id_producto]);
+            $oldFoto = $stmtOld->fetchColumn();
+
+            $sql = "UPDATE productos SET 
+                    id_categoria = ?, 
+                    id_proveedor = ?, 
+                    nombre = ?, 
+                    descripcion = ?, 
+                    stock = ?, 
+                    costo_compra = ?, 
+                    precio_venta = ?, 
+                    id_estado_producto = ?, 
+                    codigo_barras = ?";
+            
+            // ✅ CORRECCIÓN: Manejar código de barras vacío como NULL
+            $codigoBarras = !empty($_POST['codigo_barras']) ? trim($_POST['codigo_barras']) : null;
+            
+            $params = [
+                (int)$_POST['id_categoria'], 
+                !empty($_POST['id_proveedor']) ? (int)$_POST['id_proveedor'] : null, 
+                trim($_POST['nombre']), 
+                trim($_POST['descripcion'] ?? ''), 
+                (int)($_POST['stock'] ?? 0), 
+                (float)$_POST['costo_compra'], 
+                (float)$_POST['precio_venta'], 
+                (int)($_POST['id_estado_producto'] ?? 1), 
+                $codigoBarras  // ✅ NULL si está vacío
+            ];
+
+            $fotoParaBorrar = null;
+            if ($rutaImagen) {
+                $sql .= ", imagen_url = ?";
+                $params[] = $rutaImagen;
+                $fotoParaBorrar = $oldFoto;
             }
+            $sql .= " WHERE id_producto = ?";
+            $params[] = (int)$id_producto;
 
-            $id_producto = $_POST['id_producto'] ?? null;
-            $esEdicion = !empty($id_producto);
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
 
-            $rutaImagen = null;
-            if (isset($_FILES['imagen_producto']) && $_FILES['imagen_producto']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = __DIR__ . '/../img/img.productosperros/';
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            // Actualizar especies
+            if (isset($_POST['id_especie']) && !empty($_POST['id_especie'])) {
+                $stmtDel = $pdo->prepare("DELETE FROM producto_especie WHERE id_producto = ?");
+                $stmtDel->execute([(int)$id_producto]);
 
-                $ext = strtolower(pathinfo($_FILES['imagen_producto']['name'], PATHINFO_EXTENSION));
-                $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-                if (!in_array($ext, $permitidos)) responderError('Formato no permitido');
-
-                $nombreImg = 'prod_' . time() . '_' . rand(1000,9999) . '.' . $ext;
-                $rutaFinal = $uploadDir . $nombreImg;
-                if (!move_uploaded_file($_FILES['imagen_producto']['tmp_name'], $rutaFinal)) responderError('No se pudo guardar la imagen');
-                $rutaImagen = '../img/img.productosperros/' . $nombreImg;
-            }
-
-            if ($esEdicion) {
-                $stmtOld = $pdo->prepare("SELECT imagen_url FROM productos WHERE id_producto = ?");
-                $stmtOld->execute([$id_producto]);
-                $oldFoto = $stmtOld->fetchColumn();
-
-                $sql = "UPDATE productos SET id_categoria = ?, id_proveedor = ?, nombre = ?, descripcion = ?, stock = ?, costo_compra = ?, precio_venta = ?, id_estado_producto = ?, codigo_barras = ?";
-                $params = [$_POST['id_categoria'], !empty($_POST['id_proveedor']) ? $_POST['id_proveedor'] : null, trim($_POST['nombre']), trim($_POST['descripcion'] ?? ''), $_POST['stock'] ?? 0, $_POST['costo_compra'], $_POST['precio_venta'], $_POST['id_estado_producto'] ?? 1, trim($_POST['codigo_barras'] ?? '')];
-
-                $fotoParaBorrar = null;
-                if ($rutaImagen) {
-                    $sql .= ", imagen_url = ?";
-                    $params[] = $rutaImagen;
-                    $fotoParaBorrar = $oldFoto; // Se marca la vieja para borrar
+                $especiesRaw = $_POST['id_especie'];
+                $especies = is_array($especiesRaw) ? $especiesRaw : explode(',', $especiesRaw);
+                
+                $stmtEsp = $pdo->prepare("INSERT INTO producto_especie (id_producto, id_especie) VALUES (?, ?)");
+                foreach ($especies as $id_esp) {
+                    $id_esp = (int)trim($id_esp);
+                    if ($id_esp > 0) {
+                        $stmtEsp->execute([(int)$id_producto, $id_esp]);
+                    }
                 }
-                $sql .= " WHERE id_producto = ?";
-                $params[] = $id_producto;
-
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($params);
-
-                if ($fotoParaBorrar) {
-                    $rutaFisica = realpath(__DIR__ . '/' . $fotoParaBorrar);
-                    if ($rutaFisica && file_exists($rutaFisica)) unlink($rutaFisica);
-                }
-
-                responder(['success' => true, 'message' => 'Producto actualizado']);
-            } else {
-                $sql = "INSERT INTO productos (id_categoria, id_proveedor, nombre, descripcion, stock, costo_compra, precio_venta, imagen_url, id_estado_producto, codigo_barras) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$_POST['id_categoria'], !empty($_POST['id_proveedor']) ? $_POST['id_proveedor'] : null, trim($_POST['nombre']), trim($_POST['descripcion'] ?? ''), $_POST['stock'] ?? 0, $_POST['costo_compra'], $_POST['precio_venta'], $rutaImagen, $_POST['id_estado_producto'] ?? 1, trim($_POST['codigo_barras'] ?? '')]);
-                responder(['success' => true, 'message' => 'Producto creado', 'id' => $pdo->lastInsertId()]);
             }
-            break;
 
+            $pdo->commit();
+
+            if ($fotoParaBorrar && $rutaImagen) {
+                $rutaFisica = realpath(__DIR__ . '/' . $fotoParaBorrar);
+                if ($rutaFisica && file_exists($rutaFisica) && strpos($rutaFisica, 'producto-default') === false) {
+                    unlink($rutaFisica);
+                }
+            }
+
+            responder(['success' => true, 'message' => 'Producto actualizado']);
+
+        } else {
+            // CREACIÓN
+            $sql = "INSERT INTO productos (
+                        id_categoria, 
+                        id_proveedor, 
+                        nombre, 
+                        descripcion, 
+                        stock, 
+                        costo_compra, 
+                        precio_venta, 
+                        imagen_url, 
+                        id_estado_producto, 
+                        codigo_barras
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            $stmt = $pdo->prepare($sql);
+            
+            $idProveedor = !empty($_POST['id_proveedor']) ? (int)$_POST['id_proveedor'] : null;
+            $idEstado = !empty($_POST['id_estado_producto']) ? (int)$_POST['id_estado_producto'] : 1;
+            
+            // ✅ CORRECCIÓN: Manejar código de barras vacío como NULL
+            $codigoBarras = !empty($_POST['codigo_barras']) ? trim($_POST['codigo_barras']) : null;
+
+            $stmt->execute([
+                (int)$_POST['id_categoria'], 
+                $idProveedor, 
+                trim($_POST['nombre']), 
+                trim($_POST['descripcion'] ?? ''), 
+                (int)($_POST['stock'] ?? 0), 
+                (float)$_POST['costo_compra'], 
+                (float)$_POST['precio_venta'], 
+                $rutaImagen, 
+                $idEstado, 
+                $codigoBarras  // ✅ NULL si está vacío
+            ]);
+            
+            $nuevo_id_producto = (int)$pdo->lastInsertId();
+
+            // Insertar especies
+            if (isset($_POST['id_especie']) && !empty($_POST['id_especie'])) {
+                $especiesRaw = $_POST['id_especie'];
+                $especies = is_array($especiesRaw) ? $especiesRaw : explode(',', $especiesRaw);
+
+                $stmtEsp = $pdo->prepare("INSERT INTO producto_especie (id_producto, id_especie) VALUES (?, ?)");
+                foreach ($especies as $id_esp) {
+                    $id_esp = (int)trim($id_esp);
+                    if ($id_esp > 0) {
+                        try {
+                            $stmtEsp->execute([$nuevo_id_producto, $id_esp]);
+                        } catch (PDOException $e) {
+                            error_log("Error insertando especie $id_esp: " . $e->getMessage());
+                        }
+                    }
+                }
+            }
+
+            $pdo->commit();
+            responder(['success' => true, 'message' => 'Producto creado', 'id' => $nuevo_id_producto]);
+        }
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        error_log("Error detallado al guardar producto: " . $e->getMessage());
+        responderError("Error de base de datos: " . $e->getMessage());
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        responderError($e->getMessage());
+    }
+    break;
+    
         case 'eliminar_producto':
-            if (empty($_POST['id_producto'])) responderError('ID requerido');
+            if (empty($_POST['id_producto'])) responderError('ID de producto requerido');
             
-            $stmtFoto = $pdo->prepare("SELECT imagen_url FROM productos WHERE id_producto = ?");
-            $stmtFoto->execute([$_POST['id_producto']]);
-            $fotoBorrar = $stmtFoto->fetchColumn();
-            
-            $stmt = $pdo->prepare("DELETE FROM productos WHERE id_producto = ?");
-            $stmt->execute([$_POST['id_producto']]);
-            
-            if ($fotoBorrar) {
-                $rutaFisica = realpath(__DIR__ . '/' . $fotoBorrar);
-                if ($rutaFisica && file_exists($rutaFisica)) unlink($rutaFisica);
+            $id_producto = (int)$_POST['id_producto'];
+
+            try {
+                $pdo->beginTransaction();
+
+                // 1. Obtener imagen antes de borrar
+                $stmtFoto = $pdo->prepare("SELECT imagen_url FROM productos WHERE id_producto = ?");
+                $stmtFoto->execute([$id_producto]);
+                $fotoBorrar = $stmtFoto->fetchColumn();
+                
+                // ✅ CORRECCIÓN CRÍTICA: Eliminar relaciones huérfanas ANTES de borrar el producto
+                // (Por si tu base de datos no tiene configurado ON DELETE CASCADE)
+                $stmtDelEsp = $pdo->prepare("DELETE FROM producto_especie WHERE id_producto = ?");
+                $stmtDelEsp->execute([$id_producto]);
+
+                // 2. Eliminar producto
+                $stmt = $pdo->prepare("DELETE FROM productos WHERE id_producto = ?");
+                $stmt->execute([$id_producto]);
+                
+                $pdo->commit();
+
+                // 3. Borrar archivo físico (fuera de la transacción)
+                if ($fotoBorrar) {
+                    $rutaFisica = realpath(__DIR__ . '/' . $fotoBorrar);
+                    if ($rutaFisica && file_exists($rutaFisica) && strpos($rutaFisica, 'producto-default') === false) {
+                        unlink($rutaFisica);
+                    }
+                }
+                
+                responder(['success' => true, 'message' => 'Producto eliminado correctamente']);
+            } catch (PDOException $e) {
+                $pdo->rollBack();
+                error_log("Error al eliminar producto: " . $e->getMessage());
+                responderError("No se pudo eliminar el producto. Es posible que esté asociado a ventas o citas.");
             }
-            
-            responder(['success' => true, 'message' => 'Producto eliminado']);
             break;
 
         // ============================================================
@@ -673,69 +850,250 @@ try {
             responder(['success' => true, 'message' => 'Estado actualizado']);
             break;
 
-        // ============================================================
-        // PROMOCIONES
-        // ============================================================
+                // ============================================================
+        // Panel administrativo - Promociones
+        // ============================================================ 
+        
         case 'listar_promociones':
-            $stmt = $pdo->query("SELECT p.*, ep.nombre as estado_nombre FROM promociones p LEFT JOIN estado_promocion ep ON p.id_estado_promocion = ep.id_estado_promocion ORDER BY p.fecha_creacion DESC");
-            $promos = $stmt->fetchAll();
-            foreach ($promos as &$promo) {
-                $stmt2 = $pdo->prepare("SELECT pp.*, pr.nombre as producto_nombre FROM producto_promocion pp LEFT JOIN productos pr ON pp.id_producto = pr.id_producto WHERE pp.id_promo = ?");
-                $stmt2->execute([$promo['id_promo']]);
-                $promo['productos'] = $stmt2->fetchAll();
+        case 'admin_listar':
+            try {
+                $stmt = $pdo->query("
+                    SELECT p.id_promo, p.nombre, p.descripcion, p.valor, p.tipo_descuento,
+                           p.fecha_inicio, p.fecha_fin, p.fecha_creacion,
+                           p.id_estado_promocion, p.foto_url, ep.nombre AS estado_nombre
+                    FROM promociones p
+                    LEFT JOIN estado_promocion ep ON p.id_estado_promocion = ep.id_estado_promocion
+                    ORDER BY p.id_promo DESC
+                ");
+                $promos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $stmtProd = $pdo->query("
+                    SELECT pp.id_promo, pp.id_producto, pr.nombre AS producto_nombre, pr.precio_venta
+                    FROM producto_promocion pp
+                    INNER JOIN productos pr ON pp.id_producto = pr.id_producto
+                ");
+                $vinculos = $stmtProd->fetchAll(PDO::FETCH_ASSOC);
+
+                $mapProductos = [];
+                foreach ($vinculos as $v) {
+                    $mapProductos[$v['id_promo']][] = [
+                        'id_producto'     => (int)$v['id_producto'],
+                        'producto_nombre' => $v['producto_nombre'],
+                        'precio_venta'    => $v['precio_venta']
+                    ];
+                }
+
+                foreach ($promos as &$p) {
+                    $p['productos'] = $mapProductos[$p['id_promo']] ?? [];
+                }
+                unset($p);
+
+                responder(['success' => true, 'data' => $promos]);
+            } catch (Exception $e) {
+                responderError('Error listando promociones: ' . $e->getMessage());
             }
-            responder(['success' => true, 'data' => $promos]);
             break;
 
         case 'guardar_promocion':
-            $requeridos = ['nombre', 'valor', 'tipo_descuento', 'fecha_inicio', 'fecha_fin'];
-            foreach ($requeridos as $campo) {
-                if (empty($_POST[$campo])) responderError("El campo '$campo' es obligatorio");
+        case 'actualizar_promocion':
+        case 'guardar':
+        case 'actualizar':
+            try {
+                $id     = intval($_POST['id_promo'] ?? $_POST['id_prom'] ?? 0);
+                $nombre = trim($_POST['nombre'] ?? '');
+                $valor  = $_POST['valor'] ?? '';
+                
+                if (!$nombre || $valor === '') throw new Exception('Nombre y valor son obligatorios');
+                if (($_POST['tipo_descuento'] ?? 'porcentaje') === 'porcentaje' && floatval($valor) > 100) {
+                    throw new Exception('El descuento porcentual no puede superar 100%');
+                }
+
+                // 1. OBTENER DATOS ANTIGUOS (Solo si es edición)
+                $oldFoto = null;
+                if ($id > 0) {
+                    $stmtOld = $pdo->prepare("SELECT foto_url FROM promociones WHERE id_promo = :id");
+                    $stmtOld->execute([':id' => $id]);
+                    $oldFoto = $stmtOld->fetchColumn();
+                }
+
+                // 2. PROCESAR NUEVA IMAGEN (Fragmento integrado y unificado)
+                $rutaFoto = null;
+                // Mapeamos los posibles nombres que envíe tu formulario JS
+                $fileKey = isset($_FILES['foto_promo']) ? 'foto_promo' : (isset($_FILES['foto_url']) ? 'foto_url' : 'promoImagen');
+
+                if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
+                    // Directorio de subida específico para promociones
+                    $uploadDir = __DIR__ . '/../img/promociones/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    
+                    $ext = strtolower(pathinfo($_FILES[$fileKey]['name'], PATHINFO_EXTENSION));
+                    $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+                    
+                    if (!is_array($_FILES[$fileKey]) || !in_array($ext, $permitidos)) {
+                        throw new Exception('Formato de imagen no permitido. Solo se permiten JPG, PNG, WEBP o GIF.');
+                    }
+                    if ($_FILES[$fileKey]['size'] > 2 * 1024 * 1024) {
+                        throw new Exception('La imagen de la promoción no puede superar los 2MB');
+                    }
+                    
+                    // Nombre único con prefijo para promociones
+                    $nombreFoto = 'promo_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+                    $rutaFinal = $uploadDir . $nombreFoto;
+                    
+                    if (!move_uploaded_file($_FILES[$fileKey]['tmp_name'], $rutaFinal)) {
+                        throw new Exception('No se pudo guardar la imagen de la promoción');
+                    }
+                    
+                    // Ruta relativa para almacenar en la columna `foto_url` de tu base de datos
+                    $rutaFoto = 'img/promociones/' . $nombreFoto;
+                }
+
+                // 3. LÓGICA DE ELIMINACIÓN DE FOTO VIEJA
+                $eliminarFotoFlag = isset($_POST['eliminar_foto']) && $_POST['eliminar_foto'] == '1';
+                $fotoParaBorrarFisico = null;
+
+                if ($id > 0) { // Solo aplicamos lógica de borrado/reemplazo en edición
+                    if ($rutaFoto !== null) {
+                        // CASO A: Se subió una nueva imagen -> Marcamos la vieja para borrar
+                        $fotoParaBorrarFisico = $oldFoto;
+                    } elseif ($eliminarFotoFlag) {
+                        // CASO B: No se subió nada, pero el JS dijo "borrar" -> Marcamos la vieja para borrar
+                        $fotoParaBorrarFisico = $oldFoto;
+                        $rutaFoto = ""; // Para guardar vacío/NULL en la BD
+                    }
+                }
+
+                // 4. PREPARAR DATOS PARA BD
+                $campos = [
+                    ':n' => $nombre,
+                    ':d' => trim($_POST['descripcion'] ?? ''),
+                    ':v' => floatval($valor),
+                    ':t' => $_POST['tipo_descuento'] ?? 'porcentaje',
+                    ':i' => !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null,
+                    ':f' => !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null,
+                    ':e' => intval($_POST['id_estado_promocion'] ?? 1),
+                ];
+
+                // 5. EJECUTAR SQL
+                if ($id > 0) {
+                    // UPDATE
+                    $sql = "UPDATE promociones SET nombre=:n, descripcion=:d, valor=:v, tipo_descuento=:t, fecha_inicio=:i, fecha_fin=:f, id_estado_promocion=:e";
+                    
+                    // Si hay nueva ruta (subida nueva) O bandera de borrado (ruta vacía), actualizamos la columna
+                    if ($rutaFoto !== null) { 
+                         $sql .= ", foto_url=:foto";
+                         $campos[':foto'] = $rutaFoto;
+                    }
+                    
+                    $sql .= " WHERE id_promo=:id";
+                    $campos[':id'] = $id;
+                    
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($campos);
+
+                } else {
+                    // INSERT
+                    $sql = "INSERT INTO promociones (nombre, descripcion, valor, tipo_descuento, fecha_inicio, fecha_fin, id_estado_promocion, foto_url, fecha_creacion) 
+                            VALUES(:n, :d, :v, :t, :i, :f, :e, :foto, NOW())";
+                    
+                    $campos[':foto'] = $rutaFoto; // Será NULL si no se subió nada
+                    
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($campos);
+                }
+
+                // 6. BORRAR ARCHIVO FÍSICO DEL SERVIDOR (Corregido y Completado)
+                if ($fotoParaBorrarFisico) {
+                    $rutaFisica = realpath(__DIR__ . '/../' . $fotoParaBorrarFisico);
+                    if ($rutaFisica && is_file($rutaFisica)) {
+                        unlink($rutaFisica);
+                    }
+                }
+
+                responder(['success' => true, 'message' => 'Promoción guardada correctamente']);
+            } catch (Exception $e) {
+                responderError($e->getMessage());
             }
+            break;
+            // ============================================================
+        // ASIGNAR / DESASIGNAR PRODUCTOS A PROMOCIONES 
+        // ============================================================
+        case 'asignar_producto':
+            try {
+                if (empty($_POST['id_promo']) || empty($_POST['id_producto'])) {
+                    responderError('ID de promoción y producto son obligatorios');
+                }
+                
+                $id_promo = intval($_POST['id_promo']);
+                $id_producto = intval($_POST['id_producto']);
+                
+                $check = $pdo->prepare("SELECT id_producto_promocion FROM producto_promocion WHERE id_promo = ? AND id_producto = ?");
+                $check->execute([$id_promo, $id_producto]);
+                
+                if ($check->fetch()) {
+                    responderError('Este producto ya está vinculado a esta promoción');
+                }
+                
+                $stmt = $pdo->prepare("INSERT INTO producto_promocion (id_promo, id_producto) VALUES (?, ?)");
+                $stmt->execute([$id_promo, $id_producto]);
+                
+                responder(['success' => true, 'message' => 'Producto vinculado correctamente']);
+            } catch (Exception $e) {
+                responderError('Error al vincular: ' . $e->getMessage());
+            }
+            break;
 
-            $id_promo = $_POST['id_promo'] ?? null;
-            $esEdicion = !empty($id_promo);
-
-            if ($esEdicion) {
-                $sql = "UPDATE promociones SET nombre = ?, descripcion = ?, valor = ?, tipo_descuento = ?, fecha_inicio = ?, fecha_fin = ?, id_estado_promocion = ? WHERE id_promo = ?";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([trim($_POST['nombre']), trim($_POST['descripcion'] ?? ''), $_POST['valor'], $_POST['tipo_descuento'], $_POST['fecha_inicio'], $_POST['fecha_fin'], $_POST['id_estado_promocion'] ?? 1, $id_promo]);
-                responder(['success' => true, 'message' => 'Promoción actualizada']);
-            } else {
-                $sql = "INSERT INTO promociones (nombre, descripcion, valor, tipo_descuento, fecha_inicio, fecha_fin, fecha_creacion, id_estado_promocion) VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?)";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([trim($_POST['nombre']), trim($_POST['descripcion'] ?? ''), $_POST['valor'], $_POST['tipo_descuento'], $_POST['fecha_inicio'], $_POST['fecha_fin'], $_POST['id_estado_promocion'] ?? 1]);
-                responder(['success' => true, 'message' => 'Promoción creada', 'id' => $pdo->lastInsertId()]);
+        case 'desasignar_producto':
+            try {
+                if (empty($_POST['id_promo']) || empty($_POST['id_producto'])) {
+                    responderError('ID de promoción y producto son obligatorios');
+                }
+                
+                $id_promo = intval($_POST['id_promo']);
+                $id_producto = intval($_POST['id_producto']);
+                
+                $stmt = $pdo->prepare("DELETE FROM producto_promocion WHERE id_promo = ? AND id_producto = ?");
+                $stmt->execute([$id_promo, $id_producto]);
+                
+                responder(['success' => true, 'message' => 'Producto desvinculado correctamente']);
+            } catch (Exception $e) {
+                responderError('Error al desvincular: ' . $e->getMessage());
             }
             break;
 
         case 'eliminar_promocion':
-            if (empty($_POST['id_promo'])) responderError('ID requerido');
-            $pdo->prepare("DELETE FROM producto_promocion WHERE id_promo = ?")->execute([$_POST['id_promo']]);
-            $pdo->prepare("DELETE FROM promociones WHERE id_promo = ?")->execute([$_POST['id_promo']]);
-            responder(['success' => true, 'message' => 'Promoción eliminada']);
+            try {
+                if (empty($_POST['id_promo'])) {
+                    responderError('ID de promoción es obligatorio');
+                }
+                $id_promo = intval($_POST['id_promo']);
+                
+                $stmtOld = $pdo->prepare("SELECT foto_url FROM promociones WHERE id_promo = ?");
+                $stmtOld->execute([$id_promo]);
+                $oldFoto = $stmtOld->fetchColumn();
+                
+                $pdo->prepare("DELETE FROM producto_promocion WHERE id_promo = ?")->execute([$id_promo]);
+                
+                $stmt = $pdo->prepare("DELETE FROM promociones WHERE id_promo = ?");
+                $stmt->execute([$id_promo]);
+                
+                if ($oldFoto) {
+                    $rutaFisica = realpath(__DIR__ . '/../' . $oldFoto);
+                    if ($rutaFisica && is_file($rutaFisica)) {
+                        unlink($rutaFisica);
+                    }
+                }
+                
+                responder(['success' => true, 'message' => 'Promoción eliminada correctamente']);
+            } catch (Exception $e) {
+                responderError('Error al eliminar: ' . $e->getMessage());
+            }
             break;
-
-        case 'asignar_producto_promo':
-            if (empty($_POST['id_promo']) || empty($_POST['id_producto'])) responderError('Promoción y producto son obligatorios');
-            $stmt = $pdo->prepare("SELECT * FROM producto_promocion WHERE id_promo = ? AND id_producto = ?");
-            $stmt->execute([$_POST['id_promo'], $_POST['id_producto']]);
-            if ($stmt->fetch()) responderError('Este producto ya está vinculado');
-            $sql = "INSERT INTO producto_promocion (id_producto, id_promo) VALUES (?, ?)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$_POST['id_producto'], $_POST['id_promo']]);
-            responder(['success' => true, 'message' => 'Producto vinculado']);
-            break;
-
-        case 'desvincular_producto_promo':
-            if (empty($_POST['id_producto_promocion'])) responderError('ID requerido');
-            $pdo->prepare("DELETE FROM producto_promocion WHERE id_producto_promocion = ?")->execute([$_POST['id_producto_promocion']]);
-            responder(['success' => true, 'message' => 'Vínculo eliminado']);
-            break;
-
-        // ============================================================
-        // RESEÑAS
-        // ============================================================
+        
+        // ============RESEÑAS=================//
+      
         case 'listar_resenas':
             $stmt = $pdo->query("SELECT r.*, p.nombre as producto, u.nombres, u.apellidos FROM reseñas_productos r LEFT JOIN productos p ON r.id_producto = p.id_producto LEFT JOIN usuario u ON r.id_usuario = u.id_usuario ORDER BY r.fecha DESC");
             responder(['success' => true, 'data' => $stmt->fetchAll()]);

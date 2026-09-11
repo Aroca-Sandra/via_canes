@@ -610,42 +610,6 @@ header.sticky-top {
     border-top: 1px solid var(--border) !important;
 }
 
-/* ==========================================
-   FOOTER COMPONENTE
-   ========================================== */
-.main-footer {
-    background: var(--primary-dark);
-    color: var(--white);
-    padding: 4rem 2rem 2rem;
-    margin-top: 4rem;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: auto;
-}
-
-.footer-col h4 {
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.footer-col a {
-    display: block;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    margin-bottom: 10px;
-    transition: var(--transition);
-}
-
-.footer-col a:hover {
-    color: var(--accent);
-    padding-left: 4px;
-}
 
 /* ==========================================
    ANIMACIONES

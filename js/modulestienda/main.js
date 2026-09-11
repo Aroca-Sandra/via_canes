@@ -1,3 +1,6 @@
+// ================================================================
+// MAIN.JS - LÓGICA PRINCIPAL DEL PANEL DE LA TIENDA
+// ================================================================
 document.addEventListener('DOMContentLoaded', () => {
     // 1. LEER FILTROS DE LA URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -20,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     renderizarCarrito();
     verificarSesionAdmin();
+    cargarPromocionesTienda();
 
     // 3. Delegación de eventos
     document.addEventListener('click', (e) => {
@@ -34,7 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 tipo: 'producto',
                 stock: parseInt(btn.dataset.stock) || 999
             };
-            agregarAlCarrito(item);
+            if (item.id > 0 && item.precio >= 0 && item.nombre !== 'undefined') {
+        agregarAlCarrito(item);
+    } else {
+        console.error('❌ Datos inválidos:', item);
+        alert('Error: Producto no válido');
+    }
+
         }
 
         if (e.target.closest('.btn-agendar-servicio')) {
@@ -188,7 +198,7 @@ async function cargarProductos(filtros = {}) {
 }
 
 // ==========================================
-// 2. CARGA DE SERVICIOS
+// 2. CARGA DE SERVICIOS (MODIFICADO: SIN PRECIO NI DURACIÓN)
 // ==========================================
 async function cargarServicios(filtros = {}) {
     const grid = document.getElementById('servicesGrid');
@@ -234,9 +244,8 @@ async function cargarServicios(filtros = {}) {
                             <p class="card-text text-muted small flex-grow-1">
                                 ${s.descripcion ? s.descripcion.substring(0, 80) + '...' : 'Servicio profesional'}
                             </p>
-                            <div class="mt-auto">
-                                ${s.duracion ? `<small class="text-muted d-block mb-2"><i class="fa fa-clock"></i> ${s.duracion} min</small>` : ''}
-                                ${s.precio ? `<h6 class="text-primary fw-bold">$${Number(s.precio).toLocaleString('es-CO')}</h6>` : ''}
+                            <div class="mt-auto">                               
+                                
                                 <button class="btn-agendar-servicio"
                                         data-id="${s.id_servicio}"
                                         data-nombre="${s.nombre}"
@@ -511,3 +520,116 @@ function mostrarBannerCategoria(filtros, totalProductos) {
         if (hero) hero.style.display = '';
     }
 }
+// ==========================================
+// CARGA DE PROMOCIONES (VERSIÓN SEGURA)
+// ==========================================
+async function cargarPromocionesTienda() {
+    // 1. Identificar el contenedor correcto
+    const grid = document.getElementById('productGrid'); 
+    
+    // Si no estamos en la página de promociones, no hacemos nada para no dañar otras páginas
+    if (!grid || !document.querySelector('.banner-ofertas')) return;
+
+    try {
+        // 2. Llamar a la API con la ruta corregida
+        const response = await fetch('../api/promociones_data.php?accion=listar_activas');
+        
+        if (!response.ok) throw new Error('Error en la conexión con la API');
+        
+        const result = await response.json();
+
+        // 3. Limpiar el spinner de carga
+        grid.innerHTML = '';
+
+        if (result.ok && Array.isArray(result.data) && result.data.length > 0) {
+            
+            // 4. Generar las tarjetas
+            result.data.forEach(p => {
+                // Calcular descuento
+                let precioFinal = p.precio_venta;
+                let etiquetaDesc = '';
+                
+                if (p.tipo_descuento === 'porcentaje') {
+                    precioFinal = p.precio_venta * (1 - (p.valor_descuento / 100));
+                    etiquetaDesc = `-${Math.round(p.valor_descuento)}%`;
+                } else {
+                    precioFinal = p.precio_venta - p.valor_descuento;
+                    etiquetaDesc = `-$${Number(p.valor_descuento).toLocaleString('es-CO')}`;
+                }
+
+                // Ajustar imagen
+                const imgSrc = p.imagen_url ? p.imagen_url.replace('../', '') : 'img/default-product.png';
+
+                // Crear el HTML de la columna (col) para mantener el diseño Bootstrap
+                const col = document.createElement('div');
+                col.className = 'col-6 col-md-4 col-lg-3';
+                
+                col.innerHTML = `
+                    <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative">
+                        <!-- Etiqueta de oferta -->
+                        <span class="promo-badge">${etiquetaDesc} OFF</span>
+                        
+                        <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" 
+                             style="height: 180px; object-fit: cover;"
+                             onerror="this.src='img/default-product.png'">
+                             
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title fw-bold">${p.nombre}</h6>
+                            <p class="card-text text-muted small flex-grow-1 my-2">
+                                ${p.descripcion ? p.descripcion.substring(0, 60) + '...' : 'Oferta especial'}
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <div class="mb-2">
+                                    <span class="old-price">$${Number(p.precio_venta).toLocaleString('es-CO')}</span>
+                                    <br>
+                                    <span class="new-price">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
+                                </div>
+                                
+                                <button class="btn btn-primary w-100 btn-agregar-carrito"
+                                        data-id="${p.id_producto}"
+                                        data-nombre="${p.nombre}"
+                                        data-precio="${Math.round(precioFinal)}"
+                                        data-imagen="${imgSrc}"
+                                        data-stock="999"
+                                        data-tipo="producto">
+                                    <i class="fa fa-cart-plus me-1"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(col);
+            });
+
+        } else {
+            grid.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No hay promociones activas en este momento 🐾</p>
+                </div>`;
+        }
+    } catch (error) {
+        console.error('Error cargando promos:', error);
+        // No borramos el grid si falla, solo mostramos un mensaje pequeño para no dañar la UI
+        grid.innerHTML = `<div class="col-12 text-center text-danger">Error al cargar ofertas.</div>`;
+    }
+}
+// Función unificada para WhatsApp
+function irWhatsApp(origen) {
+    const numero = "573016540576"; // Tu número real
+    const mensaje = encodeURIComponent(`Hola Vía Canes! Necesito ayuda (Origen: ${origen})`);
+    window.open(`https://wa.me/${numero}?text=${mensaje}`, '_blank');
+}
+
+// Lógica para mostrar/ocultar botón flotante al hacer scroll
+window.onscroll = function() {
+    const waBtn = document.getElementById("waBtn");
+    if (waBtn) { // ✅ VALIDAR QUE EXISTA EL ELEMENTO
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            waBtn.style.display = "flex";
+        } else {
+            waBtn.style.display = "none";
+        }
+    }
+};

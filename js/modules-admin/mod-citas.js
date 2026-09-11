@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inicializarSelectsCitas();
     
     // Listener para cargar mascotas al cambiar cliente
+        // Listener para cargar mascotas al cambiar cliente
     const selCliente = document.getElementById('citaCliente');
     if (selCliente) {
         selCliente.addEventListener('change', async function() {
@@ -198,32 +199,57 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+}); // 🌟 ¡AQUÍ ESTÁ EL CIERRE CORRECTO DE DOMContentLoaded QUE FALTABA!
 
 // 🔧 NUEVO: Función para cargar mascotas del cliente (reutilizable)
+// 🔧 FUNCIÓN FINAL CORREGIDA PARA ENVIAR POR POST AL NUEVO CASE DE PHP
 async function cargarMascotasDelCliente(idUsuario) {
     const selMas = document.getElementById('citaMascota');
+    if (!selMas) return;
+
     if (!idUsuario) {
         selMas.innerHTML = '<option value="">Primero seleccione cliente</option>';
         return;
     }
+
+    selMas.innerHTML = '<option value="">Buscando mascotas...</option>';
     
-    const res = await apiFetch('listar_mascotas_por_cliente', { id_usuario: idUsuario }, 'GET');
-    if (res.success) {
-        selMas.innerHTML = '<option value="">Seleccionar...</option>' +
-            res.data.map(m => `<option value="${m.id_mascota}">${m.nombre_mascota}</option>`).join('');
+    try {
+        // 🔧 CORREGIDO: Se cambia 'GET' por 'POST' para que coincida con la lectura $_POST de tu PHP
+        const res = await apiFetch('listar_mascotas_por_cliente', { id_usuario: idUsuario }, 'POST');
+        
+        if (res && res.success) {
+            if (res.data && res.data.length > 0) {
+                // Insertamos las mascotas reales encontradas en la base de datos
+                selMas.innerHTML = '<option value="">Seleccionar mascota...</option>' +
+                    res.data.map(m => `<option value="${m.id_mascota}">${m.nombre_mascota}</option>`).join('');
+            } else {
+                selMas.innerHTML = '<option value="">El cliente no tiene mascotas registradas</option>';
+            }
+        } else {
+            selMas.innerHTML = '<option value="">Error al cargar mascotas</option>';
+            showToast(res ? res.error : 'Error en la respuesta del servidor', 'danger');
+        }
+    } catch (error) {
+        console.error("Error crítico al procesar mascotas:", error);
+        selMas.innerHTML = '<option value="">Error al cargar mascotas</option>';
     }
 }
 
+
 // 🔧 CORREGIDO: Abrir modal de usuario y actualizar select después
 function abrirModalUsuarioDesdeCita() {
+    if (typeof prepararModalUsuarioNormal !== 'function') return;
+    
     prepararModalUsuarioNormal();
     const modal = new bootstrap.Modal(document.getElementById('modalUsuario'));
     
     // 🔧 NUEVO: Listener para actualizar selects cuando se cierra el modal
     document.getElementById('modalUsuario').addEventListener('hidden.bs.modal', async function handler() {
         // Actualizar selects de clientes
-        await actualizarSelectsClientes();
+        if (typeof actualizarSelectsClientes === 'function') {
+            await actualizarSelectsClientes();
+        }
         // Restaurar el cliente seleccionado si existe
         const clienteSeleccionado = document.getElementById('citaCliente').value;
         if (clienteSeleccionado) {
@@ -235,6 +261,3 @@ function abrirModalUsuarioDesdeCita() {
     
     modal.show();
 }
-
-// 🔧 ELIMINADO: toggleMiniFormMascota() y guardarMascotaRapida() 
-// Ya están en mod-mascotas.js y son reutilizables

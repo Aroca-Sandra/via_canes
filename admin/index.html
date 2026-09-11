@@ -12,442 +12,645 @@
 
 <!-- ==================== SIDEBAR ==================== -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-brand">
-    <i class="fa fa-paw me-1" style="color:#ffd000;"></i>
-    <h5>Vía Canes</h5>
-    <small>Sistema Administrativo v2.0</small>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-label">Principal</div>
-    <div class="nav-item active" data-mod="dashboard" onclick="cambiarModulo('dashboard')"><i class="fa fa-chart-pie"></i> Dashboard</div>
+<div class="sidebar-brand">
+<i class="fa fa-paw me-1" style="color:#ffd000;"></i>
+<h5>Vía Canes</h5>
+<small>Sistema Administrativo v2.0</small>
+</div>
+<nav class="sidebar-nav">
+<div class="nav-label">Principal</div>
+<div class="nav-item active" data-mod="dashboard" onclick="cambiarModulo('dashboard')"><i class="fa fa-chart-pie"></i> Dashboard</div>
 
-    <div class="nav-label">Módulo 1: Administración</div>
-    <div class="nav-item" data-mod="usuarios" onclick="cambiarModulo('usuarios')"><i class="fa fa-users"></i> Usuarios y Roles</div>
+<div class="nav-label">Módulo 1: Administración</div>
+<div class="nav-item" data-mod="usuarios" onclick="cambiarModulo('usuarios')"><i class="fa fa-users"></i> Usuarios y Roles</div>
 
-    <div class="nav-label">Módulo 2: Mascotas</div>
-    <div class="nav-item" data-mod="mascotas" onclick="cambiarModulo('mascotas')"><i class="fa fa-dog"></i> Mascotas</div>
+<div class="nav-label">Módulo 2: Mascotas</div>
+<div class="nav-item" data-mod="mascotas" onclick="cambiarModulo('mascotas')"><i class="fa fa-dog"></i> Mascotas</div>
 
-    <div class="nav-label">Módulo 3: Tienda e Inventario</div>
-    <div class="nav-item" data-mod="inventario" onclick="cambiarModulo('inventario')"><i class="fa fa-boxes-stacked"></i> Productos</div>
-    <div class="nav-item" data-mod="servicios" onclick="cambiarModulo('servicios')"><i class="fa fa-concierge-bell"></i> Servicios</div>
-    <div class="nav-item" data-mod="proveedores" onclick="cambiarModulo('proveedores')"><i class="fa fa-truck"></i> Proveedores</div>
-    <div class="nav-item" data-mod="compras" onclick="cambiarModulo('compras')"><i class="fa fa-file-invoice-dollar"></i> Compras</div>
+<div class="nav-label">Módulo 3: Tienda e Inventario</div>
+<div class="nav-item" data-mod="inventario" onclick="cambiarModulo('inventario')"><i class="fa fa-boxes-stacked"></i> Productos</div>
+<div class="nav-item" data-mod="servicios" onclick="cambiarModulo('servicios')"><i class="fa fa-concierge-bell"></i> Servicios</div>
+<div class="nav-item" data-mod="proveedores" onclick="cambiarModulo('proveedores')"><i class="fa fa-truck"></i> Proveedores</div>
+<div class="nav-item" data-mod="compras" onclick="cambiarModulo('compras')"><i class="fa fa-file-invoice-dollar"></i> Compras</div>
 
-    <div class="nav-label">Módulo 4: Servicios y Citas</div>
-    <div class="nav-item" data-mod="citas" onclick="cambiarModulo('citas')"><i class="fa fa-calendar-check"></i> Citas</div>
+<div class="nav-label">Módulo 4: Servicios y Citas</div>
+<div class="nav-item" data-mod="citas" onclick="cambiarModulo('citas')"><i class="fa fa-calendar-check"></i> Citas</div>
 
-    <div class="nav-label">Módulo 5: Ventas y Finanzas</div>
-    <div class="nav-item" data-mod="carritos" onclick="cambiarModulo('carritos')"><i class="fa fa-cart-shopping"></i> Carritos</div>
-    <div class="nav-item" data-mod="ventas" onclick="cambiarModulo('ventas')"><i class="fa fa-receipt"></i> Pedidos</div>
+<div class="nav-label">Módulo 5: Ventas y Finanzas</div>
+<div class="nav-item" data-mod="carritos" onclick="cambiarModulo('carritos')"><i class="fa fa-cart-shopping"></i> Carritos</div>
+<div class="nav-item" data-mod="ventas" onclick="cambiarModulo('ventas')"><i class="fa fa-receipt"></i> Pedidos</div>
 
-    <div class="nav-label">Módulo 6: Marketing</div>
-    <div class="nav-item" data-mod="marketing" onclick="cambiarModulo('marketing')"><i class="fa fa-bullhorn"></i> Promociones</div>
-    <div class="nav-item" data-mod="resenas" onclick="cambiarModulo('resenas')"><i class="fa fa-star"></i> Reseñas</div>
-  </nav>
-  <div class="sidebar-footer">
-    <i class="fa fa-database me-1"></i> Base de datos activa<br>
-    <small>SENA - Ficha 3186659</small>
-  </div>
+<div class="nav-label">Módulo 6: Marketing</div>
+<div class="nav-item" data-mod="marketing" onclick="cambiarModulo('marketing')"><i class="fa fa-bullhorn"></i> Promociones</div>
+<div class="nav-item" data-mod="resenas" onclick="cambiarModulo('resenas')"><i class="fa fa-star"></i> Reseñas</div>
+</nav>
+<div class="sidebar-footer">
+<i class="fa fa-database me-1"></i> Base de datos activa<br>
+<small>SENA - Ficha 3186659</small>
+</div>
 </aside>
 
 <!-- ==================== MAIN ==================== -->
 <div class="main-content">
-  <div class="topbar">
-    <div class="d-flex align-items-center gap-3">
-      <button class="btn btn-sm btn-outline-secondary d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa fa-bars"></i></button>
-      <h4 id="topbarTitle"><i class="fa fa-chart-pie me-2 text-primary"></i>Dashboard</h4>
-    </div>
-    <div class="d-flex align-items-center gap-3">
-      <button class="btn btn-sm btn-outline-danger position-relative" onclick="verStockMinimo()" id="btnStockAlert">
-        <i class="fa fa-bell"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="stockBadge" style="display:none;">0</span>
-      </button>
-      <div class="dropdown">
-        <button class="btn btn-sm btn-dark dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-user-shield me-1"></i>Admin</button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item small" href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+<div class="topbar">
+<div class="d-flex align-items-center gap-3">
+<button class="btn btn-sm btn-outline-secondary d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa fa-bars"></i></button>
+<h4 id="topbarTitle"><i class="fa fa-chart-pie me-2 text-primary"></i>Dashboard</h4>
+</div>
+<div class="d-flex align-items-center gap-3">
+<button class="btn btn-sm btn-outline-danger position-relative" onclick="verStockMinimo()" id="btnStockAlert">
+<i class="fa fa-bell"></i>
+<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="stockBadge" style="display:none;">0</span>
+</button>
+<div class="dropdown">
+<button class="btn btn-sm btn-dark dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-user-shield me-1"></i>Admin</button>
+<ul class="dropdown-menu dropdown-menu-end">
+<li><a class="dropdown-item small" href="#" onclick="cerrarSesion()"><i class="fa fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+</ul>
+</div>
+</div>
+</div>
 
-  <div class="content-area">
+<div class="content-area">
 
-    <!-- ===== DASHBOARD ===== -->
-    <div class="mod-section active" id="mod-dashboard">
-      <!-- Tarjetas con la paleta actualizada -->
-      <div class="row g-3 mb-4 fade-in">
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#16607d,#2596be);"><div class="stat-num" id="statProductos">0</div><div class="stat-label">Productos</div><i class="fa fa-box stat-icon"></i></div></div>
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#047857,#10b981);"><div class="stat-num" id="statServicios">0</div><div class="stat-label">Servicios Activos</div><i class="fa fa-concierge-bell stat-icon"></i></div></div>
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#b91c1c,#ef4444);"><div class="stat-num" id="statStockBajo">0</div><div class="stat-label">Stock Bajo</div><i class="fa fa-exclamation-triangle stat-icon"></i></div></div>
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#6d28d9,#a78bfa);"><div class="stat-num" id="statCitas">0</div><div class="stat-label">Citas Pendientes</div><i class="fa fa-calendar stat-icon"></i></div></div>
-      </div>
-      <div class="row g-3 mb-4 fade-in">
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#9a3412,#f97316);"><div class="stat-num" id="statPedidos">0</div><div class="stat-label">Pedidos</div><i class="fa fa-receipt stat-icon"></i></div></div>
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#0f766e,#2dd4bf);"><div class="stat-num" id="statVentas">$0</div><div class="stat-label">Total Ventas</div><i class="fa fa-dollar-sign stat-icon"></i></div></div>
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#0369a1,#38bdf8);"><div class="stat-num" id="statCarritos">0</div><div class="stat-label">Carritos</div><i class="fa fa-cart-shopping stat-icon"></i></div></div>
-        <div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#92400e,#fbbf24);"><div class="stat-num" id="statResenas">0</div><div class="stat-label">Reseñas</div><i class="fa fa-star stat-icon"></i></div></div>
-      </div>
-      <div class="row g-4">
-        <div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-boxes-stacked me-2 text-danger"></i>Stock Bajo (≤5 und)</h6><div id="dashStockBajo" style="max-height:260px;overflow-y:auto;"></div></div></div>
-        <div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-concierge-bell me-2 text-success"></i>Servicios</h6><div id="dashServicios" style="max-height:260px;overflow-y:auto;"></div></div></div>
-      </div>
-      <div class="row g-4 mt-1">
-        <div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-calendar-check me-2 text-primary"></i>Próximas Citas</h6><div id="dashCitas" style="max-height:240px;overflow-y:auto;"></div></div></div>
-        <div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-star me-2 text-warning"></i>Últimas Reseñas</h6><div id="dashResenas" style="max-height:240px;overflow-y:auto;"></div></div></div>
-      </div>
-    </div>
+<!-- ===== DASHBOARD ===== -->
+<div class="mod-section active" id="mod-dashboard">
+<!-- Tarjetas con la paleta actualizada -->
+<div class="row g-3 mb-4 fade-in">
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#16607d,#2596be);"><div class="stat-num" id="statProductos">0</div><div class="stat-label">Productos</div><i class="fa fa-box stat-icon"></i></div></div>
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#047857,#10b981);"><div class="stat-num" id="statServicios">0</div><div class="stat-label">Servicios Activos</div><i class="fa fa-concierge-bell stat-icon"></i></div></div>
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#b91c1c,#ef4444);"><div class="stat-num" id="statStockBajo">0</div><div class="stat-label">Stock Bajo</div><i class="fa fa-exclamation-triangle stat-icon"></i></div></div>
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#6d28d9,#a78bfa);"><div class="stat-num" id="statCitas">0</div><div class="stat-label">Citas Pendientes</div><i class="fa fa-calendar stat-icon"></i></div></div>
+</div>
+<div class="row g-3 mb-4 fade-in">
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#9a3412,#f97316);"><div class="stat-num" id="statPedidos">0</div><div class="stat-label">Pedidos</div><i class="fa fa-receipt stat-icon"></i></div></div>
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#0f766e,#2dd4bf);"><div class="stat-num" id="statVentas">$0</div><div class="stat-label">Total Ventas</div><i class="fa fa-dollar-sign stat-icon"></i></div></div>
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#0369a1,#38bdf8);"><div class="stat-num" id="statCarritos">0</div><div class="stat-label">Carritos</div><i class="fa fa-cart-shopping stat-icon"></i></div></div>
+<div class="col-6 col-lg-3"><div class="stat-card" style="background:linear-gradient(135deg,#92400e,#fbbf24);"><div class="stat-num" id="statResenas">0</div><div class="stat-label">Reseñas</div><i class="fa fa-star stat-icon"></i></div></div>
+</div>
+<div class="row g-4">
+<div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-boxes-stacked me-2 text-danger"></i>Stock Bajo (≤5 und)</h6><div id="dashStockBajo" style="max-height:260px;overflow-y:auto;"></div></div></div>
+<div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-concierge-bell me-2 text-success"></i>Servicios</h6><div id="dashServicios" style="max-height:260px;overflow-y:auto;"></div></div></div>
+</div>
+<div class="row g-4 mt-1">
+<div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-calendar-check me-2 text-primary"></i>Próximas Citas</h6><div id="dashCitas" style="max-height:240px;overflow-y:auto;"></div></div></div>
+<div class="col-lg-6"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-star me-2 text-warning"></i>Últimas Reseñas</h6><div id="dashResenas" style="max-height:240px;overflow-y:auto;"></div></div></div>
+</div>
+</div>
 
-    <!-- ===== MÓDULO 1: USUARIOS ===== -->
-    <div class="mod-section" id="mod-usuarios">
-      <div class="sketch-card fade-in">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold mb-0"><i class="fa fa-users me-2"></i>Usuarios Registrados</h6>
-          <button class="btn btn-sm btn-v btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario" onclick="prepararModalUsuarioNormal()">
-            <i class="fa fa-plus me-1"></i>Nuevo
-          </button>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-vc table-hover mb-0">
-            <thead>
-              <tr>
-                <th>ID</th><th>Foto</th><th>Documento</th><th>Nombre</th><th>Email</th><th>Celular</th><th>Rol</th><th>Localidad</th><th>Acc.</th>
-              </tr>
-            </thead>
-            <tbody id="tablaUsuarios"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+<!-- ===== MÓDULO 1: USUARIOS ===== -->
+<div class="mod-section" id="mod-usuarios">
+<div class="sketch-card fade-in">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="fw-bold mb-0"><i class="fa fa-users me-2"></i>Usuarios Registrados</h6>
+<button class="btn btn-sm btn-v btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario" onclick="prepararModalUsuarioNormal()">
+<i class="fa fa-plus me-1"></i>Nuevo
+</button>
+</div>
+<div class="table-responsive">
+<table class="table table-vc table-hover mb-0">
+<thead>
+<tr>
+<th>ID</th><th>Foto</th><th>Documento</th><th>Nombre</th><th>Email</th><th>Celular</th><th>Rol</th><th>Localidad</th><th>Acc.</th>
+</tr>
+</thead>
+<tbody id="tablaUsuarios"></tbody>
+</table>
+</div>
+</div>
+</div>
 
-    <!-- ===== MÓDULO 2: MASCOTAS ===== -->
-    <div class="mod-section" id="mod-mascotas">
-      <div class="row g-4">
-        <div class="col-lg-4">
-          <div class="sketch-card fade-in">
-            <h6 class="fw-bold mb-3"><i class="fa fa-paw me-2"></i>Registrar Mascota</h6>
-            <form id="formMascota" novalidate>
-              <input type="hidden" id="masIdEdit">
-              <div class="mb-3 text-center">
-                <input type="file" id="mascotaImagen" accept="image/*" style="display:none;" onchange="previewMascotaImg(this)">
-                <div id="mascotaImgPreview" style="display:none;" class="mb-2">
-                  <div class="img-preview-container d-inline-block">
-                    <img id="mascotaPreview" src="" alt="">
-                    <button type="button" class="btn-remove-img" onclick="quitarMascotaImg()"><i class="fa fa-times"></i></button>
-                  </div>
-                </div>
-                <div id="mascotaImgPlaceholder" class="mb-2">
-                  <div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width:100px;height:100px;background:#f0f2f5;border:3px dashed #cbd5e1;">
-                    <i class="fa fa-paw fa-2x text-muted" style="opacity:.4;"></i>
-                  </div>
-                </div>
-                <button type="button" class="btn btn-sm btn-dark mt-2 fw-bold w-100" onclick="document.getElementById('mascotaImagen').click()"><i class="fa fa-camera"></i> Foto</button>
-              </div>
-              <div class="mb-2"><label class="fw-bold small">Dueño:</label><select id="masDueno" class="form-select form-select-sm" required></select></div>
-              <div class="mb-2"><label class="fw-bold small">Nombre de la Mascota:</label><input type="text" id="masNombre" class="form-control form-control-sm" required></div>
-              <div class="row g-2 mb-2">
-                <div class="col-6"><label class="fw-bold small">Especie:</label><select id="masEspecie" class="form-select form-select-sm" required><option value="">...</option></select></div>
-                <div class="col-6"><label class="fw-bold small">Raza:</label><select id="masRaza" class="form-select form-select-sm" required><option value="">Primero especie</option></select></div>
-              </div>
-              <div class="mb-2" id="contEspecieDetalle" style="display:none;"><label class="fw-bold small">Detalle especie:</label><input type="text" id="masEspecieDetalle" class="form-control form-control-sm"></div>
-              <div class="mb-2" id="contRazaDetalle" style="display:none;"><label class="fw-bold small">Detalle raza:</label><input type="text" id="masRazaDetalle" class="form-control form-control-sm"></div>
-              <div class="row g-2 mb-2">
-                <div class="col-6"><label class="fw-bold small">Sexo:</label><select id="masSexo" class="form-select form-select-sm" required><option value="">...</option></select></div>
-                <div class="col-6"><label class="fw-bold small">Peso (kg):</label><input type="number" id="masPeso" class="form-control form-control-sm" step="0.1" required></div>
-              </div>
-              <div class="row g-2 mb-2">
-                <div class="col-6"><label class="fw-bold small">Edad:</label><input type="text" id="masEdad" class="form-control form-control-sm" required></div>
-                <div class="col-6"><label class="fw-bold small">Color:</label><input type="text" id="masColor" class="form-control form-control-sm"></div>
-              </div>
-              <div class="mb-3"><label class="fw-bold small">Observaciones:</label><textarea id="masObservaciones" class="form-control form-control-sm" rows="2"></textarea></div>
-              <div class="d-grid gap-2">
-                <button type="button" class="btn btn-sm btn-dark fw-bold" onclick="guardarMascota()">GUARDAR MASCOTA</button>
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormMascota()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="col-lg-8">
-          <div class="sketch-card fade-in">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold mb-0"><i class="fa fa-dog me-2"></i>Mascotas</h6>
-              <button class="btn btn-sm btn-primary" onclick="prepararNuevaMascota()"><i class="fa fa-plus me-1"></i>Nueva</button>
-              <input type="text" class="form-control form-control-sm" id="buscarMascota" placeholder="Buscar..." style="width:160px;" oninput="renderMascotas()">
-            </div>
-            <div class="table-responsive" style="max-height:560px;overflow-y:auto;">
-              <table class="table table-vc table-hover mb-0">
-                <thead style="position:sticky;top:0;z-index:2;">
-                  <tr>
-                    <th>ID</th><th>Foto</th><th>Nombre</th><th>Especie</th><th>Raza</th><th>Sexo</th><th>Edad</th><th>Peso</th><th>Dueño</th><th>Acc.</th>
-                  </tr>
-                </thead>
-                <tbody id="tablaMascotas"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- ===== MÓDULO 2: MASCOTAS ===== -->
+<div class="mod-section" id="mod-mascotas">
+<div class="row g-4">
+<div class="col-lg-4">
+<div class="sketch-card fade-in">
+<h6 class="fw-bold mb-3"><i class="fa fa-paw me-2"></i>Registrar Mascota</h6>
+<form id="formMascota" novalidate>
+<input type="hidden" id="masIdEdit">
+<div class="mb-3 text-center">
+<input type="file" id="mascotaImagen" accept="image/*" style="display:none;" onchange="previewMascotaImg(this)">
+<div id="mascotaImgPreview" style="display:none;" class="mb-2">
+<div class="img-preview-container d-inline-block">
+<img id="mascotaPreview" src="" alt="">
+<button type="button" class="btn-remove-img" onclick="quitarMascotaImg()"><i class="fa fa-times"></i></button>
+</div>
+</div>
+<div id="mascotaImgPlaceholder" class="mb-2">
+<div class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width:100px;height:100px;background:#f0f2f5;border:3px dashed #cbd5e1;">
+<i class="fa fa-paw fa-2x text-muted" style="opacity:.4;"></i>
+</div>
+</div>
+<button type="button" class="btn btn-sm btn-dark mt-2 fw-bold w-100" onclick="document.getElementById('mascotaImagen').click()"><i class="fa fa-camera"></i> Foto</button>
+</div>
+<div class="mb-2"><label class="fw-bold small">Dueño:</label><select id="masDueno" class="form-select form-select-sm" required></select></div>
+<div class="mb-2"><label class="fw-bold small">Nombre de la Mascota:</label><input type="text" id="masNombre" class="form-control form-control-sm" required></div>
+<div class="row g-2 mb-2">
+<div class="col-6"><label class="fw-bold small">Especie:</label><select id="masEspecie" class="form-select form-select-sm" required><option value="">...</option></select></div>
+<div class="col-6"><label class="fw-bold small">Raza:</label><select id="masRaza" class="form-select form-select-sm" required><option value="">Primero especie</option></select></div>
+</div>
+<div class="mb-2" id="contEspecieDetalle" style="display:none;"><label class="fw-bold small">Detalle especie:</label><input type="text" id="masEspecieDetalle" class="form-control form-control-sm"></div>
+<div class="mb-2" id="contRazaDetalle" style="display:none;"><label class="fw-bold small">Detalle raza:</label><input type="text" id="masRazaDetalle" class="form-control form-control-sm"></div>
+<div class="row g-2 mb-2">
+<div class="col-6"><label class="fw-bold small">Sexo:</label><select id="masSexo" class="form-select form-select-sm" required><option value="">...</option></select></div>
+<div class="col-6"><label class="fw-bold small">Peso (kg):</label><input type="number" id="masPeso" class="form-control form-control-sm" step="0.1" required></div>
+</div>
+<div class="row g-2 mb-2">
+<div class="col-6"><label class="fw-bold small">Edad:</label><input type="text" id="masEdad" class="form-control form-control-sm" required></div>
+<div class="col-6"><label class="fw-bold small">Color:</label><input type="text" id="masColor" class="form-control form-control-sm"></div>
+</div>
+<div class="mb-3"><label class="fw-bold small">Observaciones:</label><textarea id="masObservaciones" class="form-control form-control-sm" rows="2"></textarea></div>
+<div class="d-grid gap-2">
+<button type="button" class="btn btn-sm btn-dark fw-bold" onclick="guardarMascota()">GUARDAR MASCOTA</button>
+<button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormMascota()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
+</div>
+</form>
+</div>
+</div>
+<div class="col-lg-8">
+<div class="sketch-card fade-in">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="fw-bold mb-0"><i class="fa fa-dog me-2"></i>Mascotas</h6>
+<button class="btn btn-sm btn-primary" onclick="prepararNuevaMascota()"><i class="fa fa-plus me-1"></i>Nueva</button>
+<input type="text" class="form-control form-control-sm" id="buscarMascota" placeholder="Buscar..." style="width:160px;" oninput="renderMascotas()">
+</div>
+<div class="table-responsive" style="max-height:560px;overflow-y:auto;">
+<table class="table table-vc table-hover mb-0">
+<thead style="position:sticky;top:0;z-index:2;">
+<tr>
+<th>ID</th><th>Foto</th><th>Nombre</th><th>Especie</th><th>Raza</th><th>Sexo</th><th>Edad</th><th>Peso</th><th>Dueño</th><th>Acc.</th>
+</tr>
+</thead>
+<tbody id="tablaMascotas"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- ===== MÓDULO 3: INVENTARIO ===== -->
-    <div class="mod-section" id="mod-inventario">
-      <div class="row g-4">
-        <div class="col-lg-4">
-          <div class="sketch-card fade-in">
-            <h6 class="fw-bold mb-3"><i class="fa fa-plus-circle me-2 text-success"></i>Producto</h6>
-            <form id="formProducto" novalidate>
-              <input type="hidden" id="prodIdEdit">
-              <div class="mb-3 text-center">
-                <input type="file" id="productoImagen" accept="image/*" style="display:none;" onchange="previewProductoImg(this)">
-                <div id="productoImgPreview" style="display:none;" class="mb-2">
-                  <div class="img-preview-container d-inline-block">
-                    <img id="productoPreview" src="" alt="" style="border-radius:12px;">
-                    <button type="button" class="btn-remove-img" onclick="quitarProductoImg()"><i class="fa fa-times"></i></button>
-                  </div>
-                </div>
-                <div id="productoImgPlaceholder" class="mb-2">
-                  <div class="d-inline-flex align-items-center justify-content-center rounded-3" style="width:140px;height:100px;background:#f0f2f5;border:3px dashed #cbd5e1;">
-                    <i class="fa fa-box-open fa-2x text-muted" style="opacity:.4;"></i>
-                  </div>
-                </div>
-                <button type="button" class="btn btn-sm btn-dark mt-2 fw-bold w-100" onclick="document.getElementById('productoImagen').click()"><i class="fa fa-camera"></i> Foto</button>
-              </div>
-              <div class="mb-2"><label class="fw-bold small">Nombre:</label><input type="text" id="prodNombre" class="form-control form-control-sm" required></div>
-              <div class="row g-2 mb-2">
-                <div class="col-6"><label class="fw-bold small">Categoría:</label><select id="prodCategoria" class="form-select form-select-sm"></select></div>
-                <div class="col-6"><label class="fw-bold small">Estado:</label><select id="prodEstado" class="form-select form-select-sm"></select></div>
-              </div>
-              <div class="mb-2"><label class="fw-bold small">Costo Compra $:</label><input type="number" id="prodCosto" class="form-control form-control-sm" min="0" required></div>
-              <div class="mb-2"><label class="fw-bold small">Precio Venta $:</label><input type="number" id="prodPrecio" class="form-control form-control-sm" min="0" required></div>
-              <div class="row g-2 mb-2">
-                <div class="col-6"><label class="fw-bold small">Stock:</label><input type="number" id="prodStock" class="form-control form-control-sm" value="0" min="0"></div>
-                <div class="col-6"><label class="fw-bold small">Cód. Barras:</label><input type="text" id="prodCodBarras" class="form-control form-control-sm"></div>
-              </div>
-              <div class="mb-2"><label class="fw-bold small">Proveedor:</label><select id="prodProveedor" class="form-select form-select-sm"></select></div>
-              <div class="mb-3"><label class="fw-bold small">Descripción:</label><textarea id="prodDesc" class="form-control form-control-sm" rows="2"></textarea></div>
-              <div class="d-grid gap-2">
-                <button type="button" class="btn btn-sm btn-dark fw-bold" onclick="guardarProducto()">💾 GUARDAR EN SISTEMA VÍA CANES</button>
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormProducto()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="col-lg-8">
-          <div class="sketch-card fade-in">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6 class="fw-bold mb-0"><i class="fa fa-box me-2"></i>Productos</h6>
-              <div class="d-flex gap-2">
-                <input type="text" class="form-control form-control-sm" id="buscarProducto" placeholder="Buscar..." style="width:160px;" oninput="renderProductos()">
-                <button class="btn btn-sm btn-outline-danger btn-v" onclick="verStockMinimo()" title="Ver Stock Mínimo"><i class="fa fa-exclamation-triangle"></i></button>
-              </div>
-            </div>
-            <div class="table-responsive" style="max-height:500px;overflow-y:auto;">
-              <table class="table table-vc table-hover mb-0">
-                <thead style="position:sticky;top:0;z-index:2;">
-                  <tr>
-                    <th>ID</th><th>Foto</th><th>Producto</th><th>Categoría</th><th>Costo</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acc.</th>
-                  </tr>
-                </thead>
-                <tbody id="tablaProductos"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- ===== MÓDULO 3: INVENTARIO ===== -->
+<div class="mod-section" id="mod-inventario">
+<div class="row g-4">
+<div class="col-lg-4">
+<div class="sketch-card fade-in">
+<h6 class="fw-bold mb-3"><i class="fa fa-plus-circle me-2 text-success"></i>Producto</h6>
+<form id="formProducto" novalidate>
+<input type="hidden" id="prodIdEdit">
+<div class="mb-3 text-center">
+<input type="file" id="productoImagen" accept="image/*" style="display:none;" onchange="previewProductoImg(this)">
+<div id="productoImgPreview" style="display:none;" class="mb-2">
+<div class="img-preview-container d-inline-block">
+<img id="productoPreview" src="" alt="" style="border-radius:12px;">
+<button type="button" class="btn-remove-img" onclick="quitarProductoImg()"><i class="fa fa-times"></i></button>
+</div>
+</div>
+<div id="productoImgPlaceholder" class="mb-2">
+<div class="d-inline-flex align-items-center justify-content-center rounded-3" style="width:140px;height:100px;background:#f0f2f5;border:3px dashed #cbd5e1;">
+<i class="fa fa-box-open fa-2x text-muted" style="opacity:.4;"></i>
+</div>
+</div>
+<button type="button" class="btn btn-sm btn-dark mt-2 fw-bold w-100" onclick="document.getElementById('productoImagen').click()"><i class="fa fa-camera"></i> Foto</button>
+</div>
+<div class="mb-2"><label class="fw-bold small">Nombre:</label><input type="text" id="prodNombre" class="form-control form-control-sm" required></div>
+<div class="row g-2 mb-2">
+<div class="col-6"><label class="fw-bold small">Categoría:</label><select id="prodCategoria" class="form-select form-select-sm"></select></div>
+<div class="col-6"><label class="fw-bold small">Estado:</label><select id="prodEstado" class="form-select form-select-sm"></select></div>
+</div>
+<div class="mb-2"><label class="fw-bold small">Costo Compra $:</label><input type="number" id="prodCosto" class="form-control form-control-sm" min="0" required></div>
+<div class="mb-2"><label class="fw-bold small">Precio Venta $:</label><input type="number" id="prodPrecio" class="form-control form-control-sm" min="0" required></div>
+<div class="row g-2 mb-2">
+<div class="col-6"><label class="fw-bold small">Stock:</label><input type="number" id="prodStock" class="form-control form-control-sm" value="0" min="0"></div>
+<div class="col-6"><label class="fw-bold small">Cód. Barras:</label><input type="text" id="prodCodBarras" class="form-control form-control-sm"></div>
+</div>
+<div class="row g-2 mb-2">
+<div class="col-6"><label class="fw-bold small">Proveedor:</label><select id="prodProveedor" class="form-select form-select-sm"></select></div>
+<!-- CAMPO NUEVO: Selección de Especie / Mascota -->
+<div class="col-6">
+    <label class="fw-bold small">Dirigido a:</label>
+    <select id="prodEspecie" class="form-select form-select-sm" required>
+        <option value="1">🐶 Perro</option>
+        <option value="2">🐱 Gato</option>
+        <option value="1,2">🐶🐱 Perro y Gato</option>
+        <option value="3">🐾 Otra especie</option>
+    </select>
+</div>
+</div>
+<div class="mb-3"><label class="fw-bold small">Descripción:</label><textarea id="prodDesc" class="form-control form-control-sm" rows="2"></textarea></div>
+<div class="d-grid gap-2">
+<button type="button" class="btn btn-sm btn-dark fw-bold" onclick="guardarProducto()">💾 GUARDAR EN SISTEMA VÍA CANES</button>
+<button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormProducto()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
+</div>
+</form>
+</div>
+</div>
+<div class="col-lg-8">
+<div class="sketch-card fade-in">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="fw-bold mb-0"><i class="fa fa-box me-2"></i>Productos</h6>
+<div class="d-flex gap-2">
+<input type="text" class="form-control form-control-sm" id="buscarProducto" placeholder="Buscar..." style="width:160px;" oninput="renderProductos()">
+<button class="btn btn-sm btn-outline-danger btn-v" onclick="verStockMinimo()" title="Ver Stock Mínimo"><i class="fa fa-exclamation-triangle"></i></button>
+</div>
+</div>
+<div class="table-responsive" style="max-height:500px;overflow-y:auto;">
+<table class="table table-vc table-hover mb-0">
+<thead style="position:sticky;top:0;z-index:2;">
+<tr>
+<th>ID</th><th>Foto</th><th>Producto</th><th>Categoría</th><th>Costo</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acc.</th>
+</tr>
+</thead>
+<tbody id="tablaProductos"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- SERVICIOS -->
-    <div class="mod-section" id="mod-servicios">
-      <div class="row g-4">
-        <div class="col-lg-4"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-plus-circle me-2 text-success"></i>Servicio</h6>
-          <form id="formServicio"><input type="hidden" id="servIdEdit">
-            <div class="mb-2"><label class="fw-bold small">Nombre:</label><input type="text" id="servNombre" class="form-control form-control-sm" required></div>
-            <div class="mb-2"><label class="fw-bold small">Categoría:</label><select id="servCategoria" class="form-select form-select-sm"></select></div>
-            <div class="row g-2 mb-2"><div class="col-6"><label class="fw-bold small">Precio Ref. $:</label><input type="number" id="servPrecio" class="form-control form-control-sm" required></div><div class="col-6"><label class="fw-bold small">Duración (min):</label><input type="number" id="servDuracion" class="form-control form-control-sm"></div></div>
-            <div class="info-precio-variable mb-2"><i class="fa fa-info-circle"></i><span>Precio según tamaño, raza y especie.</span></div>
-            <div class="mb-2"><label class="fw-bold small">Estado:</label><select id="servEstado" class="form-select form-select-sm"><option value="1">Activo</option><option value="2">Inactivo</option></select></div>
-            <div class="mb-3"><label class="fw-bold small">Descripción:</label><textarea id="servDesc" class="form-control form-control-sm" rows="2"></textarea></div>
-            <div class="d-grid gap-2"><button type="submit" class="btn btn-success btn-v"><i class="fa fa-save me-1"></i>Guardar</button><button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormServicio()"><i class="fa fa-eraser me-1"></i>Limpiar</button></div>
-          </form>
-        </div>
-      </div>
-        <div class="col-lg-8">
-        <div class="sketch-card fade-in">
-        <div class="btn-group w-100 mb-3" id="filtroServGroup">
-        <button type="button" class="btn btn-sm btn-dark" onclick="filtrarServicios('todos')" data-filtro="todos">Todos (<span class="cnt-t">0</span>)</button>
-        <button type="button" class="btn btn-sm btn-outline-success" onclick="filtrarServicios('activos')" data-filtro="activos">Activos (<span class="cnt-a">0</span>)</button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="filtrarServicios('inactivos')" data-filtro="inactivos">Inactivos (<span class="cnt-i">0</span>)</button>
-      </div>
-      <div id="listaServicios" style="max-height:450px;overflow-y:auto;">
-      </div>
-    </div>
-  </div>
-    </div>
-    </div>
+<!-- SERVICIOS -->
+<div class="mod-section" id="mod-servicios">
+<div class="row g-4">
+<div class="col-lg-4"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-plus-circle me-2 text-success"></i>Servicio</h6>
+<form id="formServicio"><input type="hidden" id="servIdEdit">
+<div class="mb-2"><label class="fw-bold small">Nombre:</label><input type="text" id="servNombre" class="form-control form-control-sm" required></div>
+<div class="mb-2"><label class="fw-bold small">Categoría:</label><select id="servCategoria" class="form-select form-select-sm"></select></div>
+<div class="row g-2 mb-2"><div class="col-6"><label class="fw-bold small">Precio Ref. $:</label><input type="number" id="servPrecio" class="form-control form-control-sm" required></div><div class="col-6"><label class="fw-bold small">Duración (min):</label><input type="number" id="servDuracion" class="form-control form-control-sm"></div></div>
+<div class="info-precio-variable mb-2"><i class="fa fa-info-circle"></i><span>Precio según tamaño, raza y especie.</span></div>
+<div class="mb-2"><label class="fw-bold small">Estado:</label><select id="servEstado" class="form-select form-select-sm"><option value="1">Activo</option><option value="2">Inactivo</option></select></div>
+<div class="mb-3"><label class="fw-bold small">Descripción:</label><textarea id="servDesc" class="form-control form-control-sm" rows="2"></textarea></div>
+<div class="d-grid gap-2"><button type="submit" class="btn btn-success btn-v"><i class="fa fa-save me-1"></i>Guardar</button><button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormServicio()"><i class="fa fa-eraser me-1"></i>Limpiar</button></div>
+</form>
+</div>
+</div>
+<div class="col-lg-8">
+<div class="sketch-card fade-in">
+<div class="btn-group w-100 mb-3" id="filtroServGroup">
+<button type="button" class="btn btn-sm btn-dark" onclick="filtrarServicios('todos')" data-filtro="todos">Todos (<span class="cnt-t">0</span>)</button>
+<button type="button" class="btn btn-sm btn-outline-success" onclick="filtrarServicios('activos')" data-filtro="activos">Activos (<span class="cnt-a">0</span>)</button>
+<button type="button" class="btn btn-sm btn-outline-secondary" onclick="filtrarServicios('inactivos')" data-filtro="inactivos">Inactivos (<span class="cnt-i">0</span>)</button>
+</div>
+<div id="listaServicios" style="max-height:450px;overflow-y:auto;">
+</div>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- PROVEEDORES -->
+<!-- PROVEEDORES -->
 <div class="mod-section" id="mod-proveedores">
-  <div class="row g-4">
-    <div class="col-lg-4">
-      <div class="sketch-card fade-in">
-        <h6 class="fw-bold mb-3"><i class="fa fa-truck me-2"></i>Proveedor</h6>
-        <form id="formProveedor">
-          <input type="hidden" id="provIdEdit">
-          <div class="mb-2"><label class="fw-bold small">Empresa:</label><input type="text" id="provEmpresa" class="form-control form-control-sm" required></div>
-          <div class="mb-2"><label class="fw-bold small">NIT:</label><input type="text" id="provNit" class="form-control form-control-sm" required></div>
-          <div class="mb-2"><label class="fw-bold small">Contacto:</label><input type="text" id="provContacto" class="form-control form-control-sm" required></div>
-          <div class="mb-2"><label class="fw-bold small">Teléfono:</label><input type="tel" id="provTelefono" class="form-control form-control-sm" required></div>
-          <div class="mb-2"><label class="fw-bold small">Correo:</label><input type="email" id="provCorreo" class="form-control form-control-sm" required></div>
-          
-          <!--  NUEVOS CAMPOS AGREGADOS AQUÍ -->
-          <div class="mb-2"><label class="fw-bold small">Dirección:</label><input type="text" id="provDireccion" class="form-control form-control-sm" placeholder="Ej: Cra 52 # 63-45"></div>
-          <div class="mb-3"><label class="fw-bold small">Marcas que comercializa:</label><input type="text" id="provMarcas" class="form-control form-control-sm" placeholder="Ej: Purina, Royal Canin, Dog Chow..."></div>
-          
-          <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary btn-v"><i class="fa fa-save me-1"></i>Guardar</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormProveedor()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
-          </div>
-        </form>
-        <div class="alert alert-light border mt-3 mb-0 rounded-3 small">
-          <div class="d-flex justify-content-between"><span class="text-muted">Total:</span><strong id="provTotal">0</strong></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-8">
-      <div class="sketch-card fade-in">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold mb-0"><i class="fa fa-truck me-2"></i>Proveedores</h6>
-          <input type="text" class="form-control form-control-sm" id="buscarProveedor" placeholder="Buscar..." style="width:200px;" oninput="renderProveedores()">
-        </div>
-        <div class="table-responsive" style="max-height:520px;overflow-y:auto;">
-          <table class="table table-vc table-hover mb-0">
-            <thead style="position:sticky;top:0;z-index:2;">
-              <tr>
-                <th>ID</th><th>Empresa</th><th>NIT</th><th>Contacto</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Marcas</th><th>Acc.</th>
-              </tr>
-            </thead>
-            <tbody id="tablaProveedores"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="row g-4">
+<div class="col-lg-4">
+<div class="sketch-card fade-in">
+<h6 class="fw-bold mb-3"><i class="fa fa-truck me-2"></i>Proveedor</h6>
+<form id="formProveedor">
+<input type="hidden" id="provIdEdit">
+<div class="mb-2"><label class="fw-bold small">Empresa:</label><input type="text" id="provEmpresa" class="form-control form-control-sm" required></div>
+<div class="mb-2"><label class="fw-bold small">NIT:</label><input type="text" id="provNit" class="form-control form-control-sm" required></div>
+<div class="mb-2"><label class="fw-bold small">Contacto:</label><input type="text" id="provContacto" class="form-control form-control-sm" required></div>
+<div class="mb-2"><label class="fw-bold small">Teléfono:</label><input type="tel" id="provTelefono" class="form-control form-control-sm" required></div>
+<div class="mb-2"><label class="fw-bold small">Correo:</label><input type="email" id="provCorreo" class="form-control form-control-sm" required></div>
+
+<!--  NUEVOS CAMPOS AGREGADOS AQUÍ -->
+<div class="mb-2"><label class="fw-bold small">Dirección:</label><input type="text" id="provDireccion" class="form-control form-control-sm" placeholder="Ej: Cra 52 # 63-45"></div>
+<div class="mb-3"><label class="fw-bold small">Marcas que comercializa:</label><input type="text" id="provMarcas" class="form-control form-control-sm" placeholder="Ej: Purina, Royal Canin, Dog Chow..."></div>
+
+<div class="d-grid gap-2">
+<button type="submit" class="btn btn-primary btn-v"><i class="fa fa-save me-1"></i>Guardar</button>
+<button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormProveedor()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
+</div>
+</form>
+<div class="alert alert-light border mt-3 mb-0 rounded-3 small">
+<div class="d-flex justify-content-between"><span class="text-muted">Total:</span><strong id="provTotal">0</strong></div>
+</div>
+</div>
+</div>
+<div class="col-lg-8">
+<div class="sketch-card fade-in">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="fw-bold mb-0"><i class="fa fa-truck me-2"></i>Proveedores</h6>
+<input type="text" class="form-control form-control-sm" id="buscarProveedor" placeholder="Buscar..." style="width:200px;" oninput="renderProveedores()">
+</div>
+<div class="table-responsive" style="max-height:520px;overflow-y:auto;">
+<table class="table table-vc table-hover mb-0">
+<thead style="position:sticky;top:0;z-index:2;">
+<tr>
+<th>ID</th><th>Empresa</th><th>NIT</th><th>Contacto</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Marcas</th><th>Acc.</th>
+</tr>
+</thead>
+<tbody id="tablaProveedores"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 
-    <!-- COMPRAS -->
-    <div class="mod-section" id="mod-compras"> 
-    <div class="row g-4"> 
-        <div class="col-lg-4"> 
-            <div class="sketch-card fade-in"> 
-                <h6 class="fw-bold mb-3" id="tituloFormCompra"><i class="fa fa-file-invoice-dollar me-2 text-success"></i>Compra</h6> 
-                <form id="formCompra">
-                    <input type="hidden" id="compraIdEdit"> 
-                    
-                    <div class="mb-2">
-                        <label class="fw-bold small">Proveedor:</label>
-                        <select id="compraProveedor" class="form-select form-select-sm" required></select>
-                    </div> 
+<!-- COMPRAS -->
+<div class="mod-section" id="mod-compras">
+<div class="row g-4">
+<div class="col-lg-4">
+<div class="sketch-card fade-in">
+<h6 class="fw-bold mb-3" id="tituloFormCompra"><i class="fa fa-file-invoice-dollar me-2 text-success"></i>Compra</h6>
+<form id="formCompra">
+<input type="hidden" id="compraIdEdit">
 
-                    <!-- 🆕 NUEVO CAMPO: N° Factura (Perfectamente integrado) -->
-                    <div class="mb-2">
-                        <label class="fw-bold small">N° Factura:</label>
-                        <input type="text" id="compraFactura" class="form-control form-control-sm" placeholder="Ej: FAC-2024-001" required>
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="fw-bold small">Producto:</label>
-                        <select id="compraProducto" class="form-select form-select-sm" required></select>
-                    </div> 
-                    
-                    <div class="row g-2 mb-2">
-                        <div class="col-6">
-                            <label class="fw-bold small">Cantidad:</label>
-                            <input type="number" id="compraCantidad" class="form-control form-control-sm" min="1" placeholder="Ej: 10" required>
-                        </div>
-                        <div class="col-6">
-                            <label class="fw-bold small">Costo Unit. $:</label>
-                            <input type="number" id="compraCosto" class="form-control form-control-sm" min="0" placeholder="Ej: 15000" required>
-                        </div>
-                    </div> 
-                    
-                    <div class="mb-3">
-                        <label class="fw-bold small">Fecha:</label>
-                        <input type="date" id="compraFecha" class="form-control form-control-sm" required>
-                    </div> 
-                    
-                    <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-success btn-v w-100" id="btnGuardarCompra"><i class="fa fa-bolt me-1"></i>Guardado Automático</button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormCompra()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
-                    </div> 
-                </form> 
-                
-                <div class="mt-3 p-2 rounded-3 text-center small" id="comprasEstadoIndicador"><i class="fa fa-info-circle me-1"></i>Llena todos los campos y se guarda solo en 1.5s</div> 
-                <div class="alert alert-info mt-2 mb-0 small" style="padding:8px 12px;"><i class="fa fa-info-circle me-1"></i>Stock se ajusta automáticamente al guardar o eliminar.</div> 
-            </div> 
-        </div> 
-        
-        <div class="col-lg-8"> 
-            <div class="sketch-card fade-in"> 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold mb-0"><i class="fa fa-file-invoice-dollar me-2"></i>Historial de Compras</h6>
-                    <span class="badge bg-primary" id="comprasTotalBadge">0 compras</span>
-                </div> 
-                <div class="table-responsive">
-                    <table class="table table-vc table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Proveedor</th>
-                                <!-- 🆕 NUEVO ENCABEZADO: Factura -->
-                                <th>Factura</th>
-                                <th>Producto</th>
-                                <th>Cant.</th>
-                                <th>Costo Unit.</th>
-                                <th>Total</th>
-                                <th>Acc.</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaCompras"></tbody>
-                    </table>
-                </div> 
-            </div> 
-        </div> 
-    </div> 
+<div class="mb-2">
+<label class="fw-bold small">Proveedor:</label>
+<select id="compraProveedor" class="form-select form-select-sm" required></select>
 </div>
 
-       
-    <!-- MÓDULO CITAS -->
-    <div class="mod-section" id="mod-citas">
-      <div class="row g-4">
-        <div class="col-lg-5"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-calendar-plus me-2 text-primary"></i>Agendar Cita</h6>
-          <form id="formCita">
-            <div class="mb-2"><label class="fw-bold small"><i class="fa fa-user me-1 text-primary"></i>Cliente:</label><div class="select-with-btn"><select id="citaCliente" class="form-select form-select-sm" required><option value="">Seleccionar...</option></select><button type="button" class="btn btn-primary btn-add-inline" title="Crear cliente" onclick="abrirModalUsuarioDesdeCita()"><i class="fa fa-user-plus"></i></button></div><small id="citaClienteInfo" class="text-muted mt-1 d-block" style="font-size:.68rem;display:none;"></small></div>
-            <div class="mb-2"><label class="fw-bold small"><i class="fa fa-paw me-1 text-success"></i>Mascota:</label><div class="select-with-btn"><select id="citaMascota" class="form-select form-select-sm" required><option value="">Primero seleccione cliente</option></select><button type="button" class="btn btn-success btn-add-inline" title="Registrar mascota rápida" onclick="toggleMiniFormMascota()" id="btnToggleMiniMas"><i class="fa fa-plus"></i></button></div><small id="citaMascotaInfo" class="text-muted mt-1 d-block" style="font-size:.68rem;display:none;"></small></div>
-            <div id="miniFormMascota" style="display:none;">
-              <div class="mini-form-card"><div class="d-flex justify-content-between align-items-center mb-2"><h6 class="mb-0"><i class="fa fa-bolt me-1"></i>Registro Rápido Mascota</h6><button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="toggleMiniFormMascota()" style="font-size:.7rem;"><i class="fa fa-times"></i></button></div><div class="row g-2 mb-2"><div class="col-6"><label>Nombre *</label><input type="text" id="miniMasNombre" class="form-control form-control-sm"></div><div class="col-6"><label>Especie *</label><select id="miniMasEspecie" class="form-select form-select-sm"><option value="">...</option></select></div></div><div class="row g-2 mb-2"><div class="col-6"><label>Raza *</label><select id="miniMasRaza" class="form-select form-select-sm"><option value="">Primero especie</option></select></div><div class="col-6"><label>Sexo *</label><select id="miniMasSexo" class="form-select form-select-sm"><option value="">...</option></select></div></div><div class="row g-2 mb-2"><div class="col-4"><label>Peso *</label><input type="number" id="miniMasPeso" class="form-control form-control-sm" step="0.1"></div><div class="col-4"><label>Edad *</label><input type="text" id="miniMasEdad" class="form-control form-control-sm"></div><div class="col-4"><label>Color</label><input type="text" id="miniMasColor" class="form-control form-control-sm"></div></div><div id="miniContEspDetalle" style="display:none;" class="mb-2"><label>Detalle especie:</label><input type="text" id="miniMasEspDetalle" class="form-control form-control-sm"></div>
-              <div id="miniContRazaDetalle" style="display:none;" class="mb-2"><label>Especifique la raza *</label><input type="text" id="miniMasRazaDetalle" class="form-control form-control-sm" placeholder="Ingrese la raza"></div>
-              <div class="mb-2"><label>Observaciones</label><input type="text" id="miniMasObs" class="form-control form-control-sm"></div><button type="button" class="btn btn-sm btn-success w-100 fw-bold" onclick="guardarMascotaRapida()"><i class="fa fa-bolt me-1"></i>Guardar y Seleccionar</button></div></div>
-            <div class="mb-2"><label class="fw-bold small"><i class="fa fa-concierge-bell me-1 text-warning"></i>Servicio:</label><select id="citaServicio" class="form-select form-select-sm" required><option value="">Seleccionar...</option></select><div class="info-precio-variable"><i class="fa fa-info-circle"></i><span>Precio según tamaño, raza y especie de la mascota.</span></div></div>
-            <div class="row g-2 mb-2"><div class="col-6"><label class="fw-bold small">Fecha:</label><input type="date" id="citaFecha" class="form-control form-control-sm" required></div><div class="col-6"><label class="fw-bold small">Hora:</label><input type="time" id="citaHora" class="form-control form-control-sm" required></div></div>
-            <div class="mb-3"><label class="fw-bold small">Notas:</label><textarea id="citaNotas" class="form-control form-control-sm" rows="2"></textarea></div>
-            <button type="submit" class="btn btn-primary btn-v w-100"><i class="fa fa-calendar-check me-1"></i>Agendar Cita</button>
-          </form></div></div>
-        <div class="col-lg-7"><div class="sketch-card fade-in">
-          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"><h6 class="fw-bold mb-0"><i class="fa fa-calendar-check me-2"></i>Citas</h6><div class="btn-group btn-group-sm"><button class="btn btn-dark active" onclick="filtrarCitas('hoy',this)">Hoy</button><button class="btn btn-outline-dark" onclick="filtrarCitas('todas',this)">Todas</button><button class="btn btn-outline-warning" onclick="filtrarCitas('pendientes',this)">Pendientes</button><button class="btn btn-outline-info" onclick="filtrarCitas('confirmadas',this)">Confirmadas</button><button class="btn btn-outline-success" onclick="filtrarCitas('completadas',this)">Completadas</button><button class="btn btn-outline-secondary" onclick="filtrarCitas('canceladas',this)">Canceladas</button></div></div><div class="table-responsive" style="max-height:540px;overflow-y:auto;"><table class="table table-vc table-hover mb-0"><thead style="position:sticky;top:0;z-index:2;"><tr><th>ID</th><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Mascota</th><th>Servicio</th><th>Estado</th><th>Acc.</th></tr></thead><tbody id="tablaCitas"></tbody></table></div></div></div>
-      </div>
-    </div>
+<!-- 🆕 NUEVO CAMPO: N° Factura (Perfectamente integrado) -->
+<div class="mb-2">
+<label class="fw-bold small">N° Factura:</label>
+<input type="text" id="compraFactura" class="form-control form-control-sm" placeholder="Ej: FAC-2024-001" required>
+</div>
 
-    <div class="mod-section" id="mod-carritos"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-cart-shopping me-2"></i>Carritos</h6><div id="listaCarritos"></div></div></div>
-    
-    <div class="mod-section" id="mod-ventas"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-receipt me-2"></i>Pedidos</h6><div class="table-responsive"><table class="table table-vc table-hover mb-0"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Método</th><th>Pago</th><th>Acc.</th></tr></thead><tbody id="tablaPedidos"></tbody></table></div></div></div>
-    
-    <div class="mod-section" id="mod-marketing">
-      <div class="row g-4">
-        <div class="col-lg-5"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-tags me-2 text-warning"></i>Promoción</h6><form id="formPromo"><div class="mb-2"><label class="fw-bold small">Nombre:</label><input type="text" id="promoNombre" class="form-control form-control-sm" required></div><div class="mb-2"><label class="fw-bold small">Descripción:</label><textarea id="promoDesc" class="form-control form-control-sm" rows="2"></textarea></div><div class="row g-2 mb-2"><div class="col-6"><label class="fw-bold small">Valor:</label><input type="number" id="promoValor" class="form-control form-control-sm" step="0.01"></div><div class="col-6"><label class="fw-bold small">Tipo:</label><select id="promoTipo" class="form-select form-select-sm"><option value="porcentaje">Porcentaje %</option><option value="valor">Valor Fijo $</option></select></div></div><div class="row g-2 mb-2"><div class="col-6"><label class="fw-bold small">Inicio:</label><input type="date" id="promoInicio" class="form-control form-control-sm"></div><div class="col-6"><label class="fw-bold small">Fin:</label><input type="date" id="promoFin" class="form-control form-control-sm"></div></div><button type="submit" class="btn btn-warning btn-v w-100 text-dark"><i class="fa fa-save me-1"></i>Guardar</button></form></div><div class="sketch-card fade-in mt-3"><h6 class="fw-bold mb-3"><i class="fa fa-link me-2 text-info"></i>Vincular Producto</h6><div class="mb-2"><label class="fw-bold small">Promoción:</label><select id="asigPromo" class="form-select form-select-sm"></select></div><div class="mb-2"><label class="fw-bold small">Producto:</label><select id="asigProducto" class="form-select form-select-sm"></select></div><button class="btn btn-sm btn-info btn-v w-100 text-white" onclick="asignarProductoPromo()"><i class="fa fa-link me-1"></i>Vincular</button><div id="listaProdPromo" class="mt-3" style="max-height:200px;overflow-y:auto;"></div></div></div>
-        <div class="col-lg-7"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-bullhorn me-2"></i>Promociones</h6><div class="table-responsive"><table class="table table-vc table-hover mb-0"><thead><tr><th>ID</th><th>Nombre</th><th>Valor</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Acc.</th></tr></thead><tbody id="tablaPromos"></tbody></table></div></div></div>
-      </div>
-    </div>
+<div class="mb-2">
+<label class="fw-bold small">Producto:</label>
+<select id="compraProducto" class="form-select form-select-sm" required></select>
+</div>
+
+<div class="row g-2 mb-2">
+<div class="col-6">
+<label class="fw-bold small">Cantidad:</label>
+<input type="number" id="compraCantidad" class="form-control form-control-sm" min="1" placeholder="Ej: 10" required>
+</div>
+<div class="col-6">
+<label class="fw-bold small">Costo Unit. $:</label>
+<input type="number" id="compraCosto" class="form-control form-control-sm" min="0" placeholder="Ej: 15000" required>
+</div>
+</div>
+
+<div class="mb-3">
+<label class="fw-bold small">Fecha:</label>
+<input type="date" id="compraFecha" class="form-control form-control-sm" required>
+</div>
+
+<div class="d-grid gap-2">
+<button type="button" class="btn btn-success btn-v w-100" id="btnGuardarCompra"><i class="fa fa-bolt me-1"></i>Guardado Automático</button>
+<button type="button" class="btn btn-outline-secondary btn-sm" onclick="limpiarFormCompra()"><i class="fa fa-eraser me-1"></i>Limpiar</button>
+</div>
+</form>
+
+<div class="mt-3 p-2 rounded-3 text-center small" id="comprasEstadoIndicador"><i class="fa fa-info-circle me-1"></i>Llena todos los campos y se guarda solo en 1.5s</div>
+<div class="alert alert-info mt-2 mb-0 small" style="padding:8px 12px;"><i class="fa fa-info-circle me-1"></i>Stock se ajusta automáticamente al guardar o eliminar.</div>
+</div>
+</div>
+
+<div class="col-lg-8">
+<div class="sketch-card fade-in">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="fw-bold mb-0"><i class="fa fa-file-invoice-dollar me-2"></i>Historial de Compras</h6>
+<span class="badge bg-primary" id="comprasTotalBadge">0 compras</span>
+</div>
+<div class="table-responsive">
+<table class="table table-vc table-hover mb-0">
+<thead>
+<tr>
+<th>ID</th>
+<th>Fecha</th>
+<th>Proveedor</th>
+<!-- 🆕 NUEVO ENCABEZADO: Factura -->
+<th>Factura</th>
+<th>Producto</th>
+<th>Cant.</th>
+<th>Costo Unit.</th>
+<th>Total</th>
+<th>Acc.</th>
+</tr>
+</thead>
+<tbody id="tablaCompras"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- MÓDULO CITAS -->
+<div class="mod-section" id="mod-citas">
+<div class="row g-4">
+<div class="col-lg-5"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-calendar-plus me-2 text-primary"></i>Agendar Cita</h6>
+<form id="formCita">
+<div class="mb-2"><label class="fw-bold small"><i class="fa fa-user me-1 text-primary"></i>Cliente:</label><div class="select-with-btn"><select id="citaCliente" class="form-select form-select-sm" required><option value="">Seleccionar...</option></select><button type="button" class="btn btn-primary btn-add-inline" title="Crear cliente" onclick="abrirModalUsuarioDesdeCita()"><i class="fa fa-user-plus"></i></button></div><small id="citaClienteInfo" class="text-muted mt-1 d-block" style="font-size:.68rem;display:none;"></small></div>
+<div class="mb-2"><label class="fw-bold small"><i class="fa fa-paw me-1 text-success"></i>Mascota:</label><div class="select-with-btn"><select id="citaMascota" class="form-select form-select-sm" required><option value="">Primero seleccione cliente</option></select><button type="button" class="btn btn-success btn-add-inline" title="Registrar mascota rápida" onclick="toggleMiniFormMascota()" id="btnToggleMiniMas"><i class="fa fa-plus"></i></button></div><small id="citaMascotaInfo" class="text-muted mt-1 d-block" style="font-size:.68rem;display:none;"></small></div>
+<div id="miniFormMascota" style="display:none;">
+<div class="mini-form-card"><div class="d-flex justify-content-between align-items-center mb-2"><h6 class="mb-0"><i class="fa fa-bolt me-1"></i>Registro Rápido Mascota</h6><button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="toggleMiniFormMascota()" style="font-size:.7rem;"><i class="fa fa-times"></i></button></div><div class="row g-2 mb-2"><div class="col-6"><label>Nombre *</label><input type="text" id="miniMasNombre" class="form-control form-control-sm"></div><div class="col-6"><label>Especie *</label><select id="miniMasEspecie" class="form-select form-select-sm"><option value="">...</option></select></div></div><div class="row g-2 mb-2"><div class="col-6"><label>Raza *</label><select id="miniMasRaza" class="form-select form-select-sm"><option value="">Primero especie</option></select></div><div class="col-6"><label>Sexo *</label><select id="miniMasSexo" class="form-select form-select-sm"><option value="">...</option></select></div></div><div class="row g-2 mb-2"><div class="col-4"><label>Peso *</label><input type="number" id="miniMasPeso" class="form-control form-control-sm" step="0.1"></div><div class="col-4"><label>Edad *</label><input type="text" id="miniMasEdad" class="form-control form-control-sm"></div><div class="col-4"><label>Color</label><input type="text" id="miniMasColor" class="form-control form-control-sm"></div></div><div id="miniContEspDetalle" style="display:none;" class="mb-2"><label>Detalle especie:</label><input type="text" id="miniMasEspDetalle" class="form-control form-control-sm"></div>
+<div id="miniContRazaDetalle" style="display:none;" class="mb-2"><label>Especifique la raza *</label><input type="text" id="miniMasRazaDetalle" class="form-control form-control-sm" placeholder="Ingrese la raza"></div>
+<div class="mb-2"><label>Observaciones</label><input type="text" id="miniMasObs" class="form-control form-control-sm"></div><button type="button" class="btn btn-sm btn-success w-100 fw-bold" onclick="guardarMascotaRapida()"><i class="fa fa-bolt me-1"></i>Guardar y Seleccionar</button></div></div>
+<div class="mb-2"><label class="fw-bold small"><i class="fa fa-concierge-bell me-1 text-warning"></i>Servicio:</label><select id="citaServicio" class="form-select form-select-sm" required><option value="">Seleccionar...</option></select><div class="info-precio-variable"><i class="fa fa-info-circle"></i><span>Precio según tamaño, raza y especie de la mascota.</span></div></div>
+<div class="row g-2 mb-2"><div class="col-6"><label class="fw-bold small">Fecha:</label><input type="date" id="citaFecha" class="form-control form-control-sm" required></div><div class="col-6"><label class="fw-bold small">Hora:</label><input type="time" id="citaHora" class="form-control form-control-sm" required></div></div>
+<div class="mb-3"><label class="fw-bold small">Notas:</label><textarea id="citaNotas" class="form-control form-control-sm" rows="2"></textarea></div>
+<button type="submit" class="btn btn-primary btn-v w-100"><i class="fa fa-calendar-check me-1"></i>Agendar Cita</button>
+</form></div></div>
+<div class="col-lg-7"><div class="sketch-card fade-in">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"><h6 class="fw-bold mb-0"><i class="fa fa-calendar-check me-2"></i>Citas</h6><div class="btn-group btn-group-sm"><button class="btn btn-dark active" onclick="filtrarCitas('hoy',this)">Hoy</button><button class="btn btn-outline-dark" onclick="filtrarCitas('todas',this)">Todas</button><button class="btn btn-outline-warning" onclick="filtrarCitas('pendientes',this)">Pendientes</button><button class="btn btn-outline-info" onclick="filtrarCitas('confirmadas',this)">Confirmadas</button><button class="btn btn-outline-success" onclick="filtrarCitas('completadas',this)">Completadas</button><button class="btn btn-outline-secondary" onclick="filtrarCitas('canceladas',this)">Canceladas</button></div></div><div class="table-responsive" style="max-height:540px;overflow-y:auto;"><table class="table table-vc table-hover mb-0"><thead style="position:sticky;top:0;z-index:2;"><tr><th>ID</th><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Mascota</th><th>Servicio</th><th>Estado</th><th>Acc.</th></tr></thead><tbody id="tablaCitas"></tbody></table></div></div></div>
+</div>
+</div>
+
+<div class="mod-section" id="mod-carritos"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-cart-shopping me-2"></i>Carritos</h6><div id="listaCarritos"></div></div></div>
+
+<div class="mod-section" id="mod-ventas"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-receipt me-2"></i>Pedidos</h6><div class="table-responsive"><table class="table table-vc table-hover mb-0"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Método</th><th>Pago</th><th>Acc.</th></tr></thead><tbody id="tablaPedidos"></tbody></table></div></div></div>
+<!-- MÓDULO: PROMOCIONES — Panel Administrativo -->
+<!-- MÓDULO: PROMOCIONES — Panel Administrativo -->
+<div class="mod-section" id="mod-marketing">
+<div class="row g-4">
+
+<!-- COLUMNA IZQUIERDA: FORMULARIO Y VINCULACIÓN -->
+<div class="col-lg-5">
+
+<!-- FORMULARIO DE PROMOCIÓN -->
+<div class="sketch-card fade-in">
+<!-- CAMBIO APLICADO: Título estandarizado igual a los otros módulos -->
+<h6 class="fw-bold mb-3"><i class="fa fa-tags me-2 text-warning"></i>Promoción</h6>
+
+<form id="formPromo" enctype="multipart/form-data" class="needs-validation" novalidate>
+<input type="hidden" id="promoIdEdit" name="id_promo">
+<!-- CAMPO OCULTO PARA INDICAR BORRADO DE FOTO -->
+<input type="hidden" id="promoEliminarFotoFlag" name="eliminar_foto_actual" value="0">
+<!-- Carga de Imagen -->
+<input type="file" id="promoImagen" name="foto_url" accept="image/png,image/jpeg,image/webp" style="display:none;">
+
+<!-- Vista previa -->
+<div id="promoImgPreview" style="display:none;" class="mb-2 text-center">
+<div class="position-relative d-inline-block">
+<img id="promoPreview" src="" alt="Vista previa"
+style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+<button type="button" id="btnQuitarImg"
+class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle p-0 d-flex align-items-center justify-content-center"
+style="width:28px; height:28px; font-size:0.7rem;"
+aria-label="Quitar imagen">
+<i class="fa fa-times"></i>
+</button>
+</div>
+</div>
+
+<!-- Placeholder -->
+<div id="promoImgPlaceholder" class="mb-2 text-center">
+<div class="d-inline-flex align-items-center justify-content-center rounded-3"
+style="width:150px; height:150px; background:#f8f9fa; border:2px dashed #dee2e6;">
+<div class="text-center">
+<i class="fa fa-camera fa-2x text-muted d-block mb-1"></i>
+<small class="text-muted">PNG, JPG, Webp<br>Máx. 2 MB</small>
+</div>
+</div>
+</div>
+
+<!-- Botón seleccionar -->
+<button type="button" id="btnSeleccionarImg" class="btn btn-outline-dark btn-sm w-100 mt-2">
+<i class="fa fa-upload me-1"></i> Seleccionar Imagen
+</button>
+
+<!-- nombre -->
+<div class="mb-2 mt-3">
+<label for="promoNombre" class="fw-bold small">Nombre:</label>
+<input type="text" id="promoNombre" name="nombre"
+class="form-control form-control-sm" required
+maxlength="100" placeholder="Ej: Descuento de Verano">
+<div class="invalid-feedback">Ingresa un nombre para la promoción.</div>
+</div>
+
+<!-- descripcion -->
+<div class="mb-2">
+<label for="promoDesc" class="fw-bold small">Descripción:</label>
+<textarea id="promoDesc" name="descripcion"
+class="form-control form-control-sm" rows="2"
+maxlength="300" placeholder="Breve descripción..."></textarea>
+</div>
+
+<!-- valor + tipo_descuento -->
+<div class="row g-2 mb-2">
+<div class="col-6">
+<label for="promoValor" class="fw-bold small">Valor:</label>
+<input type="number" id="promoValor" name="valor"
+class="form-control form-control-sm" step="0.01" min="0.01" required
+placeholder="0.00">
+<div class="invalid-feedback">Valor mayor a 0.</div>
+</div>
+<div class="col-6">
+<label for="promoTipo" class="fw-bold small">Tipo:</label>
+<select id="promoTipo" name="tipo_descuento" class="form-select form-select-sm">
+<option value="porcentaje">Porcentaje %</option>
+<option value="valor">Valor Fijo $</option>
+</select>
+</div>
+</div>
+
+<!-- fecha_inicio + fecha_fin -->
+<div class="row g-2 mb-2">
+<div class="col-6">
+<label for="promoInicio" class="fw-bold small">Inicio:</label>
+<input type="date" id="promoInicio" name="fecha_inicio"
+class="form-control form-control-sm">
+</div>
+<div class="col-6">
+<label for="promoFin" class="fw-bold small">Fin:</label>
+<input type="date" id="promoFin" name="fecha_fin"
+class="form-control form-control-sm">
+</div>
+</div>
+
+<!-- id_estado_promocion -->
+<div class="mb-3">
+<label for="promoEstado" class="fw-bold small">Estado:</label>
+<select id="promoEstado" name="id_estado_promocion" class="form-select form-select-sm">
+<option value="1">Activo</option>
+<option value="2">Inactivo</option>
+</select>
+</div>
+
+<!-- Botones -->
+<button type="submit" id="btnGuardarPromo"
+class="btn btn-warning btn-v w-100 text-dark fw-bold">
+<i class="fa fa-save me-1"></i>
+<span id="btnGuardarPromoTexto">Guardar Promoción</span>
+</button>
+<button type="button" id="btnCancelarEdicion"
+class="btn btn-outline-secondary btn-sm w-100 mt-2"
+style="display:none;">
+<i class="fa fa-times me-1"></i>Cancelar Edición
+</button>
+</form>
+</div>
+
+<!-- VINCULAR PRODUCTO -->
+<div class="sketch-card fade-in mt-3">
+<h6 class="fw-bold mb-3">
+<i class="fa fa-link me-2 text-info"></i>Vincular Producto
+</h6>
+<div class="mb-2">
+<label for="asigPromo" class="fw-bold small">Promoción:</label>
+<select id="asigPromo" class="form-select form-select-sm" required>
+<option value="" disabled selected>Selecciona una promoción</option>
+</select>
+</div>
+<div class="mb-2">
+<label for="asigProducto" class="fw-bold small">Producto:</label>
+<select id="asigProducto" class="form-select form-select-sm" required>
+<option value="" disabled selected>Selecciona un producto</option>
+</select>
+</div>
+<button type="button" id="btnVincularProd"
+class="btn btn-sm btn-info btn-v w-100 text-white" disabled>
+<i class="fa fa-link me-1"></i>Vincular
+</button>
+<div id="listaProdPromo" class="mt-3" style="max-height:200px; overflow-y:auto;"></div>
+</div>
+
+</div>
+
+<!-- COLUMNA DERECHA: TABLA -->
+<div class="col-lg-7">
+<div class="sketch-card fade-in">
+<!-- Encabezado de tabla limpio -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h6 class="fw-bold mb-0"><i class="fa fa-bullhorn me-2"></i>Promociones</h6>
+<span id="contadorPromos" class="badge bg-secondary rounded-pill" style="display:none;">0</span>
+</div>
+
+<div class="table-responsive">
+<table class="table table-vc table-hover mb-0">
+<thead>
+<tr>
+<th>ID</th>
+<th>Imagen</th>
+<th>Nombre</th>
+<th>Valor</th>
+<th>Tipo</th>
+<th>Inicio</th>
+<th>Fin</th>
+<th>Creada</th>
+<th>Estado</th>
+<th>Acc.</th>
+</tr>
+</thead>
+<tbody id="tablaPromos">
+<tr id="promoLoadingRow">
+<td colspan="10" class="text-center py-4">
+<div class="spinner-border spinner-border-sm text-primary" role="status">
+<span class="visually-hidden">Cargando...</span>
+</div>
+<span class="ms-2 text-muted small">Cargando promociones...</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Empty State -->
+<div id="promoEmptyState" style="display:none;" class="text-center py-4">
+<i class="fa fa-tags fa-3x text-muted opacity-25 d-block mb-2"></i>
+<p class="text-muted mb-0 small">No hay promociones registradas.</p>
+<p class="text-muted small">Crea la primera usando el formulario de la izquierda.</p>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
     
     <div class="mod-section" id="mod-resenas">
       <div class="row g-4">
@@ -456,7 +659,7 @@
       </div>
     </div>
   </div>
-</div>
+
 
 <!-- ==================== MODALES GLOBALES ==================== -->
 <div class="modal fade" id="modalStockBajo" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content" style="border-radius:14px;border:none;"><div class="modal-header text-white" style="background:var(--grad-modal-danger);border-radius:14px 14px 0 0;"><h5 class="modal-title fw-bold"><i class="fa fa-exclamation-triangle me-2"></i>Stock Bajo</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-2 mb-4" id="stockResumen"></div><div id="stockLista" style="max-height:360px;overflow-y:auto;"></div></div></div></div></div>
@@ -465,84 +668,84 @@
 
 <!-- Modal Único de Usuarios  -->
 <div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioTitulo" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="border-radius:14px;border:none;">
-      <div class="modal-header text-white" style="background:var(--grad-modal-primary);border-radius:14px 14px 0 0;">
-        <h5 class="modal-title fw-bold"><i class="fa fa-user-plus me-2"></i><span id="modalUsuarioTitulo">Registro de Usuario</span></h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
+<div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal-content" style="border-radius:14px;border:none;">
+<div class="modal-header text-white" style="background:var(--grad-modal-primary);border-radius:14px 14px 0 0;">
+<h5 class="modal-title fw-bold"><i class="fa fa-user-plus me-2"></i><span id="modalUsuarioTitulo">Registro de Usuario</span></h5>
+<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
 <form id="formUsuario">
-    <input type="hidden" name="id_usuario" value="">
-    <div class="row g-3">
-        <div class="col-md-5">
-            <label for="usrTipoId" class="form-label">Tipo Identificación</label>
-            <select class="form-select" id="usrTipoId" name="id_tipo_id" required></select>
-        </div>
-        <div class="col-md-7">
-            <label for="usrDoc" class="form-label">Número de Documento</label>
-            <input type="text" class="form-control" id="usrDoc" name="numero_documento" required>
-        </div>
-        <div class="col-md-6">
-            <label for="usrNombres" class="form-label">Nombres</label>
-            <input type="text" class="form-control" id="usrNombres" name="nombres" required>
-        </div>
-        <div class="col-md-6">
-            <label for="usrApellidos" class="form-label">Apellidos</label>
-            <input type="text" class="form-control" id="usrApellidos" name="apellidos" required>
-        </div>
-        <div class="col-md-6">
-            <label for="usrEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="usrEmail" name="email" placeholder="ejemplo@dominio.com">
-        </div>
-        <div class="col-md-6">
-            <label for="usrCelular" class="form-label">Celular</label>
-            <input type="text" class="form-control" id="usrCelular" name="celular" placeholder="Solo números" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="15">
-        </div>
-        <div class="col-md-4">
-            <label for="usrRol" class="form-label">Rol</label>
-            <select class="form-select" id="usrRol" name="id_rol" required></select>
-        </div>
-        <div class="col-md-4">
-            <label for="usrLocalidad" class="form-label">Localidad</label>
-            <select class="form-select" id="usrLocalidad" name="id_localidad" required></select>
-        </div>
-        <div class="col-md-4">
-            <label for="usrContrasena" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="usrContrasena" name="nueva_contrasena" placeholder="Dejar vacío si no cambia">
-        </div>
-        <div class="col-12">
-            <label for="usrDireccion" class="form-label">Dirección</label>
-            <input type="text" class="form-control" id="usrDireccion" name="direccion">
-        </div>
-        <div class="col-12">
-            <label for="usrFoto" class="form-label">Foto de Perfil</label>
-            <!-- INPUT OCULTO PARA ELIMINAR FOTO -->
-    <input type="hidden" id="usrEliminarFotoFlag" name="eliminar_foto" value="0">
-            <input class="form-control" type="file" id="usrFoto" name="foto_usuario" accept="image/*">
-            <div class="mt-2 text-center">
-                <img id="usrFotoPreview" src="" alt="Vista previa" width="100" height="100" class="rounded-circle d-none object-fit-cover border">
-                    <!-- BOTONES DE ELIMINAR FOTO -->
-        <div id="contEliminarFoto" class="mt-2 d-none">
-            <button type="button" id="btnMarcarEliminar" class="btn btn-sm btn-outline-danger" onclick="marcarEliminarFoto()">
-                <i class="fa fa-trash-alt me-1"></i>Eliminar foto
-            </button>
-            <div id="eliminacionPendiente" class="alert alert-warning py-1 px-2 mt-2 small d-none d-flex justify-content-between align-items-center">
-                <span><i class="fa fa-exclamation-triangle me-1"></i>Pendiente eliminar</span>
-                <button type="button" class="btn btn-sm btn-link text-primary p-0" onclick="cancelarEliminarFoto()">Deshacer</button>
-            
-              </div>
-        </div>
-    </div>
+<input type="hidden" name="id_usuario" value="">
+<div class="row g-3">
+<div class="col-md-5">
+<label for="usrTipoId" class="form-label">Tipo Identificación</label>
+<select class="form-select" id="usrTipoId" name="id_tipo_id" required></select>
+</div>
+<div class="col-md-7">
+<label for="usrDoc" class="form-label">Número de Documento</label>
+<input type="text" class="form-control" id="usrDoc" name="numero_documento" required>
+</div>
+<div class="col-md-6">
+<label for="usrNombres" class="form-label">Nombres</label>
+<input type="text" class="form-control" id="usrNombres" name="nombres" required>
+</div>
+<div class="col-md-6">
+<label for="usrApellidos" class="form-label">Apellidos</label>
+<input type="text" class="form-control" id="usrApellidos" name="apellidos" required>
+</div>
+<div class="col-md-6">
+<label for="usrEmail" class="form-label">Email</label>
+<input type="email" class="form-control" id="usrEmail" name="email" placeholder="ejemplo@dominio.com">
+</div>
+<div class="col-md-6">
+<label for="usrCelular" class="form-label">Celular</label>
+<input type="text" class="form-control" id="usrCelular" name="celular" placeholder="Solo números" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="15">
+</div>
+<div class="col-md-4">
+<label for="usrRol" class="form-label">Rol</label>
+<select class="form-select" id="usrRol" name="id_rol" required></select>
+</div>
+<div class="col-md-4">
+<label for="usrLocalidad" class="form-label">Localidad</label>
+<select class="form-select" id="usrLocalidad" name="id_localidad" required></select>
+</div>
+<div class="col-md-4">
+<label for="usrContrasena" class="form-label">Contraseña</label>
+<input type="password" class="form-control" id="usrContrasena" name="nueva_contrasena" placeholder="Dejar vacío si no cambia">
+</div>
+<div class="col-12">
+<label for="usrDireccion" class="form-label">Dirección</label>
+<input type="text" class="form-control" id="usrDireccion" name="direccion">
+</div>
+<div class="col-12">
+<label for="usrFoto" class="form-label">Foto de Perfil</label>
+<!-- INPUT OCULTO PARA ELIMINAR FOTO -->
+<input type="hidden" id="usrEliminarFotoFlag" name="eliminar_foto" value="0">
+<input class="form-control" type="file" id="usrFoto" name="foto_usuario" accept="image/*">
+<div class="mt-2 text-center">
+<img id="usrFotoPreview" src="" alt="Vista previa" width="100" height="100" class="rounded-circle d-none object-fit-cover border">
+<!-- BOTONES DE ELIMINAR FOTO -->
+<div id="contEliminarFoto" class="mt-2 d-none">
+<button type="button" id="btnMarcarEliminar" class="btn btn-sm btn-outline-danger" onclick="marcarEliminarFoto()">
+<i class="fa fa-trash-alt me-1"></i>Eliminar foto
+</button>
+<div id="eliminacionPendiente" class="alert alert-warning py-1 px-2 mt-2 small d-none d-flex justify-content-between align-items-center">
+<span><i class="fa fa-exclamation-triangle me-1"></i>Pendiente eliminar</span>
+<button type="button" class="btn btn-sm btn-link text-primary p-0" onclick="cancelarEliminarFoto()">Deshacer</button>
+
+</div>
+</div>
+</div>
 </form>
-       
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary btn-v" onclick="guardarUsuario()"><i class="fa fa-save me-1"></i>Guardar</button>
-      </div>
-    </div>
-  </div>
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+<button type="button" class="btn btn-primary btn-v" onclick="guardarUsuario()"><i class="fa fa-save me-1"></i>Guardar</button>
+</div>
+</div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -561,3 +764,4 @@
 <script src="../js/modules-admin/mod-carritos.js"></script>
 </body>
 </html>
+

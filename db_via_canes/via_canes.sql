@@ -3,11 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-08-2026 a las 03:37:57
+-- Tiempo de generación: 19-08-2026 a las 22:59:12
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -21,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `via_canes`
 --
-CREATE DATABASE IF NOT EXISTS `via_canes` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `via_canes`;
 
 -- --------------------------------------------------------
 
@@ -30,7 +27,6 @@ USE `via_canes`;
 -- Estructura de tabla para la tabla `carrito`
 --
 
-DROP TABLE IF EXISTS `carrito`;
 CREATE TABLE `carrito` (
   `id_carrito` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
@@ -43,7 +39,6 @@ CREATE TABLE `carrito` (
 -- Estructura de tabla para la tabla `categorias_producto`
 --
 
-DROP TABLE IF EXISTS `categorias_producto`;
 CREATE TABLE `categorias_producto` (
   `id_categoria` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL
@@ -66,7 +61,6 @@ INSERT INTO `categorias_producto` (`id_categoria`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `categoria_servicio`
 --
 
-DROP TABLE IF EXISTS `categoria_servicio`;
 CREATE TABLE `categoria_servicio` (
   `id_categoria_servicio` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -87,7 +81,6 @@ INSERT INTO `categoria_servicio` (`id_categoria_servicio`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `citas`
 --
 
-DROP TABLE IF EXISTS `citas`;
 CREATE TABLE `citas` (
   `id_cita` int(11) NOT NULL,
   `fecha_cita` date DEFAULT NULL,
@@ -105,7 +98,6 @@ CREATE TABLE `citas` (
 -- Estructura de tabla para la tabla `compras_proveedor`
 --
 
-DROP TABLE IF EXISTS `compras_proveedor`;
 CREATE TABLE `compras_proveedor` (
   `id_compra` int(11) NOT NULL,
   `id_proveedor` int(11) DEFAULT NULL,
@@ -135,7 +127,6 @@ INSERT INTO `compras_proveedor` (`id_compra`, `id_proveedor`, `numero_factura`, 
 -- Estructura de tabla para la tabla `detalle_carrito`
 --
 
-DROP TABLE IF EXISTS `detalle_carrito`;
 CREATE TABLE `detalle_carrito` (
   `id_detalle` int(11) NOT NULL,
   `id_carrito` int(11) DEFAULT NULL,
@@ -151,7 +142,6 @@ CREATE TABLE `detalle_carrito` (
 -- Estructura de tabla para la tabla `detalle_pedido`
 --
 
-DROP TABLE IF EXISTS `detalle_pedido`;
 CREATE TABLE `detalle_pedido` (
   `id_detalle` int(11) NOT NULL,
   `id_pedido` int(11) DEFAULT NULL,
@@ -167,7 +157,6 @@ CREATE TABLE `detalle_pedido` (
 -- Estructura de tabla para la tabla `especie`
 --
 
-DROP TABLE IF EXISTS `especie`;
 CREATE TABLE `especie` (
   `id_especie` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -188,7 +177,6 @@ INSERT INTO `especie` (`id_especie`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estados_producto`
 --
 
-DROP TABLE IF EXISTS `estados_producto`;
 CREATE TABLE `estados_producto` (
   `id_estado_producto` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -209,7 +197,6 @@ INSERT INTO `estados_producto` (`id_estado_producto`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_cita`
 --
 
-DROP TABLE IF EXISTS `estado_cita`;
 CREATE TABLE `estado_cita` (
   `id_estado_cita` int(11) NOT NULL,
   `nombre` varchar(20) DEFAULT NULL
@@ -231,7 +218,6 @@ INSERT INTO `estado_cita` (`id_estado_cita`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_pago`
 --
 
-DROP TABLE IF EXISTS `estado_pago`;
 CREATE TABLE `estado_pago` (
   `id_estado_pago` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL
@@ -252,7 +238,6 @@ INSERT INTO `estado_pago` (`id_estado_pago`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_pedido`
 --
 
-DROP TABLE IF EXISTS `estado_pedido`;
 CREATE TABLE `estado_pedido` (
   `id_estado_pedido` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL
@@ -275,7 +260,6 @@ INSERT INTO `estado_pedido` (`id_estado_pedido`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_promocion`
 --
 
-DROP TABLE IF EXISTS `estado_promocion`;
 CREATE TABLE `estado_promocion` (
   `id_estado_promocion` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -297,7 +281,6 @@ INSERT INTO `estado_promocion` (`id_estado_promocion`, `nombre`, `descripcion`) 
 -- Estructura de tabla para la tabla `estado_servicio`
 --
 
-DROP TABLE IF EXISTS `estado_servicio`;
 CREATE TABLE `estado_servicio` (
   `id_estado_servicio` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -317,7 +300,6 @@ INSERT INTO `estado_servicio` (`id_estado_servicio`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `localidad`
 --
 
-DROP TABLE IF EXISTS `localidad`;
 CREATE TABLE `localidad` (
   `id_localidad` int(11) NOT NULL,
   `nombre_localidad` varchar(100) DEFAULT NULL
@@ -354,7 +336,6 @@ INSERT INTO `localidad` (`id_localidad`, `nombre_localidad`) VALUES
 -- Estructura de tabla para la tabla `mascota`
 --
 
-DROP TABLE IF EXISTS `mascota`;
 CREATE TABLE `mascota` (
   `id_mascota` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
@@ -381,7 +362,7 @@ INSERT INTO `mascota` (`id_mascota`, `id_usuario`, `foto_mascota`, `nombre_masco
 (3, 4, '../img/mascotas/mascota_4_1784516750.png', 'Luna', 2, '', 20, '', 2, '6 meses', 'chocolate', 5.00, 'nerviosa'),
 (4, 8, '../img/mascotas/mascota_8_1784516714.png', 'tito', 1, '', 5, '', 1, '4 años', 'gris blanco', 6.00, ''),
 (5, 5, '../img/mascotas/mascota_5_1783666394_3900.jpg', 'Toby', 1, NULL, 26, 'coker ingles', 1, '7 años', 'dorado', 15.00, ''),
-(6, 2, '../img/mascotas/mascota_2_1784524399_1457.jpg', 'Neron', 1, NULL, 26, 'coker ingles', 1, '12 años', 'dorado y pecas blancas', 12.00, ''),
+(6, 2, '../img/mascotas/mascota_2_1786737493_2610.jpg', 'Neron', 1, NULL, 26, 'coker ingles', 1, '12 años', 'dorado y pecas blancas', 16.00, ''),
 (7, 7, '../img/mascotas/mascota_7_1784528217.png', 'Oliver', 1, '', 7, '', 1, '6 años', 'beige', 6.00, 'es alergico al shampo insectisida'),
 (8, 9, '../img/mascotas/mascota_9_1784531247_3871.png', 'kira', 1, NULL, 3, NULL, 2, '6 años', 'beige y pintas negras', 7.00, ''),
 (9, 7, '../img/mascotas/mascota_7_1784532981_9451.png', 'nala', 1, NULL, 7, NULL, 2, '6años', 'beige', 6.00, ''),
@@ -396,7 +377,6 @@ INSERT INTO `mascota` (`id_mascota`, `id_usuario`, `foto_mascota`, `nombre_masco
 -- Estructura de tabla para la tabla `metodos_catalogo`
 --
 
-DROP TABLE IF EXISTS `metodos_catalogo`;
 CREATE TABLE `metodos_catalogo` (
   `id_metodo` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
@@ -420,7 +400,6 @@ INSERT INTO `metodos_catalogo` (`id_metodo`, `nombre`, `descripcion`) VALUES
 -- Estructura de tabla para la tabla `pagos`
 --
 
-DROP TABLE IF EXISTS `pagos`;
 CREATE TABLE `pagos` (
   `id_pago` int(11) NOT NULL,
   `id_pedido` int(11) DEFAULT NULL,
@@ -436,7 +415,6 @@ CREATE TABLE `pagos` (
 -- Estructura de tabla para la tabla `pedido`
 --
 
-DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE `pedido` (
   `id_pedido` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
@@ -451,7 +429,6 @@ CREATE TABLE `pedido` (
 -- Estructura de tabla para la tabla `productos`
 --
 
-DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL,
   `id_categoria` int(11) DEFAULT NULL,
@@ -487,7 +464,6 @@ INSERT INTO `productos` (`id_producto`, `id_categoria`, `id_proveedor`, `nombre`
 -- Estructura de tabla para la tabla `producto_especie`
 --
 
-DROP TABLE IF EXISTS `producto_especie`;
 CREATE TABLE `producto_especie` (
   `id_producto` int(11) NOT NULL,
   `id_especie` int(11) NOT NULL
@@ -516,7 +492,6 @@ INSERT INTO `producto_especie` (`id_producto`, `id_especie`) VALUES
 -- Estructura de tabla para la tabla `producto_promocion`
 --
 
-DROP TABLE IF EXISTS `producto_promocion`;
 CREATE TABLE `producto_promocion` (
   `id_producto_promocion` int(11) NOT NULL,
   `id_producto` int(11) DEFAULT NULL,
@@ -538,7 +513,6 @@ INSERT INTO `producto_promocion` (`id_producto_promocion`, `id_producto`, `id_pr
 -- Estructura de tabla para la tabla `promociones`
 --
 
-DROP TABLE IF EXISTS `promociones`;
 CREATE TABLE `promociones` (
   `id_promo` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -548,17 +522,17 @@ CREATE TABLE `promociones` (
   `fecha_inicio` date DEFAULT NULL,
   `fecha_fin` date DEFAULT NULL,
   `fecha_creacion` date DEFAULT NULL,
-  `id_estado_promocion` int(11) DEFAULT NULL
+  `id_estado_promocion` int(11) DEFAULT NULL,
+  `foto_url` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `promociones`
 --
 
-INSERT INTO `promociones` (`id_promo`, `nombre`, `descripcion`, `valor`, `tipo_descuento`, `fecha_inicio`, `fecha_fin`, `fecha_creacion`, `id_estado_promocion`) VALUES
-(1, 'Promo Bienvenida', 'Descuentos generales', 10.00, 'porcentaje', '2026-04-30', '2026-05-31', '2026-04-30', 1),
-(2, 'Mes del Cachorro', 'Descuento en alimento perro y gato', 2000.00, 'valor', '2026-04-20', '2026-04-20', '2026-04-20', 1),
-(3, 'Black Friday', 'Descuentos generales', 10.00, 'porcentaje', '2026-07-11', '2026-07-12', '2026-07-11', 2);
+INSERT INTO `promociones` (`id_promo`, `nombre`, `descripcion`, `valor`, `tipo_descuento`, `fecha_inicio`, `fecha_fin`, `fecha_creacion`, `id_estado_promocion`, `foto_url`) VALUES
+(1, 'Cuidado e Higiene', 'Desparasitantes', 15.00, 'porcentaje', '2026-08-15', '2026-08-30', '2026-04-30', 1, NULL),
+(2, 'Mes del Cachorro', 'Descuento en alimento perro y gato', 2000.00, 'valor', '2026-04-20', '2026-04-20', '2026-04-20', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -566,7 +540,6 @@ INSERT INTO `promociones` (`id_promo`, `nombre`, `descripcion`, `valor`, `tipo_d
 -- Estructura de tabla para la tabla `proveedores`
 --
 
-DROP TABLE IF EXISTS `proveedores`;
 CREATE TABLE `proveedores` (
   `id_proveedor` int(11) NOT NULL,
   `nombre_empresa` varchar(100) DEFAULT NULL,
@@ -596,7 +569,6 @@ INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit_cedula`, `cont
 -- Estructura de tabla para la tabla `raza`
 --
 
-DROP TABLE IF EXISTS `raza`;
 CREATE TABLE `raza` (
   `id_raza` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -643,7 +615,6 @@ INSERT INTO `raza` (`id_raza`, `nombre`, `id_especie`) VALUES
 -- Estructura de tabla para la tabla `recuperar_clave`
 --
 
-DROP TABLE IF EXISTS `recuperar_clave`;
 CREATE TABLE `recuperar_clave` (
   `id_token` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
@@ -689,7 +660,6 @@ INSERT INTO `recuperar_clave` (`id_token`, `id_usuario`, `token`, `fecha_creacio
 -- Estructura de tabla para la tabla `reseñas_productos`
 --
 
-DROP TABLE IF EXISTS `reseñas_productos`;
 CREATE TABLE `reseñas_productos` (
   `id_reseña` int(11) NOT NULL,
   `id_producto` int(11) DEFAULT NULL,
@@ -712,7 +682,6 @@ INSERT INTO `reseñas_productos` (`id_reseña`, `id_producto`, `id_usuario`, `es
 -- Estructura de tabla para la tabla `rol`
 --
 
-DROP TABLE IF EXISTS `rol`;
 CREATE TABLE `rol` (
   `id_rol` int(11) NOT NULL,
   `nombre_rol` varchar(50) NOT NULL
@@ -733,7 +702,6 @@ INSERT INTO `rol` (`id_rol`, `nombre_rol`) VALUES
 -- Estructura de tabla para la tabla `servicios`
 --
 
-DROP TABLE IF EXISTS `servicios`;
 CREATE TABLE `servicios` (
   `id_servicio` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -757,7 +725,7 @@ INSERT INTO `servicios` (`id_servicio`, `nombre`, `descripcion`, `precio`, `dura
 (5, 'Guardería Canina: Diversión, Socialización y Cuidado Diario', 'El lugar perfecto para que tu perro juegue, se ejercite y socialice de forma segura mientras tú trabajas o viajas. Incluye supervisión profesional constante, actividades recreativas guiadas, áreas de descanso climatizadas y reportes con fotos/videos de su día.', 25000.00, 60, 1, 3, NULL),
 (6, 'Consulta Veterinaria General', 'Prioriza la salud de tu mascota con una atención médica experta y oportuna. Incluye examen físico completo (revisión de ojos, oídos, boca, piel, corazón y pulmones), control de peso, diagnóstico preliminar, receta médica detallada y orientación profesional para su cuidado diario.', 50000.00, 40, 2, 2, NULL),
 (7, 'Servicio de Paseos: Energía, Socialización y Libertad', 'Dale a tu perro el ejercicio y la distracción que necesita para mantenerse equilibrado y feliz. Incluye paseadores calificados, rutas seguras y controladas, dinámicas de socialización, hidratación constante y reportes en tiempo real con su ubicación y fotos.', 8000.00, 60, 1, 3, NULL),
-(8, 'Corte unas canino y felino', 'Corte de Uñas Seguro para Perros y Gatos 🐶🐱Evita molestias, dolores y lesiones en sus patitas. Nuestro equipo profesional realiza un corte preciso, rápido y sin estrés, cuidando la salud de tu mascota.📅 ¡Agenda tu cita hoy mismo!', 10000.00, 20, 1, 1, NULL);
+(8, 'Corte unas canino y felino', 'Corte de Uñas Seguro para Perros y Gatos 🐶🐱Evita molestias, dolores y lesiones en sus patitas. Nuestro equipo profesional realiza un corte preciso, rápido y sin estrés, cuidando la salud de tu mascota.📅 ¡Agenda tu cita hoy mismo!', 200.00, 120, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -765,7 +733,6 @@ INSERT INTO `servicios` (`id_servicio`, `nombre`, `descripcion`, `precio`, `dura
 -- Estructura de tabla para la tabla `sexo_mascotas`
 --
 
-DROP TABLE IF EXISTS `sexo_mascotas`;
 CREATE TABLE `sexo_mascotas` (
   `id_sexoMascota` int(11) NOT NULL,
   `sexo_mascota` varchar(50) DEFAULT NULL
@@ -785,7 +752,6 @@ INSERT INTO `sexo_mascotas` (`id_sexoMascota`, `sexo_mascota`) VALUES
 -- Estructura de tabla para la tabla `tipo_identificacion`
 --
 
-DROP TABLE IF EXISTS `tipo_identificacion`;
 CREATE TABLE `tipo_identificacion` (
   `id_tipo_id` int(11) NOT NULL,
   `sigla` varchar(10) DEFAULT NULL,
@@ -813,7 +779,6 @@ INSERT INTO `tipo_identificacion` (`id_tipo_id`, `sigla`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `usuario`
 --
 
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL,
   `id_rol` int(11) DEFAULT NULL,
@@ -1397,7 +1362,6 @@ ALTER TABLE `usuario`
   ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_tipo_id`) REFERENCES `tipo_identificacion` (`id_tipo_id`),
   ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`),
   ADD CONSTRAINT `usuario_ibfk_3` FOREIGN KEY (`id_localidad`) REFERENCES `localidad` (`id_localidad`);
-SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

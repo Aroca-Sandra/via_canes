@@ -23,4 +23,16 @@ try {
     http_response_code(500); 
     exit("Error interno del servidor. Por favor, inténtelo más tarde."); 
 }
+// 2. CONEXIÓN MYSQLI (Para promociones_data.php y otros legacy)
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    error_log("Error de conexión MySQLi: " . $conn->connect_error);
+    if (ob_get_level()) ob_end_clean();
+    http_response_code(500);
+    exit("Error interno del servidor.");
+}
+
+// Asegurar que el charset sea correcto en mysqli también
+$conn->set_charset($charset);
 ?>

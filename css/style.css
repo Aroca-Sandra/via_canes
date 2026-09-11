@@ -1,644 +1,55 @@
-/* =========================================
-   MAIN.CSS - VÍA CANES
-========================================= */
-
-
-
-/* ================= HERO ================= */
-.hero{
-    margin:40px 5% 20px;
-
-    min-height:300px;
-
-    border-radius:25px;
-
-    padding:50px;
-
-    background:
-    linear-gradient(
-        rgba(37,150,190,.85),
-        rgba(22,96,125,.85)
-    ),
-    url('https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200');
-
-    background-size:cover;
-    background-position:center;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-
-    text-align:center;
-
-    box-shadow:var(--shadow-md);
-}
-
-.hero h1{
-    font-size:3rem;
-    font-weight:800;
-}
-
-.hero p{
-    margin:20px 0;
-    font-size:1.1rem;
-}
-/* ========= BOTÓN PRINCIPAL ========= */
-
-
-.btn-main{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-
-    padding:14px 28px;
-
-    background:var(--accent);
-    color:var(--primary-dark);
-
-    border:none;
-    border-radius:50px;
-
-    font-weight:800;
-    text-decoration:none;
-
-    transition:var(--transition);
-}
-
-.btn-main:hover{
-    background:var(--white);
-    color:var(--primary-dark);
-
-    transform:translateY(-3px);
-
-    box-shadow:0 10px 20px rgba(0,0,0,0.15);
-}
-
-/* =========================================
-   TITULOS
-========================================= */
-.section-title{
-    text-align:center;
-    margin-bottom:45px;
-}
-
-.section-title h2{
-    font-size:2rem;
-    font-weight:800;
-    color:var(--text);
-}
-
-.section-title p{
-    color:var(--text-light);
-    margin-top:10px;
-}
-
-/* =========================================
-   PRODUCTOS
-========================================= */
-.products-section{
-    padding:70px 5%;
-}
-
-.main-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:25px;
-}
-
-.product-card{
-    background:var(--white);
-
-    border-radius:20px;
-    overflow:hidden;
-
-    padding:20px;
-
-    position:relative;
-
-    transition:var(--transition);
-
-    box-shadow:var(--shadow-sm);
-
-    display:flex;
-    flex-direction:column;
-}
-
-.product-card:hover{
-    transform:translateY(-8px);
-    box-shadow:var(--shadow-lg);
-}
-
-.product-badge{
-    position:absolute;
-    top:15px;
-    left:15px;
-
-    background:var(--secondary);
-    color:var(--white);
-
-    padding:6px 12px;
-
-    border-radius:30px;
-
-    font-size:.75rem;
-    font-weight:700;
-}
-
-.img-wrapper{
-    width:100%;
-    height:220px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#f8fafc;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-    margin-bottom:20px;
-}
-
-.img-wrapper img{
-    max-width:85%;
-    max-height:85%;
-
-    object-fit:contain;
-
-    transition:var(--transition);
-}
-
-.product-card:hover .img-wrapper img{
-    transform:scale(1.08);
-}
-
-.brand-tag{
-    font-size:.8rem;
-    font-weight:700;
-    color:var(--text-light);
-
-    text-transform:uppercase;
-
-    margin-bottom:8px;
-}
-
-.product-title{
-    font-size:1rem;
-    font-weight:700;
-
-    margin-bottom:10px;
-
-    min-height:50px;
-}
-
-.price-tag{
-    font-size:1.5rem;
-    font-weight:800;
-
-    color:var(--primary);
-
-    margin-bottom:20px;
-}
-
-.btn-add{
-    margin-top:auto;
-
-    border:none;
-
-    background:#eff6ff;
-    color:var(--primary);
-
-    border-radius:50px;
-
-    padding:12px 20px;
-
-    font-weight:700;
-
-    transition:var(--transition);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-}
-
-.btn-add:hover{
-    background:var(--primary);
-    color:var(--white);
-
-    transform:translateY(-2px);
-}
-
-/* =========================================
-   SERVICIOS
-========================================= */
-/* Animación interactiva para bloques informativos del index */
-.card-servicio-informativa {
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer;
-}
-
-.card-servicio-informativa:hover {
-    transform: translateY(-4px); /* Eleva levemente la tarjeta */
-}
-.services-section{
-    padding:80px 5%;
-    background:var(--white);
-}
-
-.services-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:30px;
-}
-
-.service-card{
-    background:var(--white);
-
-    border-radius:30px;
-
-    overflow:hidden;
-
-    box-shadow:var(--shadow-sm);
-
-    transition:var(--transition);
-}
-
-.service-card:hover{
-    transform:translateY(-10px);
-    box-shadow:var(--shadow-lg);
-}
-
-.service-card img{
-    width:100%;
-    height:260px;
-
-    object-fit:cover;
-}
-
-.service-info{
-    padding:25px;
-    text-align:center;
-}
-
-.service-info h3{
-    font-size:1.4rem;
-    font-weight:800;
-
-    color:var(--primary);
-
-    margin-bottom:10px;
-}
-
-.service-info p{
-    color:var(--text-light);
-}
-
-/* =========================================
-   SIDEBAR CARRITO
-========================================= */
-.cart-overlay{
-    position:fixed;
-    inset:0;
-
-    background:rgba(0,0,0,.5);
-
-    display:none;
-
-    z-index:1500;
-}
-
-.cart-overlay.active{
-    display:block;
-}
-
-.cart-sidebar{
-    position:fixed;
-
-    top:0;
-    right:-420px;
-
-    width:400px;
-    height:100vh;
-
-    background:var(--white);
-
-    z-index:2000;
-
-    display:flex;
-    flex-direction:column;
-
-    transition:.4s ease;
-
-    box-shadow:-10px 0 40px rgba(0,0,0,.15);
-}
-
-.cart-sidebar.active{
-    right:0;
-}
-
-.cart-header{
-    padding:25px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    border-bottom:1px solid #eee;
-}
-
-.cart-header h3{
-    font-weight:800;
-    margin:0;
-}
-
-.close-cart{
-    background:none;
-    border:none;
-
-    font-size:1.4rem;
-
-    cursor:pointer;
-}
-
-.cart-items{
-    flex:1;
-    overflow-y:auto;
-
-    padding:20px;
-}
-
-.empty-cart{
-    text-align:center;
-    color:var(--text-light);
-
-    margin-top:50px;
-}
-
-.cart-footer{
-    padding:25px;
-    border-top:1px solid #eee;
-}
-
-.cart-total{
-    display:flex;
-    justify-content:space-between;
-
-    font-size:1.2rem;
-    font-weight:800;
-
-    margin-bottom:20px;
-}
-
-.checkout-btn{
-    width:100%;
-
-    border:none;
-
-    background:var(--primary);
-    color:var(--white);
-
-    padding:14px;
-
-    border-radius:50px;
-
-    font-weight:700;
-
-    transition:var(--transition);
-}
-
-.checkout-btn:hover{
-    background:var(--primary-dark);
-}
-
-/* =========================================
-   PANEL ADMIN
-========================================= */
-.admin-section{
-    padding:80px 5%;
-}
-
-.admin-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:25px;
-}
-
-.admin-card{
-    background:var(--white);
-
-    border-radius:25px;
-
-    padding:30px;
-
-    text-align:center;
-
-    box-shadow:var(--shadow-sm);
-
-    transition:var(--transition);
-}
-
-.admin-card:hover{
-    transform:translateY(-8px);
-    box-shadow:var(--shadow-lg);
-}
-
-.admin-card i{
-    font-size:3rem;
-    color:var(--primary);
-
-    margin-bottom:20px;
-}
-
-.admin-card h4{
-    font-weight:800;
-    margin-bottom:10px;
-}
-
-.admin-card p{
-    color:var(--text-light);
-    font-size:.95rem;
-}
-
-/* =========================================
-   FOOTER
-========================================= */
-.main-footer{
-    background:#0f172a;
-    color:var(--white);
-
-    padding:70px 5% 30px;
-}
-
-.footer-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:40px;
-}
-
-.footer-col h4{
-    margin-bottom:20px;
-    color:var(--primary);
-
-    font-weight:800;
-}
-
-.footer-col a{
-    display:block;
-
-    color:#cbd5e1;
-
-    text-decoration:none;
-
-    margin-bottom:10px;
-
-    transition:var(--transition);
-}
-
-.footer-col a:hover{
-    color:var(--white);
-    padding-left:5px;
-}
-
-.footer-bottom{
-    border-top:1px solid rgba(255,255,255,.1);
-
-    margin-top:40px;
-    padding-top:20px;
-
-    text-align:center;
-
-    color:#94a3b8;
-}
-
-/* =========================================
-   WHATSAPP
-========================================= */
-.btn-whatsapp{
-    position:fixed;
-
-    bottom:25px;
-    right:25px;
-
-    width:65px;
-    height:65px;
-
-    border-radius:50%;
-
-    background:#25d366;
-    color:var(--white);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:2rem;
-
-    text-decoration:none;
-
-    z-index:999;
-
-    box-shadow:0 10px 25px rgba(37,211,102,.4);
-
-    transition:var(--transition);
-}
-
-.btn-whatsapp:hover{
-    transform:scale(1.1);
-}
-
-/* =========================================
-   RESPONSIVE
-========================================= */
-@media(max-width:1200px){
-
-    .main-grid{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-    .admin-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-}
-
-@media(max-width:900px){
-
-    .hero{
-        padding:40px 30px;
-    }
-
-    .hero h1{
-        font-size:2.3rem;
-    }
-
-    .main-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .services-grid{
-        grid-template-columns:1fr;
-    }
-
-    .footer-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-}
-
-@media(max-width:600px){
-
-    .hero{
-        margin:20px;
-        padding:30px 20px;
-        text-align:center;
-    }
-
-    .hero h1{
-        font-size:1.9rem;
-    }
-
-    .main-grid{
-        grid-template-columns:1fr;
-    }
-
-    .admin-grid{
-        grid-template-columns:1fr;
-    }
-
-    .footer-grid{
-        grid-template-columns:1fr;
-    }
-
-    .cart-sidebar{
-        width:100%;
-    }
-
-}
-/* OCULTAR EL $NaN Y CUALQUIER PRECIO DE SERVICIO */
-.precio, .price, [class*="precio"], [class*="price"] {
-    display: none !important;
-}
 /* ==========================================
-   BANNER DINÁMICO POR CATEGORÍA
+   VARIABLES Y ESTILOS BASE COMPARTIDOS
    ========================================== */
+:root {
+  --banner-title-color: #1a365d;
+  --banner-text-color: #2d3748;
+  --banner-font-family: 'Inter', sans-serif;
+  --banner-text-shadow: -1px -1px 0 #ffffff, 
+                        1px -1px 0 #ffffff, 
+                       -1px  1px 0 #ffffff, 
+                        1px  1px 0 #ffffff, 
+                        0px 3px 6px rgba(0, 0, 0, 0.15);
+                                    --primary-blue: #0046be;
+            --light-blue: #f0f5ff;
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --white: #ffffff;
+            --whatsapp-green: #25d366;
+
+}
+
+
+/* ==========================================
+   ESTRUCTURA GENERAL DE BANNERS (.hero y .category-banner)
+   ========================================== */
+.hero,
 .category-banner {
     position: relative;
     width: 100%;
-    min-height: 280px;
-    background-size: cover;
-    background-position: center;
+    max-width: 1200px;
+    min-height: 350px;
+    aspect-ratio: 1200 / 350;
+    margin: 0 auto 2rem auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
+    background-color: transparent;
     background-repeat: no-repeat;
+    background-position: center right;
+    background-size: cover;
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
-    overflow: hidden;
-    border-radius: 0;
+    justify-content: flex-start;
+    padding: 30px 40px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.hero {
+    background-image: url('../img/banners/banner-index.png');
+    background-position: center center;
+    background-size: cover;  
 }
 
 .banner-overlay {
@@ -647,151 +58,1280 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.1) 100%);
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.75) 0%,   
+        rgba(255, 255, 255, 0.3) 40%,  
+        transparent 80%);              
     z-index: 1;
+    pointer-events: none;
 }
 
+.hero-content,
 .banner-content {
     position: relative;
-    z-index: 2;
-    padding: 3rem 0;
+    z-index: 5;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    justify-content: space-between; 
+    gap: 15px;
 }
 
+.hero-text,
 .banner-text {
-    max-width: 550px;
-    color: white;
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+    font-family: var(--banner-font-family);
+    color: var(--banner-title-color) !important;
 }
 
+.hero h1,
+.banner-title {
+    font-family: var(--banner-font-family);
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--banner-title-color);
+    text-shadow: var(--banner-text-shadow);
+    text-align: left;
+    margin: 0;
+}
+
+.hero p,
+.banner-description {
+    font-family: var(--banner-font-family);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--banner-text-color);
+    text-shadow: var(--banner-text-shadow);
+    text-align: left;
+    margin: 0; 
+}
+
+/* ==========================================
+   COMPONENTES ADICIONALES (BADGES E ICONOS)
+   ========================================== */
 .banner-badge {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    align-self: flex-start; 
+    background: rgba(255, 255, 255, 0.6); 
     padding: 0.4rem 1rem;
     border-radius: 20px;
     font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.banner-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 0.8rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    line-height: 1.2;
-}
-
-.banner-description {
-    font-size: 1.05rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-    opacity: 0.95;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: capitalize;
+    color: #1a365d;
+    border: 1px solid rgba(26, 54, 93, 0.15);
+    margin-bottom: 0.2rem;
 }
 
 .banner-stats {
     display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
+    gap: 0.8rem;
+    flex-wrap: nowrap;          
+    margin-top: 2.8rem;
+    align-items: center;
+    justify-content: flex-start; 
+    width: 100%;                
 }
 
 .stat-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.15);
+    justify-content: center;    
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.75); 
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-    font-weight: 500;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    border: 1px solid rgba(26, 54, 93, 0.2); 
+    color: #1a365d !important; 
+    white-space: nowrap;        
+    transition: all 0.25s ease;
 }
 
-.stat-item i {
-    color: #ffd700;
+.stat-item i,
+.stat-item span {
+    color: #1a365d !important; 
+    font-size: 1.0rem;
+    transition: color 0.25s ease;
 }
 
-/* Fondos específicos por categoría */
-.banner-perros {
-    background-image: url('../img/banners/banner-perros.png');
+.stat-item:hover {
+    background: #ffd000 !important; 
+    border-color: #ffd000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 54, 93, 0.25);
 }
 
-.banner-gatos {
-    background-image: url('../img/banners/banner-gatos.png');
+.stat-item:hover i,
+.stat-item:hover span {
+    color: #1a365d !important;            
 }
 
-.banner-higiene {
-    background-image: url('../img/banners/banner-higiene.png');
+/* ==========================================
+   BOTÓN DESTACADO (SUPERIOR DERECHO)
+   ========================================== */
+.hero .btn-main,
+.category-banner .btn-main {
+    position: absolute;
+    top: 10px;
+    right: 200px;
+    z-index: 12;
+    display: inline-flex;    
+    align-items: center;
+    justify-content: center;    
+    gap: 0.5rem;
+    padding: 0.98rem 1.5rem; 
+    font-size: 1.9rem;
+    font-weight: 800;
+    border-radius: 12px; 
+    background: rgba(255, 208, 0, 0.617) !important; 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);   
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    color: #1a365d !important; 
+    font-family: var(--banner-font-family);
+    text-decoration: none;
+    white-space: nowrap;        
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
 }
 
-.banner-salud {
-    background-image: url('../img/banners/banner-salud.png');
+.hero .btn-main i,
+.category-banner .btn-main i {
+    color: #1a365d !important;
+    font-size: 1.0rem;
+    transition: color 0.25s ease;
 }
 
-.banner-servicios {
-    background-image: url('../img/banners/banner-servicios.png');
+.hero .btn-main:hover,
+.category-banner .btn-main:hover {
+    background: rgba(26, 54, 93, 0.9) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(0.98);
 }
 
-.banner-citas {
-    background-image: url('../img/banners/banner-citas.jpg');
+.hero .btn-main:hover i,
+.category-banner .btn-main:hover i {
+    color: #ffffff !important;
 }
 
-.banner-otros {
-    background-image: url('../img/banners/banner-otros_animales.png');
-}
+/* Rutas de Fondos */
+.banner-perros { background-image: url('../img/banners/banner-perros.png'); }
+.banner-gatos { background-image: url('../img/banners/banner-gatos.png'); }
+.banner-higiene { background-image: url('../img/banners/banner-higiene.png'); }
+.banner-salud { background-image: url('../img/banners/banner-salud.png'); }
+.banner-servicios { background-image: url('../img/banners/banner-servicios.jpg'); }
+.banner-citas { background-image: url('../img/banners/banner-citas.png'); }
+.banner-otros { background-image: url('../img/banners/banner-otros_animales.png'); }
+.banner-ofertas { background-image: url('../img/banners/banner-ofertas.jpg');}
 
-/* Animación de entrada */
-.category-banner.active {
-    animation: bannerSlideIn 0.6s ease-out;
+.category-banner.active,
+.hero.active { 
+    animation: bannerSlideIn 0.6s ease-out; 
 }
 
 @keyframes bannerSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   TITULOS DE SECCIÓN
+   ========================================== */
+.section-title {
+    text-align: center;
+    margin-bottom: 45px;
+}
+.section-title h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+}
+.section-title p {
+    color: var(--text-light);
+    margin-top: 10px;
+}
+/* Botones Autenticación */
+.btn-green {
+background: var(--primary);
+color: white;
+border: none;
+padding: 10px;
+width: 100%;
+font-weight: bold;
+border-radius: 12px;
+font-size: 0.9rem ;
+cursor: pointer;
+transition: 0.3s;
+margin-top: 5px;
+transition: 0.3s;
+text-transform: uppercase;
+letter-spacing: 1px;
+height: 45px;
+font-weight: 800;
+}
+/* --- SEPARADOR "O" ESTILO IMAGEN --- */
+.separator-container {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Crea las líneas finas de los lados */
+.separator-container::before,
+.separator-container::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #cbd5e1; /* Línea gris clara */
+}
+
+/* Espacio interno para la letra "O" */
+.separator-container span {
+  padding: 0 15px;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-family: sans-serif;
+}
+
+.btn-green:hover {
+background: var(--primary-dark);
+transform: translateY(-2px);
+}
+
+.btn-google {
+background: #ffffff;
+color: #444;
+border: 1.5px solid #e2e8f0;
+width: 100%;
+padding: 12px; /* Un poco más de aire */
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px; /* Este espacio separa el icono del texto */
+cursor: pointer;
+font-weight: 600;
+transition: 0.3s;
+font-size: 0.95rem;
+font-family: 'Roboto', sans-serif; /* Tipografía recomendada */
+}
+
+/* Estilo específico para el icono azul */
+.btn-google i {
+color: #4285f4;
+font-size: 1.2rem;
+}
+
+.btn-google:hover {
+background: #f8fafc;
+border-color: #cbd5e1;
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Separador "O" */
+.auth-form p {
+margin: 10px 0;
+color: #94a3b8;
+font-size: 0.8rem;
+position: relative;
+padding-top: 0 !important;
+margin-bottom: 3px !important;
+
+}
+
+
+
+
+
+
+
+/* ==========================================
+   PRODUCTOS
+   ========================================== */
+.products-section {
+    padding: 70px 5%;
+}
+.main-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+.product-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 20px;
+    position: relative;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+.product-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--secondary);
+    color: var(--white);
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: .75rem;
+    font-weight: 700;
+}
+.img-wrapper {
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.img-wrapper img {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+    transition: var(--transition);
+}
+.product-card:hover .img-wrapper img {
+    transform: scale(1.08);
+}
+.brand-tag {
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+.product-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    min-height: 50px;
+}
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+.btn-add {
+    margin-top: auto;
+    border: none;
+    background: #eff6ff;
+    color: var(--primary);
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-weight: 700;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.btn-add:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   SERVICIOS
+   ========================================== */
+.card-servicio-informativa {
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+.card-servicio-informativa:hover {
+    transform: translateY(-4px);
+}
+.services-section {
+    padding: 80px 5%;
+    background: var(--white);
+}
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+.service-card {
+    background: var(--white);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+}
+.service-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+.service-info {
+    padding: 25px;
+    text-align: center;
+}
+.service-info h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+.service-info p {
+    color: var(--text-light);
+}
+
+/* ==========================================
+   SIDEBAR CARRITO
+   ========================================== */
+.cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display: none;
+    z-index: 1500;
+}
+.cart-overlay.active {
+    display: block;
+}
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: var(--white);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transition: .4s ease;
+    box-shadow: -10px 0 40px rgba(0,0,0,.15);
+}
+.cart-sidebar.active {
+    right: 0;
+}
+.cart-header {
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+.cart-header h3 {
+    font-weight: 800;
+    margin: 0;
+}
+.close-cart {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+.empty-cart {
+    text-align: center;
+    color: var(--text-light);
+    margin-top: 50px;
+}
+.cart-footer {
+    padding: 25px;
+    border-top: 1px solid #eee;
+}
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+.checkout-btn {
+    width: 100%;
+    border: none;
+    background: var(--primary);
+    color: var(--white);
+    padding: 14px;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: var(--transition);
+}
+.checkout-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ==========================================
+   PANEL ADMIN
+   ========================================== */
+.admin-section {
+    padding: 80px 5%;
+}
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+.admin-card {
+    background: var(--white);
+    border-radius: 25px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+.admin-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+.admin-card i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+.admin-card h4 {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+.admin-card p {
+    color: var(--text-light);
+    font-size: .95rem;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+.main-footer {
+    background: #0f172a;
+    color: var(--white);
+    padding: 70px 5% 30px;
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+.footer-col h4 {
+    margin-bottom: 20px;
+    color: var(--primary);
+    font-weight: 800;
+}
+.footer-col a {
+    display: block;
+    color: #cbd5e1;
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: var(--transition);
+}
+.footer-col a:hover {
+    color: var(--white);
+    padding-left: 5px;
+}
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.1);
+    margin-top: 40px;
+    padding-top: 20px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+/* ==========================================
+   BOTONES FLOTANTES (WhatsApp + Paw)
+   ========================================== */
+.floating-buttons {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9998;
+}
+
+/* Botón de WhatsApp (pastilla con texto) */
+.btn-whatsapp {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white !important;
+    padding: 12px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    animation: pulse-green 2s infinite;
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    color: white !important;
+}
+
+.btn-whatsapp i {
+    font-size: 1.4rem;
+}
+
+/* Botón Paw (huella de mascota) */
+.btn-paw {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, #FF6B9D, #C44569);
+    color: white !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.6rem;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+    transition: all 0.3s ease;
+    align-self: flex-end;
+}
+
+.btn-paw:hover {
+    transform: translateY(-3px) scale(1.1) rotate(15deg);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+    color: white !important;
+}
+
+/* Animación de pulso para WhatsApp */
+@keyframes pulse-green {
+    0% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(37, 211, 102, 0.7); }
+    100% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+}
+
+/* ==========================================
+   OCULTAR PRECIOS EN SERVICIOS
+   ========================================== */
+.precio, .price, [class*="precio"], [class*="price"] {
+    display: none !important;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 1200px) {
+    .main-grid { grid-template-columns: repeat(3, 1fr); }
+    .admin-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 992px) {
+    .hero,
+    .category-banner {
+        aspect-ratio: 1936 / 544; 
+        min-height: 240px; 
+        background-position: center center; 
+        padding: 20px 30px;
     }
 }
 
-/* Responsive */
+@media (max-width: 900px) {
+    .hero { padding: 40px 30px; }
+    .hero h1 { font-size: 2.3rem; }
+    .main-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
+    .hero,
     .category-banner {
-        min-height: 220px;
+        padding: 20px;
     }
-    
+
+    .hero-content,
+    .banner-content { 
+        flex-direction: column;
+        align-items: flex-start; 
+        gap: 1.2rem;
+    }
+
+    .hero-text,
+    .banner-text { 
+        text-align: left; 
+        max-width: 100%; 
+    }
+
+    .hero h1,
     .banner-title {
-        font-size: 1.8rem;
+        font-size: 2.2rem;
+    }
+
+    .banner-stats { 
+        justify-content: flex-start; 
+        gap: 0.6rem; 
+    }
+
+    .stat-item { 
+        font-size: 0.8rem; 
+        padding: 0.4rem 0.8rem; 
     }
     
-    .banner-description {
-        font-size: 0.95rem;
+    /* Botón principal del banner en móvil */
+    .hero .btn-main,
+    .category-banner .btn-main {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: auto; 
+        font-size: 0.88rem;
+        padding: 0.5rem 1.1rem;
     }
-    
-    .banner-stats {
-        gap: 0.8rem;
+
+    .banner-overlay {
+        background: linear-gradient(180deg, 
+            rgba(22, 96, 125, 0.6) 0%,  
+            rgba(22, 96, 125, 0.4) 50%, 
+            rgba(22, 96, 125, 0.6) 100%); 
     }
-    
-    .stat-item {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .hero {
+        margin: 20px;
+        padding: 30px 20px;
+        text-align: center;
+    }
+    .hero h1 { font-size: 1.9rem; }
+    .main-grid { grid-template-columns: 1fr; }
+    .admin-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .cart-sidebar { width: 100%; }
+}
+
+@media (max-width: 576px) {
+    .floating-buttons {
+        bottom: 15px;
+        right: 15px;
+    }
+    .btn-whatsapp {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+    .btn-whatsapp span {
+        display: none;
+    }
+    .btn-paw {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
     }
 }
 
 @media (max-width: 480px) {
+    .hero h1,
     .banner-title {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
     
     .banner-stats {
-        flex-direction: column;
-        gap: 0.5rem;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 5px;
+        width: 100%;
     }
+}
+/* Estilo para las tarjetas del panel */
+.sketch-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    border: 1px solid #f0f0f0;
+}
+
+/* Vista previa de imagen */
+#promoImgPreview img {
+    transition: transform 0.2s;
+}
+#promoImgPreview img:hover {
+    transform: scale(1.02);
+}
+
+/* Botón de quitar imagen */
+#btnQuitarImg {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Tabla personalizada */
+.table-vc th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 2px solid #dee2e6;
+}
+.table-vc td {
+    vertical-align: middle;
+}
+
+/* Animación de entrada */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+    /* ============================
+        Banner promocional medio
+        ============================ */
+  .mid-promo-banner {
+    /* Fondo con degradado de colores vivos y alegres */
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%) !important;
+    /* Borde más visible y colorido */
+    border: 2px solid rgba(37, 207, 249, 0.6) !important;
+    border-radius: 24px;
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    /* Sombra suave para darle volumen al banner */
+    box-shadow: 0 10px 30px rgba(37, 207, 249, 0.15);
+  }
+  /* Esfera brillante violeta en la esquina superior derecha */
+  .mid-promo-banner::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(20px);
+    z-index: 0;
+  }
+.mid-promo-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: -10%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.35) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(20px);
+  z-index: 0;
+    }
+
+    .mid-promo-icon {
+        font-size: 3.5rem;
+        color: #ff7300; 
+        animation: float 4s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+        filter: drop-shadow(0 4px 12px rgba(255, 115, 0, 0.4));
+    }
+
+    .mid-promo-content {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mid-promo-content h4 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #0284c7;
+        margin-bottom: 0.5rem;
+    }
+
+    .mid-promo-content p {
+        color: #0f172a;
+        font-size: 0.92rem;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
+
+    .mid-promo-cta {
+        background: #ff7300;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+        position: relative;
+        z-index: 1;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+         box-shadow: 0 4px 15px rgba(255, 115, 0, 0.4);
+    }
+
+    .mid-promo-cta:hover {
+        background:#0284c7;
+        transform: translateY(-3px);
+          box-shadow: 0 10px 25px rgba(2, 132, 199, 0.5);
+        color: #fff;
+    }
+/* Cards */
+        .help-card {
+            border: none;
+            border-radius: 24px;
+            padding: 40px 30px;
+            height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .help-card:hover { transform: translateY(-5px); }
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        .btn-light-custom {
+            background-color: #f1f3f5;
+            border-radius: 50px;
+            color: var(--text-dark);
+            font-weight: 600;
+            padding: 10px 25px;
+            border: none;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .wa-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #eee !important;
+            border-radius: 15px !important;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .accordion-button { font-weight: 600; padding: 20px; }
+        .accordion-button:not(.collapsed) {
+            background-color: transparent;
+            color: var(--primary-blue);
+            box-shadow: none;
+        }
+
+        /* Banner Final */
+        .contact-banner {
+            background-color: var(--primary-blue);
+            border-radius: 30px;
+            padding: 60px;
+            color: white;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-whatsapp-large {
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-weight: 700;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Footer */
+        footer { font-size: 0.8rem; color: #999; padding: 40px 0; }
+        footer a { color: #999; text-decoration: none; margin-left: 20px; }
+
+        /* --- NUEVOS ESTILOS: WHATSAPP FLOTANTE --- */
+        .whatsapp-float {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white !important;
+    padding: 12px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    animation: pulse-green 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #1ebe5d;
+            color: #FFF;
+        }
+
+        .float-text {
+            font-size: 16px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .float-text { display: none; }
+            .whatsapp-float {
+                padding: 15px;
+                border-radius: 50%;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+  
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 0 60px;
+            background: radial-gradient(circle at top right, #f0f7ff 0%, #ffffff 50%);
+            text-align: center;
+        }
+        .search-wrapper {
+            max-width: 600px;
+            margin: 30px auto 0;
+            position: relative;
+        }
+        .search-wrapper input {
+            border-radius: 50px;
+            padding: 15px 25px 15px 50px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+        }
+
+        /* Cards */
+        .help-card {
+            border: none;
+            border-radius: 24px;
+            padding: 40px 30px;
+            height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .help-card:hover { transform: translateY(-5px); }
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        .btn-light-custom {
+            background-color: #f1f3f5;
+            border-radius: 50px;
+            color: var(--text-dark);
+            font-weight: 600;
+            padding: 10px 25px;
+            border: none;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .wa-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #eee !important;
+            border-radius: 15px !important;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .accordion-button { font-weight: 600; padding: 20px; }
+        .accordion-button:not(.collapsed) {
+            background-color: transparent;
+            color: var(--primary-blue);
+            box-shadow: none;
+        }
+
+        /* Banner Final */
+        .contact-banner {
+            background-color: var(--primary-blue);
+            border-radius: 30px;
+            padding: 60px;
+            color: white;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-whatsapp-large {
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-weight: 700;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Footer */
+        footer { font-size: 0.8rem; color: #999; padding: 40px 0; }
+        footer a { color: #999; text-decoration: none; margin-left: 20px; }
+
+        /* --- NUEVOS ESTILOS: WHATSAPP FLOTANTE --- */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--whatsapp-green);
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none; /* Se activa con el scroll */
+            align-items: center;
+            padding: 10px 20px;
+            text-decoration: none !important;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #1ebe5d;
+            color: #FFF;
+        }
+
+        .float-text {
+            font-size: 16px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .float-text { display: none; }
+            .whatsapp-float {
+                padding: 15px;
+                border-radius: 50%;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+/* 4. BANNER PUBLICITARIO INTERMEDIO */
+.mid-promo-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    border: 1px dashed #ffe8a1;
+    border-radius: 16px;
+    padding: 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.mid-promo-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #ffc107;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #ffffff;
+}
+
+.mid-promo-content {
+    flex: 1;
+    min-width: 280px;
+}
+
+.mid-promo-content h4 {
+    color: #856404;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.mid-promo-content p {
+    color: #856404;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.mid-promo-cta {
+    background-color: var(--text-dark);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: var(--transition-smooth);
+    white-space: nowrap;
+}
+
+.mid-promo-cta:hover {
+    background-color: #000000;
+    color: #ffffff;
+    transform: translateX(4px);
+}
+#productGrid .text-warning:not(img),
+#productGrid small.text-warning,
+#productGrid .alert-warning,
+#productGrid .fa-exclamation-triangle,
+#productGrid .fa-triangle-exclamation,
+#productGrid span:has(.fa-exclamation),
+#productGrid div:has(.fa-exclamation) {
+    display: none !important;
 }

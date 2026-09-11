@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Promociones</title>
+</head>
+<body>
+    <h2>Resultado de la API:</h2>
+    <pre id="json-result" style="background:#f4f4f4; padding:15px;">Cargando...</pre>
+    
+    <h2>Renderizado:</h2>
+    <div id="render-result"></div>
+
+    <script>
+        // AJUSTA ESTA RUTA: Si tu api está en una carpeta 'api', usa 'api/promociones_data.php'
+        // Si está una carpeta atrás, usa '../api/promociones_data.php'
+        const API_URL = 'api/promociones_data.php?accion=listar_activas';
+
+        fetch(API_URL)
+            .then(response => {
+                if (!response.ok) throw new Error('Error HTTP: ' + response.status);
+                return response.json();
+            })
+            .then(json => {
+                // 1. Mostrar el JSON crudo
+                document.getElementById('json-result').textContent = JSON.stringify(json, null, 2);
+                
+                // 2. Intentar renderizar
+                const container = document.getElementById('render-result');
+                if (json.ok && json.data && json.data.length > 0) {
+                    container.innerHTML = `<h3 style="color:green">¡ÉXITO! Se encontraron ${json.data.length} promociones.</h3>`;
+                    json.data.forEach(p => {
+                        container.innerHTML += `
+                            <div style="border:1px solid #ccc; padding:10px; margin:10px 0; display:flex; gap:15px;">
+                                <img src="${p.imagen_url}" onerror="this.src='https://via.placeholder.com/100'" style="width:100px; height:100px; object-fit:cover;">
+                                <div>
+                                    <strong>${p.nombre}</strong><br>
+                                    Precio: $${p.precio_venta}<br>
+                                    Descuento: ${p.valor_descuento} ${p.tipo_descuento}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<h3 style="color:red">La API respondió, pero no hay datos (data está vacío) o ok es false.</h3>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('json-result').textContent = 'ERROR DE CONEXIÓN: ' + error.message + '\n\nVerifica que la ruta API_URL sea correcta.';
+            });
+    </script>
+</body>
+</html>

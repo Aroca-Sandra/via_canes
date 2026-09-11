@@ -1,5 +1,5 @@
 <?php
-require_once '../config/database.php';
+require_once 'db.php';
 header('Content-Type: application/json');
 
 $method = $_SERVER['REQUEST_METHOD'];

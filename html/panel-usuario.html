@@ -8,7 +8,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/panel-usuario.css">
+
 </head>
 <body>
 <!-- HEADER COMPLETO -->
@@ -598,7 +600,115 @@ MAIN LAYOUT ARCHITECTURE
 </div>
 </div>
 </div>
+    <!-- PIE DE PÁGINA (FOOTER)                         -->
+<!-- ============================================= -->
+<footer class="main-footer">
+  <div class="footer-grid">
 
+    <!-- Columna 1: Branding y Redes Sociales -->
+    <div class="footer-col">
+      <div class="logo-text" style="color: white; margin-bottom: 1rem;">Vía Canes</div>
+      <p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">El destino preferido para los amantes de las mascotas que buscan calidad, confianza y un toque de alegría en cada servicio.</p>
+      <div class="social-icons">
+        <h4>Síguenos</h4>
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="mailto:contacto@viacanes.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+
+    <!-- Columna 2: Navegación Interna -->
+    <div class="footer-col">
+      <h3>Explorar</h3>
+      <ul>
+        <li><a href="../index.html">Tienda Online</a></li>
+        <li><a href="../index.html?tipo=categoria&valor=Higiene">Baño y Estética</a></li>
+        <li><a href="../index.html?tipo=categoria&valor=Citas">Agendar Cita</a></li>
+        <li><a href="../index.html?tipo=categoria&valor=Servicios">Paseos</a></li>
+        <li><a href="../index.html?tipo=categoria&valor=Servicios">Guardería</a></li>
+      </ul>
+    </div>
+
+    <!-- Columna 3: Soporte -->
+    <div class="footer-col">
+      <h3>Soporte</h3>
+      <ul>
+        <li><a href="ayuda.html">Contacto</a></li>
+        <li><a href="ayuda.html">Ayuda</a></li>
+        <li><a href="ayuda.html">Términos</a></li>
+        <li><a href="ayuda.html">Preguntas Frecuentes</a></li>
+      </ul>
+    </div>
+
+    <!-- Columna 4: Ubicación -->
+    <div class="footer-col">
+      <h3>Ubicación</h3>
+      <p style="opacity: 0.7; font-size: 0.9rem;">Carrera 56 #3-00</p>
+      <div style="margin-top: 1rem; display: flex; align-items: center; gap: 8px; color: var(--accent);">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <a href="https://maps.google.com/?q=Carrera+56+3" target="_blank" rel="noopener noreferrer"
+           style="color: var(--accent); text-decoration: none;">Ver en el mapa</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="text-center mt-5 pt-4 border-top opacity-50 small">
+    © 2026 Vía Canes — Todos los derechos reservados.
+  </div>
+</footer>
+    <!-- ============================================= -->
+    <!-- BOTONES FLOTANTES (WhatsApp y Paw)            -->
+    <!-- ============================================= -->
+    <div class="floating-buttons">
+        <!-- Botón Compra por WhatsApp -->
+        <a href="https://wa.me/573001234567?text=Hola%20Vía%20Canes,%20quiero%20hacer%20un%20pedido" 
+           class="btn-whatsapp" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           aria-label="Compra por WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>Compra por WhatsApp</span>
+        </a>
+
+        <!-- Botón Paw (huella de mascota) - Volver arriba -->
+        <a href="#top" class="btn-paw" aria-label="Volver arriba" title="Volver arriba">
+            <i class="fa-solid fa-paw"></i>
+        </a>
+    </div>
+    <!-- MENÚ LATERAL DE CARRITO (Offcanvas) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoLateral">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold">
+                <i class="fa fa-shopping-cart me-2"></i>Tu Carrito
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <div id="cart-items" class="flex-grow-1">
+                <p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+                    <span>Total:</span>
+                    <span id="cart-total">$0</span>
+                </div>
+                <a href="html/carrito.html" class="btn btn-primary w-100 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2" id="btn-checkout" style="pointer-events: none; opacity: 0.6;">
+                    <i class="fa fa-credit-card"></i> Continuar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIONES -->
+    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
+        <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMsg">Operación exitosa</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../js/modulestienda/panel-usuario.js"></script>
 
