@@ -180,7 +180,7 @@ function obtenerVistaTienda(PDO $pdo, string $tipo, string $valor, int $limite, 
                 'tiene_anterior'  => $pagina > 1,
                 'tiene_siguiente' => $pagina < $totalPaginas
             ],
-            'sql' => trim($sqlProductos), // Depuración: muestra la consulta SQL generada
+            //'sql' => trim($sqlProductos), // Depuración: muestra la consulta SQL generada
             'data' => $productos
         ]);
 
