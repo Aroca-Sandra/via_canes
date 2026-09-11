@@ -67,12 +67,14 @@ function obtenerVistaTienda(PDO $pdo, string $tipo, string $valor, int $limite, 
     $select = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio_venta, 
                       p.stock, p.imagen_url, p.id_categoria, c.nombre AS categoria, 
                       GROUP_CONCAT(DISTINCT e.nombre ORDER BY e.nombre SEPARATOR ', ') AS especies,
-                      GROUP_CONCAT(DISTINCT pe.id_especie SEPARATOR ',') AS ids_especies";
-    
+                      GROUP_CONCAT(DISTINCT pe.id_especie SEPARATOR ',') AS ids_especies,
+                      pr.id_promo, pr.valor AS valor_descuento, pr.tipo_descuento, pr.fecha_inicio, pr.fecha_fin ";
     $from   = "FROM productos p";
     $joins  = "INNER JOIN categorias_producto c ON c.id_categoria = p.id_categoria ";
     $joins .= "LEFT JOIN producto_especie pe ON pe.id_producto = p.id_producto ";
     $joins .= "LEFT JOIN especie e ON e.id_especie = pe.id_especie ";
+    $joins .= "LEFT JOIN producto_promocion pp ON pp.id_producto = p.id_producto ";
+    $joins .= "LEFT JOIN promociones pr ON pr.id_promo = pp.id_promo AND pr.id_estado_promocion = 1 AND (pr.fecha_fin IS NULL OR pr.fecha_fin >= CURDATE()) AND (pr.fecha_inicio IS NULL OR pr.fecha_inicio <= CURDATE())";
 
     $whereClause = "WHERE p.id_estado_producto = 1";
 
@@ -143,7 +145,7 @@ function obtenerVistaTienda(PDO $pdo, string $tipo, string $valor, int $limite, 
                          GROUP BY p.id_producto
                          ORDER BY p.id_producto DESC 
                          LIMIT :limite OFFSET :offset";
-
+        //var_dump($sqlProductos); // Depuración: muestra la consulta SQL generada
         $stmt = $pdo->prepare($sqlProductos);
         foreach ($params as $key => $val) {
             $stmt->bindValue($key, $val);
@@ -178,6 +180,7 @@ function obtenerVistaTienda(PDO $pdo, string $tipo, string $valor, int $limite, 
                 'tiene_anterior'  => $pagina > 1,
                 'tiene_siguiente' => $pagina < $totalPaginas
             ],
+            //'sql' => trim($sqlProductos), // Depuración: muestra la consulta SQL generada
             'data' => $productos
         ]);
 

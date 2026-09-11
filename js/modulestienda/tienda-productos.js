@@ -85,5 +85,5 @@ function renderizarCatalogo() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    cargarTienda();
+    //cargarTienda();
 });

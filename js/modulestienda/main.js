@@ -1,3 +1,5 @@
+import {procesarYRenderizar} from './tienda-mostrar.js';
+
 // ================================================================
 // MAIN.JS - LÓGICA PRINCIPAL DEL PANEL DE LA TIENDA
 // ================================================================
@@ -9,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         valor: urlParams.get('valor')
     };
 
-    console.log('🐾 Vía Canes - Cargando tienda con filtros:', filtros);
+    //console.log('🐾 Vía Canes - Cargando tienda con filtros:', filtros);
 
     // 2. Inicializar cargas
     cargarProductos(filtros);
@@ -139,8 +141,8 @@ async function cargarProductos(filtros = {}) {
             
             // Mostrar banner dinámico
             mostrarBannerCategoria(filtros, result.data.length);
-            
-            grid.innerHTML = result.data.map(p => {
+            procesarYRenderizar(result.data);
+            /*grid.innerHTML = result.data.map(p => {
                 const imgSrc = p.imagen_url ? p.imagen_url.replace('../', '') : 'img/default-product.png';
                 const sinStock = parseInt(p.stock) <= 0;
                 const stockActual = parseInt(p.stock) || 0;
@@ -178,7 +180,7 @@ async function cargarProductos(filtros = {}) {
                     </div>
                 </div>
                 `;
-            }).join('');
+            }).join('');*/
         } else {
             mostrarBannerCategoria(filtros, 0);
             console.warn('⚠️ No hay productos disponibles');
@@ -232,7 +234,6 @@ async function cargarServicios(filtros = {}) {
 
         if ((result.ok || result.success) && Array.isArray(result.data) && result.data.length > 0) {
             console.log(`📦 Mostrando ${result.data.length} servicios`);
-            
             grid.innerHTML = result.data.map(s => `
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card h-100 shadow-sm border-0 service-card">
@@ -273,6 +274,10 @@ async function cargarServicios(filtros = {}) {
         </div>`;
     }
 }
+
+/**/
+
+
 
 // ==========================================
 // 3. LÓGICA DEL CARRITO
