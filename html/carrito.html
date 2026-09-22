@@ -1,196 +1,156 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vía Canes | Tienda</title>
-    
-    <!-- FUENTES Y ESTILOS EXTERNOS -->
-    <!-- Google Fonts: Fuente Inter para tipografía moderna -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome: Iconos para la interfaz -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Bootstrap 5.3: Framework para diseño responsivo -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- ESTILOS PROPIOS -->
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Promociones y ofertas especiales en productos y servicios para mascotas. Descuentos de hasta 20% en Vía Canes.">
+<title>Vía Canes | Carrito de Compras</title>
+
+<!-- FUENTES Y ESTILOS EXTERNOS -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- ESTILOS PROPIOS -->
+<link rel="stylesheet" href="../css/main.css">
+<link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body id="top">
 
-    <!-- ENCABEZADO (HEADER) - Navegación fija superior -->
-    <header class="sticky-top">
-        <!-- Barra superior: Logo, Buscador y Accesos rápidos -->
-        <div class="navbar-top">
-            <!-- Contenedor del Logo de la marca -->
-            <a href="/via_canes/index.html" class="logo-container text-decoration-none">
-                <img src="../img/logo.png" alt="Logo" class="logo-img">
-                <span class="logo-text">Vía Canes</span>
-            </a>
-            
-            <!-- Barra de búsqueda de productos -->
-            <div class="search-container">
-                <i class="fa fa-search search-icon"></i>
-                <input type="text" class="custom-search-input" placeholder="¿Qué necesita tu mascota hoy?">
-            </div>
-            
-            <!-- Iconos de Utilidad (Cuenta, Carrito, Ayuda) -->
-            <div class="utility-icons">
-                <!-- Mi Cuenta -->
-                <a href="../html/auth.html" class="util-item">
-                    <i class="fa fa-user"></i> <span>Cuenta</span>
-                </a>
-                
-                <!-- Carrito de compras con disparador de menú lateral (Offcanvas) -->
-                <button class="util-item border-0 bg-transparent position-relative p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoLateral">
-                    <i class="fa fa-shopping-cart fs-5"></i>
-                    <span>Carrito</span>
-                    <!-- Globo indicador de cantidad (Controlado por JS) -->
-                    <span id="contador-carrito" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="display:none;">0</span>
-                </button>
-                
-                                <!-- Central de Ayuda -->
-                <a href="../html/ayuda.html" class="util-item">
-                    <i class="fa fa-phone"></i> <span>Ayuda</span>
-                </a>
-            </div>
-        </div>
-        
-        <!-- Barra inferior: Accesos directos a Categorías y Filtros URL -->
-        <div class="categories-row">
-            <a href="index.html?tipo=especie&valor=Perros" class="cat-item">
-                <div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div>
-                <span>Perros</span>
-            </a>
-            <a href="index.html?tipo=especie&valor=Gatos" class="cat-item">
-                <div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div>
-                <span>Gatos</span>
-            </a>
-            <a href="index.html?tipo=especie&valor=Otra%20Especie" class="cat-item">
-                <div class="img-circle"><img src="../img/p-otros.png" alt="Otros" class="cat-img"></div>
-                <span>Otra Especie</span>
-            </a>
-            <a href="index.html?tipo=categoria&valor=Higiene" class="cat-item">
-                <div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div>
-                <span>Higiene</span>
-            </a>
-            <a href="index.html?tipo=categoria&valor=Salud" class="cat-item">
-                <div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div>
-                <span>Salud</span>
-            </a>
-            <a href="index.html?tipo=categoria&valor=Servicios" class="cat-item">
-                <div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div>
-                <span>Servicios</span>
-            </a>
-            <a href="index.html?tipo=categoria&valor=Citas" class="cat-item">
-                <div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div>
-                <span>Citas</span>
-            </a>
-            <a href="html/promociones.html" class="cat-item">
-                <div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div>
-                <span>Promociones</span>
-            </a>
-        </div>
-    </header>
+<!-- =====================a======================== -->
+<!-- ENCABEZADO (HEADER) - Navegación fija superior -->
+<!-- ============================================= -->
+<header class="sticky-top">
 
-    <!-- CONTENIDO PRINCIPAL: CARRITO DE COMPRAS -->
-    <main class="container mt-5">
-        <div class="row">
-            <!-- Lista de Productos -->
-            <div class="col-lg-8">
-                <section id="carrito-items" class="mb-4">
-                    <h4 class="fw-bold mb-4">Mi carrito</h4>
-                    
-                    <div id="lista-productos-carrito"></div>
+<!-- Barra superior: Logo, Buscador y Accesos rápidos -->
+<div class="navbar-top">
 
-                    <!-- Estado Vacío -->
-                    <div class="alert alert-light border text-center p-5 d-none" id="carrito-compras-vacio">
-                        <img src="../img/carrito-compras-vacio.png" alt="Vacío" style="width: 120px;" class="mb-3 opacity-50">
-                        <h3 class="fw-bold">Tu carrito está vacío</h3>
-                        <p class="text-muted">¡Tu mascota está esperando un regalo! 🐾</p>
-                        <a href="tienda.html" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ir a la tienda</a>
-                    </div>
-                </section>
-            </div>
+<!-- Contenedor del Logo de la marca -->
+<a href="/via_canes/index.html" class="logo-container text-decoration-none">
+<img src="../img/logo.png" alt="Logo Vía Canes" class="logo-img">
+<span class="logo-text">Vía Canes</span>
+</a>
 
-            <!-- Resumen de Compra (Sticky) -->
-            <div class="col-lg-4">
-                <div class="card shadow-sm p-4 border-0 rounded-4 sticky-top" style="top: 100px;">
-                    <h4 class="mb-4 fw-bold">Resumen</h4>
+<!-- Barra de búsqueda de productos -->
+<div class="search-container">
+<i class="fa fa-search search-icon"></i>
+<input type="text" class="custom-search-input" placeholder="¿Qué necesita tu mascota hoy?">
+</div>
 
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Subtotal (Neto):</span>
-                        <span id="subtotal" class="fw-bold text-dark">$0</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">IVA (19%):</span>
-                        <span id="iva" class="text-dark">$0</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Transporte:</span>
-                        <span class="text-success fw-bold">Gratis</span>
-                    </div>
+<!-- Iconos de Utilidad (Cuenta, Carrito, Ayuda) -->
+<div class="utility-icons">
 
-                    <!-- Barra de progreso envío gratis -->
-                    <div class="mt-4 mb-3 p-3 bg-light rounded-3 border-0 text-center">
-                        <small id="envio-msj" class="d-block mb-2 text-dark fw-bold">
-                            ¡Añade productos para envío gratis!
-                        </small>
-                        <div class="progress mb-1" style="height: 8px; border-radius: 10px; background-color: #e9ecef;">
-                            <div id="envio-barra" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
-                        </div>
-                    </div>
+<!-- Mi Cuenta -->
+<a href="auth.html" class="util-item">
+<i class="fa fa-user"></i> <span>Cuenta</span>
+</a>
+<!-- Central de Ayuda -->
+<a href="ayuda.html" class="util-item" aria-label="Central de ayuda">
+<i class="fa fa-phone"></i> <span>Ayuda</span>
+</a>
 
-                    <hr class="my-3 opacity-50">
+</div>
+</div>
 
-                    <div class="d-flex justify-content-between mb-4 align-items-center">
-                        <strong class="fs-5 text-dark">Total</strong>
-                        <strong id="total" class="fs-3 text-dark">$0</strong>
-                    </div>
+<!-- Barra inferior: Accesos directos a Categorías y Filtros URL -->
+<div class="categories-row">
+<a href="../index.html?tipo=especie&valor=Perros" class="cat-item">
+<div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div>
+<span>Perros</span>
+</a>
+<a href="../index.html?tipo=especie&valor=Gatos" class="cat-item">
+<div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div>
+<span>Gatos</span>
+</a>
+<a href="../index.html?tipo=especie&valor=Otra%20Especie" class="cat-item">
+<div class="img-circle"><img src="../img/p-otros.png" alt="Otra Especie" class="cat-img"></div>
+<span>Otra Especie</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Higiene" class="cat-item">
+<div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div>
+<span>Higiene</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Salud" class="cat-item">
+<div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div>
+<span>Salud</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Servicios" class="cat-item">
+<div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div>
+<span>Servicios</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Citas" class="cat-item">
+<div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div>
+<span>Citas</span>
+</a>
+<a href="promociones.html" class="cat-item">
+<div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div>
+<span>Promociones</span>
+</a>
+</div>
+</header>
 
-                    <button id="btn-finalizar" class="btn w-100 py-3 fw-bold rounded-3 fs-5 shadow-sm border-0 text-white"
-                            style="background-color: var(--primary, #0d6efd);">
-                        Comenzar pedido
-                    </button>
+<main class="container mt-5">
+<div class="row">
+<div class="col-lg-8">
+<section id="carrito-items" class="mb-4">
+<h4 class="fw-bold mb-4">Mi carrito</h4>
+<div id="lista-productos-carrito">
+</div>
 
-                    <button id="btn-confirmar-vaciar" class="btn btn-link text-danger w-100 mt-3 text-decoration-none small fw-semibold">
-                        <i class="fa fa-trash-can me-1"></i> Vaciar mi carrito
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
+<div class="alert alert-light border text-center p-5 d-none" id="carrito-compras-vacio">
+<img src="../img/carrito-compras-vacio.png" alt="Vacío" style="width: 120px;" class="mb-3 opacity-50">
+<h3 class="fw-bold">Tu carrito está vacío</h3>
+<p class="text-muted">¡Tu mascota está esperando un regalo! 🐾</p>
+<a href="/via_canes/index.html" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ir a la tienda</a>
+</div>
+</section>
+</div>
 
-    <!-- MENÚ LATERAL DE CARRITO (OFFCANVAS) - MEJORADO -->
-    <div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="carritoLateral" style="width: 400px;">
-        <!-- Header con botón Volver (Mejora del código 2) -->
-        <div class="offcanvas-header border-bottom py-3 bg-light">
-            <button type="button" class="btn btn-white border shadow-sm rounded-pill d-flex align-items-center gap-2 px-3" data-bs-dismiss="offcanvas">
-                <i class="fa fa-arrow-left text-primary"></i>
-                <span class="small fw-bold">Volver</span>
-            </button>
-            <h5 class="offcanvas-title fw-bold text-dark ms-auto">Tu Cesta</h5>
-        </div>
-        
-        <div class="offcanvas-body d-flex flex-column px-4">
-            <div id="lista-productos-flotante" class="flex-grow-1">
-                <p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
-            </div>
-            
-            <!-- Footer del Offcanvas Mejorado -->
-            <div class="border-top pt-4 mt-3 bg-white">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-muted fw-bold">Total estimado:</span>
-                    <strong id="total-flotante" class="fs-4 text-dark">$0</strong>
-                </div>
-                
-                <a href="carrito.html" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                    <i class="fa fa-credit-card"></i> Ver mi cesta completa
-                </a>
-            </div>
-        </div>
-    </div>
+<div class="col-lg-4">
+<div class="card shadow-sm p-4 border-0 rounded-4 sticky-top" style="top: 100px;">
+<h4 class="mb-4 fw-bold">Resumen</h4>
+
+<div class="d-flex justify-content-between mb-2">
+<span class="text-muted">Subtotal (Neto):</span>
+<span id="subtotal" class="fw-bold text-dark">$0</span>
+</div>
+<div class="d-flex justify-content-between mb-2">
+<span class="text-muted">IVA (19%):</span>
+<span id="iva" class="text-dark">$0</span>
+</div>
+<div class="d-flex justify-content-between mb-2">
+<span class="text-muted">Transporte:</span>
+<span class="text-success fw-bold">Gratis</span>
+</div>
+
+<div class="mt-4 mb-3 p-3 bg-light rounded-3 border-0 text-center">
+<small id="envio-msj" class="d-block mb-2 text-dark fw-bold">
+¡Añade productos para envío gratis!
+</small>
+<div class="progress mb-1" style="height: 8px; border-radius: 10px; background-color: #e9ecef;">
+<div id="envio-barra" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+</div>
+</div>
+
+<hr class="my-3 opacity-50">
+
+<div class="d-flex justify-content-between mb-4 align-items-center">
+<strong class="fs-5 text-dark">Total</strong>
+<strong id="total" class="fs-3 text-dark">$0</strong>
+</div>
+
+<button id="btn-finalizar" class="btn w-100 py-3 fw-bold rounded-3 fs-5 shadow-sm border-0 text-white"
+style="background-color: var(--primary);">
+Comenzar pedido
+</button>
+
+<button id="btn-confirmar-vaciar" class="btn btn-link text-danger w-100 mt-3 text-decoration-none small fw-semibold">
+<i class="fa fa-trash-can me-1"></i> Vaciar mi carrito
+</button>
+</div>
+</div>
+</div>
+</main>
 
     <!-- PIE DE PÁGINA (FOOTER) COMPLETO -->
     <footer class="main-footer">
@@ -301,8 +261,8 @@
         </div>
     </div>
     <!-- SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/modulestienda/main.js" defer></script>
-    <script src="../js/carrito.js"></script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
+    <script type="module" src="../js/modulestienda/main.js"></script>
+ <script src="../js/modulestienda/carrito.js" defer type="module"></script>
+
+       </html>

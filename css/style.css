@@ -1335,3 +1335,143 @@ margin-bottom: 3px !important;
 #productGrid div:has(.fa-exclamation) {
     display: none !important;
 }
+
+.carrito-container {
+max-width: 500px;
+margin: 30px auto;
+padding: 10px;
+}
+
+.carrito-vacio {
+display: none;
+text-align: center;
+padding: 50px 20px;
+background: white;
+border-radius: 18px;
+box-shadow:var(--shadow-soft);
+animation: fadeIn 0.4s ease-in-out;
+
+}
+
+.img-vacio {
+width: 250px;
+margin-bottom: 15px;
+}
+
+.carrito-vacio h2 {
+font-size: 24px;
+margin-bottom: 10px;
+}
+
+.carrito-vacio p {
+color: #666;
+margin-bottom: 25px;
+}
+
+.btn-continuar {
+display: inline-block;
+padding: 14px 28px;
+background:#ff8c00;
+color: white;
+text-decoration: none;
+border-radius: 12px;
+transition: 0.3s;
+font-weight: bold;
+}
+
+.btn-continuar:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+@keyframes fadeIn {
+from {opacity: 0; transform: translateY(10px);}
+to {opacity: 1; transform: translateY(0);}
+}
+figure {
+margin: 0;
+padding: 0;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+overflow: hidden;
+}
+
+.carrito-vacio figure {
+margin-bottom: 20px;
+text-align: center;
+background-color: #f8f9fa;
+border-radius: 20px;
+opacity: 0.8;
+border: 2px dashed #dee2e6 !important; /* Estilo decorativo */
+}
+
+/* Tarjeta del resumen (derecha) */
+.card.shadow-sm {
+border: none;
+border-radius: 15px;
+}
+
+#total {
+color: #1a73e8 !important; /* Combinar con el azul del header */
+}
+
+/* Barra de progreso de envío */
+.progress {
+background-color: #e9ecef;
+border-radius: 10px;
+overflow: hidden;
+}
+
+#envio-barra {
+transition: width 0.5s ease;
+}
+
+/* Botones personalizados */
+.btn-success {
+background-color: #2596be;
+border: none;
+border-radius: 8px;
+font-weight: 600;
+}
+
+.btn-primary {
+background-color: #1a73e8;
+border: none;
+border-radius: 8px;
+}
+
+/* Tarjeta del resumen (derecha) */
+.card.shadow-sm {
+border: none;
+border-radius: 15px;
+}
+
+#total {
+color: #1a73e8 !important; /* Combinar con el azul del header */
+}
+#envio-barra {
+transition: width 0.5s ease;
+}
+/* Botones personalizados */
+.btn-success {
+background-color: #28a745;
+border: none;
+border-radius: 8px;
+font-weight: 600;
+}
+.btn-primary {
+background-color: #1a73e8;
+border: none;
+border-radius: 8px;
+}
+/* Barra de envío */
+.progress {
+border-radius: 10px;
+overflow: hidden;
+background-color: #e9ecef;
+}
+.progress-bar {
+transition: width 0.4s ease;
+}

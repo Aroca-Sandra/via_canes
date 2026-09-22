@@ -1,279 +1,210 @@
-/* ==========================================
-   LÓGICA UNIFICADA DEL CARRITO (Vía Canes)
-   Incluye Modo Demo si falla el Backend
-   ========================================== */
+// ================================================================
+// GESTIÓN DE LA PÁGINA COMPLETA DE CARRITO - CARRITO.JS (CORREGIDO)
+// ================================================================
 
-let carritoData = { 
-    id_carrito: null, 
-    items: [] 
-};
+const CLAVE_STORAGE = 'viaCanesCarrito';
+const VALOR_ENVIO_GRATIS = 100000; 
 
-// ==================== INICIALIZACIÓN ====================
-document.addEventListener("DOMContentLoaded", () => {
-    cargarCarrito();
-    
-    // Listeners botones estáticos
-    document.getElementById("btn-confirmar-vaciar")?.addEventListener("click", vaciarCarrito);
-    document.getElementById("btn-finalizar")?.addEventListener("click", finalizarPedido);
-
-    // Refrescar al abrir el menú lateral
-    const offcanvasEl = document.getElementById('carritoLateral');
-    if (offcanvasEl) {
-        offcanvasEl.addEventListener('shown.bs.offcanvas', renderizarCarrito);
-    }
-
-    // Delegación de eventos para botones dinámicos (+, -, eliminar)
-    document.body.addEventListener('click', function(e) {
-        const btnSumar = e.target.closest('.btn-sumar');
-        const btnRestar = e.target.closest('.btn-restar');
-        const btnEliminar = e.target.closest('.btn-eliminar');
-
-        if (btnSumar) {
-            const id = btnSumar.dataset.id;
-            const item = carritoData.items.find(i => i.id_detalle == id);
-            if (item) cambiarCantidad(id, item.cantidad + 1);
-        } 
-        else if (btnRestar) {
-            const id = btnRestar.dataset.id;
-            const item = carritoData.items.find(i => i.id_detalle == id);
-            if (item && item.cantidad > 1) {
-                cambiarCantidad(id, item.cantidad - 1);
-            } else if (item) {
-                eliminarProducto(id);
-            }
-        } 
-        else if (btnEliminar) {
-            eliminarProducto(btnEliminar.dataset.id);
-        }
-    });
-});
-
-// ==================== CARGAR DATOS ====================
-async function cargarCarrito() {
+function obtenerCarrito() {
     try {
-        // Intenta conectar con el backend
-        const response = await fetch('carritos_data.php?action=obtener');
-        
-        if (!response.ok) throw new Error("Backend no disponible");
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            carritoData.id_carrito = data.id_carrito;
-            carritoData.items = data.items;
-        } else {
-            throw new Error("Respuesta inválida del servidor");
+        return JSON.parse(localStorage.getItem(CLAVE_STORAGE)) || [];
+    } catch (error) {
+        console.error('Error al leer el carrito:', error);
+        return [];
+    }
+}
+
+function guardarCarrito(carrito) {
+    try {
+        localStorage.setItem(CLAVE_STORAGE, JSON.stringify(carrito));
+        initCarritoPage(); 
+        if (typeof window.actualizarVistaCarrito === 'function') {
+            window.actualizarVistaCarrito();
         }
     } catch (error) {
-        console.warn("⚠️ Backend no detectado. Activando MODO DEMO para pruebas visuales.");
-        activarModoDemo();
+        console.error('Error al guardar el carrito:', error);
     }
-    
-    renderizarCarrito();
 }
 
-// ==================== MODO DEMO (FALLBACK) ====================
-function activarModoDemo() {
-    // Simula un carrito con datos si no hay PHP conectado
-    carritoData.id_carrito = 999;
-    carritoData.items = [
-        {
-            id_detalle: 101,
-            nombre: "Croquetas Premium Perro Adulto",
-            precio_unitario: 45000,
-            cantidad: 1,
-            subtotal: 45000,
-            imagen_url: "../img/p-perro.png" // Asegúrate que esta imagen exista o usa una URL externa
-        },
-        {
-            id_detalle: 102,
-            nombre: "Juguete Hueso de Goma",
-            precio_unitario: 12000,
-            cantidad: 2,
-            subtotal: 24000,
-            imagen_url: "../img/p-gato.png"
+// INICIALIZAR Y RENDERIZAR LA INTERFAZ
+function initCarritoPage() {
+    const carrito = obtenerCarrito();
+    const listaProductos = document.getElementById('lista-productos-carrito');
+    const contenedorVacio = document.getElementById('carrito-compras-vacio');
+    
+    const subtotalElement = document.getElementById('subtotal');
+    const ivaElement = document.getElementById('iva');
+    const totalElement = document.getElementById('total');
+    
+    const envioMsj = document.getElementById('envio-msj');
+    const envioBarra = document.getElementById('envio-barra');
+
+    if (!listaProductos) return; 
+
+    if (carrito.length === 0) {
+        listaProductos.innerHTML = '';
+        if (contenedorVacio) contenedorVacio.classList.remove('d-none');
+        if (subtotalElement) subtotalElement.textContent = '\$0';
+        if (ivaElement) ivaElement.textContent = '\$0';
+        if (totalElement) totalElement.textContent = '\$0';
+        if (envioBarra) envioBarra.style.width = '0%';
+        if (envioMsj) envioMsj.innerHTML = '¡Añade productos para envío gratis!';
+        return;
+    }
+
+    if (contenedorVacio) contenedorVacio.classList.add('d-none');
+
+    let netoSubtotal = 0;
+
+    // Generar las filas de productos utilizando atributos 'data-' seguros
+    listaProductos.innerHTML = carrito.map(item => {
+        const precio = parseFloat(item.precio) || 0;
+        const cantidad = parseInt(item.cantidad) || 1;
+        const subtotalItem = precio * cantidad;
+        netoSubtotal += subtotalItem;
+
+        let imgUrl = item.imagen || '';
+        if (!imgUrl.startsWith('http') && !imgUrl.startsWith('/')) {
+            imgUrl = imgUrl.replace(/^(\.\.\/)+/, ''); 
+            imgUrl = '../' + imgUrl; 
         }
-    ];
-}
 
-// ==================== RENDERIZADO VISUAL ====================
-function renderizarCarrito() {
-    const items = carritoData.items;
-    const totalItems = items.reduce((sum, item) => sum + parseInt(item.cantidad), 0);
-    
-    // 1. Contador Header
-    const badge = document.getElementById('contador-carrito');
-    if (badge) {
-        badge.textContent = totalItems;
-        badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-    }
-
-    // 2. Lista Principal (Página Carrito)
-    const listaPrincipal = document.getElementById('lista-productos-carrito');
-    const msgVacio = document.getElementById('carrito-compras-vacio');
-    
-    if (listaPrincipal) {
-        if (items.length === 0) {
-            listaPrincipal.innerHTML = '';
-            if(msgVacio) msgVacio.classList.remove('d-none');
-        } else {
-            if(msgVacio) msgVacio.classList.add('d-none');
-            
-            listaPrincipal.innerHTML = items.map(prod => `
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="row g-0 align-items-center p-2">
-                        <div class="col-3 text-center">
-                            <img src="${prod.imagen_url || 'https://via.placeholder.com/100'}" class="img-fluid rounded" style="max-height: 80px;">
-                        </div>
-                        <div class="col-9">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="fw-bold mb-1">${prod.nombre}</h6>
-                                <button class="btn btn-sm text-danger btn-eliminar" data-id="${prod.id_detalle}"><i class="fa fa-trash"></i></button>
-                            </div>
-                            <small class="text-muted">$${parseFloat(prod.precio_unitario).toLocaleString()} c/u</small>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <div class="input-group input-group-sm" style="width: 100px;">
-                                    <button class="btn btn-outline-secondary btn-restar" data-id="${prod.id_detalle}">-</button>
-                                    <input type="text" class="form-control text-center p-0" value="${prod.cantidad}" readonly style="height: 30px;">
-                                    <button class="btn btn-outline-secondary btn-sumar" data-id="${prod.id_detalle}">+</button>
-                                </div>
-                                <span class="fw-bold">$${parseFloat(prod.subtotal).toLocaleString()}</span>
-                            </div>
-                        </div>
+        return `
+            <div class="card card-body mb-3 shadow-sm border-0 rounded-4 d-flex flex-row align-items-center gap-3">
+                <img src="${imgUrl}" alt="${item.nombre}" class="rounded-3" style="width: 80px; height: 80px; object-fit: cover;"
+                     onerror="this.onerror=null; this.src='../img/default-product.png'">
+                
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold mb-1 fs-6">${item.nombre}</h5>
+                    <p class="text-muted small mb-0">$${precio.toLocaleString('es-CO')} c/u</p>
+                    
+                    <div class="d-flex align-items-center gap-2 mt-2">
+                        <button class="btn btn-sm btn-outline-secondary rounded-circle px-2 py-0 btn-control-checkout" 
+                                data-id="${item.id}" data-tipo="${item.tipo}" data-accion="restar">-</button>
+                        <span class="fw-bold fs-6">${cantidad}</span>
+                        <button class="btn btn-sm btn-outline-secondary rounded-circle px-2 py-0 btn-control-checkout" 
+                                data-id="${item.id}" data-tipo="${item.tipo}" data-accion="sumar">+</button>
                     </div>
                 </div>
-            `).join('');
+                
+                <div class="text-end">
+                    <p class="fw-bold text-dark mb-2">$${subtotalItem.toLocaleString('es-CO')}</p>
+                    <button class="btn btn-sm btn-outline-danger border-0 rounded-circle btn-eliminar-checkout" 
+                            data-id="${item.id}" data-tipo="${item.tipo}">
+                        <i class="fa fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // OPERACIÓN MATEMÁTICA
+    const precioSubtotalNeto = Math.round(netoSubtotal / 1.19);
+    const precioIva = netoSubtotal - precioSubtotalNeto;
+
+    if (subtotalElement) subtotalElement.textContent = `$${precioSubtotalNeto.toLocaleString('es-CO')}`;
+    if (ivaElement) ivaElement.textContent = `$${precioIva.toLocaleString('es-CO')}`;
+    if (totalElement) totalElement.textContent = `$${netoSubtotal.toLocaleString('es-CO')}`;
+
+    if (envioBarra && envioMsj) {
+        const porcentaje = Math.min((netoSubtotal / VALOR_ENVIO_GRATIS) * 100, 100);
+        envioBarra.style.width = `${porcentaje}%`;
+
+        if (netoSubtotal >= VALOR_ENVIO_GRATIS) {
+            envioMsj.innerHTML = '🎉 ¡Felicidades! Tienes **Envío Gratis**';
+        } else {
+            const faltante = VALOR_ENVIO_GRATIS - netoSubtotal;
+            envioMsj.innerHTML = `Te faltan **$${faltante.toLocaleString('es-CO')}** para el envío gratis`;
         }
     }
 
-    // 3. Offcanvas (Menú Lateral) - Actualiza ambos contenedores posibles
-    ['cart-items', 'lista-productos-flotante'].forEach(id => {
-        const container = document.getElementById(id);
-        if (container) {
-            if (items.length === 0) {
-                container.innerHTML = '<p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>';
-            } else {
-                container.innerHTML = items.map(prod => `
-                    <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
-                        <img src="${prod.imagen_url || 'https://via.placeholder.com/60'}" width="50" height="50" class="rounded me-3" style="object-fit:cover">
-                        <div class="flex-grow-1">
-                            <h6 class="mb-0 small fw-bold">${prod.nombre}</h6>
-                            <small class="text-muted">${prod.cantidad} x $${parseFloat(prod.precio_unitario).toLocaleString()}</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                             <button class="btn btn-sm btn-outline-secondary py-0 px-2 btn-restar" data-id="${prod.id_detalle}">-</button>
-                             <span class="small fw-bold">${prod.cantidad}</span>
-                             <button class="btn btn-sm btn-outline-secondary py-0 px-2 btn-sumar" data-id="${prod.id_detalle}">+</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
+    asignarEventosBotones();
+}
+
+// CAPTURA AUTOMÁTICA DE CLICS
+function asignarEventosBotones() {
+    // Escuchar botones de + y -
+    document.querySelectorAll('.btn-control-checkout').forEach(boton => {
+        boton.addEventListener('click', (e) => {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            const tipo = e.currentTarget.getAttribute('data-tipo');
+            const accion = e.currentTarget.getAttribute('data-accion');
+            ejecutarCambioCantidad(id, tipo, accion);
+        });
     });
 
-    // 4. Cálculos Totales
-    let totalAcumulado = items.reduce((acc, item) => acc + parseFloat(item.subtotal), 0);
-    let neto = totalAcumulado / 1.19;
-    let iva = totalAcumulado - neto;
+    // Escuchar botones de eliminar (basurero)
+    document.querySelectorAll('.btn-eliminar-checkout').forEach(boton => {
+        boton.addEventListener('click', (e) => {
+            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+            const tipo = e.currentTarget.getAttribute('data-tipo');
+            ejecutarEliminacion(id, tipo);
+        });
+    });
+}
 
-    updateText('subtotal', `$${Math.round(neto).toLocaleString()}`);
-    updateText('iva', `$${Math.round(iva).toLocaleString()}`);
-    updateText('total', `$${Math.round(totalAcumulado).toLocaleString()}`);
-    updateText('total-flotante', `$${Math.round(totalAcumulado).toLocaleString()}`);
-    updateText('cart-total', `$${Math.round(totalAcumulado).toLocaleString()}`);
+function ejecutarCambioCantidad(id, tipo, accion) {
+    let carrito = obtenerCarrito();
+    const idx = carrito.findIndex(i => parseInt(i.id) === id && i.tipo === tipo);
+    if (idx === -1) return;
 
-    // 5. Barra Envío Gratis
-    const meta = 60000;
-    const barra = document.getElementById('envio-barra');
-    const msj = document.getElementById('envio-msj');
-    
-    if (barra && msj) {
-        if (items.length === 0) {
-            barra.style.width = '0%';
-            msj.textContent = '¡Añade productos para envío gratis!';
-        } else if (totalAcumulado >= meta) {
-            barra.style.width = '100%';
-            msj.innerHTML = '<span class="text-success fw-bold">¡Envío GRATIS desbloqueado! 🚀</span>';
+    if (accion === 'sumar') {
+        if (carrito[idx].cantidad < (carrito[idx].stock || 999)) {
+            carrito[idx].cantidad++;
+        }
+    } else if (accion === 'restar') {
+        if (carrito[idx].cantidad > 1) {
+            carrito[idx].cantidad--;
         } else {
-            let pct = (totalAcumulado / meta) * 100;
-            barra.style.width = `${pct}%`;
-            msj.textContent = `Te faltan $${(meta - totalAcumulado).toLocaleString()} para envío gratis`;
+            if(confirm("¿Quitar este producto del carrito? 🐾")) {
+                ejecutarEliminacion(id, tipo);
+                return;
+            }
         }
     }
-
-    // 6. Botones Checkout
-    const btnCheck = document.getElementById('btn-checkout');
-    const btnFin = document.getElementById('btn-finalizar');
-    if(btnCheck) btnCheck.style.opacity = items.length ? '1' : '0.5';
-    if(btnFin) btnFin.disabled = items.length === 0;
+    guardarCarrito(carrito);
 }
 
-// Helper simple para actualizar texto
-function updateText(id, val) {
-    const el = document.getElementById(id);
-    if(el) el.textContent = val;
+function ejecutarEliminacion(id, tipo) {
+    let carrito = obtenerCarrito();
+    carrito = carrito.filter(i => !(parseInt(i.id) === id && i.tipo === tipo));
+    guardarCarrito(carrito);
 }
 
-// ==================== ACCIONES ====================
+// INICIALIZACIÓN DE LA PÁGINA
+document.addEventListener('DOMContentLoaded', () => {
+    initCarritoPage();
 
-window.agregarAlCarrito = async function(id, nombre, precio, img) {
-    // Simulación visual inmediata
-    mostrarToast(`🐾 ${nombre} agregado`, 'success');
+    // Buscar el botón vaciar buscando tanto por ID como por el texto "Vaciar mi carrito"
+    let btnVaciar = document.getElementById('btn-confirmar-vaciar') || document.getElementById('vaciar-carrito');
     
-    // En un entorno real, aquí harías el fetch POST al PHP
-    // Por ahora, agregamos al array local para probar
-    let existente = carritoData.items.find(i => i.id_detalle == id);
-    if(existente) {
-        existente.cantidad++;
-        existente.subtotal = existente.cantidad * existente.precio_unitario;
-    } else {
-        carritoData.items.push({
-            id_detalle: id,
-            nombre: nombre,
-            precio_unitario: precio,
-            cantidad: 1,
-            subtotal: precio,
-            imagen_url: img
+    if (!btnVaciar) {
+        // Si no lo encuentra, busca cualquier botón rojo abajo de la tarjeta que contenga la palabra Vaciar
+        const botones = document.querySelectorAll('button, a');
+        botones.forEach(b => {
+            if(b.textContent.toLowerCase().includes('vaciar')) {
+                btnVaciar = b;
+            }
         });
     }
-    renderizarCarrito();
-};
 
-async function cambiarCantidad(id, nuevaCantidad) {
-    // Aquí iría el fetch POST 'action=actualizar'
-    const item = carritoData.items.find(i => i.id_detalle == id);
-    if(item) {
-        item.cantidad = nuevaCantidad;
-        item.subtotal = item.cantidad * item.precio_unitario;
-        renderizarCarrito();
+    if (btnVaciar) {
+        btnVaciar.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('¿Estás seguro de que deseas vaciar por completo tu carrito? 🐾')) {
+                guardarCarrito([]);
+            }
+        });
     }
-}
 
-async function eliminarProducto(id) {
-    if(!confirm("¿Eliminar producto?")) return;
-    // Aquí iría el fetch POST 'action=eliminar'
-    carritoData.items = carritoData.items.filter(i => i.id_detalle != id);
-    renderizarCarrito();
-}
-
-async function vaciarCarrito() {
-    if(!confirm("¿Vaciar todo el carrito?")) return;
-    // Aquí iría el fetch POST 'action=vaciar'
-    carritoData.items = [];
-    renderizarCarrito();
-}
-
-function finalizarPedido() {
-    if(carritoData.items.length === 0) return;
-    alert("Redirigiendo a pasarela de pago...");
-}
-
-function mostrarToast(msg, type) {
-    const t = document.getElementById('toast');
-    const m = document.getElementById('toastMsg');
-    if(t && m) {
-        m.textContent = msg;
-        t.className = `toast align-items-center text-white bg-${type || 'primary'} border-0 show`;
-        setTimeout(() => t.classList.remove('show'), 3000);
+    const btnFinalizar = document.getElementById('btn-finalizar') || document.querySelector('.btn-primary');
+    if (btnFinalizar && btnFinalizar.textContent.includes('Comenzar')) {
+        btnFinalizar.addEventListener('click', (e) => {
+            e.preventDefault();
+            const carrito = obtenerCarrito();
+            if (carrito.length === 0) return;
+            alert('¡Pedido procesado con éxito! Nos comunicaremos contigo para coordinar la entrega. 🐶');
+            guardarCarrito([]);
+        });
     }
-}
+});

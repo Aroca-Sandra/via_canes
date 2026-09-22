@@ -1,11 +1,11 @@
 // ================================================================
-// MÓDULO: PROMOCIONES — Panel Administrativo (mod-promociones.js)
+// MÓDULO: PROMOCIONES — Panel Administrativo
 // ================================================================
 
 const MarketingMod = (() => {
     const $ = s => document.querySelector(s);
 
-    // ---- Referencias DOM ----
+    // ---- Referencias DOM (Actualizadas según tu HTML) ----
     const form          = $('#formPromo');
     const fileInput     = $('#promoImagen');
     const previewWrap   = $('#promoImgPreview');
@@ -18,9 +18,13 @@ const MarketingMod = (() => {
     const campoInicio   = $('#promoInicio');
     const campoFin      = $('#promoFin');
     const campoIdEdit   = $('#promoIdEdit');
+    
+    // Botones del formulario
+    const btnSubmit     = $('#btnGuardarPromo'); // ID correcto del HTML
+    const btnSubmitTxt  = $('#btnGuardarPromoTexto'); // Span dentro del botón
     const btnCancelar   = $('#btnCancelarEdicion');
-    const btnGuardarTxt = $('#btnGuardarPromoTexto');
 
+    // Elementos de Vinculación
     const asigPromo     = $('#asigPromo');
     const asigProducto  = $('#asigProducto');
     const btnVincular   = $('#btnVincularProd');
@@ -47,17 +51,32 @@ const MarketingMod = (() => {
         return f;
     };
 
-    const spin = (btn, txt) => {
+    // Función Spinner mejorada para manejar el botón y el texto interno
+    const spin = (btn, txtOriginal, loadingText) => {
         if (!btn) return () => {};
-        const h = btn.innerHTML;
+        const span = btn.querySelector('span') || btn; // Busca el span o usa el botón
+        const originalHTML = btn.innerHTML;
+        
         btn.disabled = true;
-        btn.innerHTML = txt;
-        return () => { btn.disabled = false; btn.innerHTML = h; };
+        btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> ${loadingText}`;
+        
+        return () => { 
+            btn.disabled = false; 
+            btn.innerHTML = originalHTML; 
+        };
     };
 
     const fmtFecha = s => s
         ? new Date(s + 'T12:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })
         : '—';
+
+    const showToast = (msg, type) => {
+        if(typeof window.showToast === 'function') {
+            window.showToast(msg, type);
+        } else {
+            alert(`${type.toUpperCase()}: ${msg}`);
+        }
+    };
 
     // ---- Lógica de Imagen Centralizada ----
     function actualizarEstadoImagen(mostrarPreview, src = '') {
@@ -105,7 +124,6 @@ const MarketingMod = (() => {
         $('#btnQuitarImg')?.addEventListener('click', () => {
             fileInput.value = '';
             actualizarEstadoImagen(false);
-            console.log("Imagen marcada para eliminación en servidor");
         });
 
         // --- Tipo → placeholder y max ---
@@ -158,16 +176,18 @@ const MarketingMod = (() => {
                 showToast('Máximo 100%', 'danger');
                 procesando = false; return;
             }
+            
+            // Validación básica de fechas
             if (campoInicio.value && campoFin.value && campoFin.value < campoInicio.value) {
-                showToast('Fecha fin anterior a inicio', 'danger');
+                showToast('La fecha fin no puede ser anterior a la inicio', 'danger');
                 procesando = false; return;
             }
 
             const formData = new FormData(form);
             const accion = campoIdEdit.value ? 'actualizar' : 'guardar';
 
-            const btnSubmit = form.querySelector('button[type="submit"]');
-            const restore = spin(btnSubmit, '<i class="fa fa-spinner fa-spin"></i> Guardando...');
+            // Usamos btnSubmit (el botón entero) para el spinner
+            const restore = spin(btnSubmit, btnSubmit.innerHTML, 'Guardando...');
 
             try {
                 const res = await apiFetch(accion, formData);
@@ -191,48 +211,78 @@ const MarketingMod = (() => {
 
         btnCancelar?.addEventListener('click', resetForm);
 
-        // --- Vinculación ---
+        // ==========================================
+        // LÓGICA DE VINCULACIÓN (CORREGIDA)
+        // ==========================================
         if (btnVincular && asigPromo && asigProducto) {
-            const check = () => {
-                btnVincular.disabled = !(asigPromo?.value && asigProducto?.value);
+            
+            const checkVincularBtn = () => {
+                const promoVal = asigPromo?.value;
+                const prodVal = asigProducto?.value;
+                const isValid = promoVal && prodVal;
+                
+                btnVincular.disabled = !isValid;
+                // Feedback visual
+                if(isValid) {
+                    btnVincular.classList.remove('btn-secondary');
+                    btnVincular.classList.add('btn-info'); // O btn-success según tu gusto
+                } else {
+                    btnVincular.classList.remove('btn-info');
+                    btnVincular.classList.add('btn-secondary');
+                }
             };
 
             asigPromo?.addEventListener('change', () => {
-                check();
-                asigPromo.value
-                    ? renderVinculados(asigPromo.value)
-                    : (listaProdPromo && (listaProdPromo.innerHTML = ''));
+                checkVincularBtn();
+                const idP = asigPromo.value;
+                if (idP) {
+                    renderVinculados(idP);
+                } else {
+                    if (listaProdPromo) listaProdPromo.innerHTML = '';
+                }
             });
-            asigProducto?.addEventListener('change', check);
+
+            asigProducto?.addEventListener('change', checkVincularBtn);
 
             btnVincular.addEventListener('click', async () => {
-                const idP = asigPromo.value, idR = asigProducto.value;
+                const idP = asigPromo.value;
+                const idR = asigProducto.value;
+
                 if (!idP || !idR) {
-                    showToast('Seleccione ambos', 'warning');
+                    showToast('Seleccione promoción y producto', 'warning');
                     return;
                 }
 
-                const restore = spin(btnVincular, '<i class="fa fa-spinner fa-spin me-1"></i>Vinculando...');
+                const restore = spin(btnVincular, btnVincular.innerHTML, 'Vinculando...');
+                
                 try {
                     const res = await apiFetch('asignar_producto', fd({ id_promo: idP, id_producto: idR }));
                     restore();
 
                     if (res.success) {
-                        showToast(res.message || 'Vinculado', 'success');
-                        asigProducto.value = '';
-                        check();
+                        showToast(res.message || 'Producto vinculado correctamente', 'success');
+                        
+                        // Limpiar selección de producto
+                        asigProducto.value = ''; 
+                        checkVincularBtn();
+                        
+                        // Recargar datos para actualizar la lista interna
                         await cargarPromocionesAdmin();
+                        
+                        // Refrescar vista de vinculados
                         renderVinculados(idP);
                     } else {
                         showToast(res.error || 'Error al vincular', 'danger');
                     }
                 } catch(e) {
                     restore();
-                    showToast('Error de conexión', 'danger');
+                    console.error(e);
+                    showToast('Error de conexión al vincular', 'danger');
                 }
             });
         }
 
+        // Carga inicial
         cargarPromocionesAdmin();
     }
 
@@ -263,15 +313,14 @@ const MarketingMod = (() => {
                         : '<i class="fa fa-image text-muted"></i>'}</td>
                     <td>
                         <div class="fw-bold small">${esc(p.nombre)}</div>
-                        <div class="text-muted" style="font-size:.7rem;">${esc((p.descripcion || '').substring(0, 35))}${(p.descripcion || '').length > 35 ? '...' : ''}</div>
                     </td>
-                    <td class="small fw-bold" style="color:var(--accent,#e5a00d);">${p.valor}${p.tipo_descuento === 'porcentaje' ? '%' : ''}</td>
+                    <td class="small fw-bold">${p.valor}${p.tipo_descuento === 'porcentaje' ? '%' : ''}</td>
                     <td class="small text-capitalize">${p.tipo_descuento}</td>
                     <td class="small">${fmtFecha(p.fecha_inicio)}</td>
                     <td class="small">${fmtFecha(p.fecha_fin)}</td>
                     <td class="small text-muted">${fmtFecha(p.fecha_creacion)}</td>
                     <td><span class="badge rounded-pill ${p.id_estado_promocion == 1 ? 'bg-success' : 'bg-secondary'}" style="font-size:.7rem;">
-                        <i class="fa fa-circle" style="font-size:.45rem;${p.id_estado_promocion == 1 ? '' : 'opacity:.4'}"></i> ${p.id_estado_promocion == 1 ? 'Activo' : 'Inactivo'}
+                        ${p.id_estado_promocion == 1 ? 'Activo' : 'Inactivo'}
                     </span></td>
                     <td class="text-nowrap">
                         <button class="btn btn-sm btn-outline-primary p-1" onclick="MarketingMod.editarPromo(${p.id_promo})" title="Editar"><i class="fa fa-pen fa-xs"></i></button>
@@ -284,19 +333,22 @@ const MarketingMod = (() => {
     // ---- Render vinculados ----
     function renderVinculados(idPromo) {
         if (!listaProdPromo) return;
-        const prods = promosData.find(p => String(p.id_promo) === String(idPromo))?.productos;
-        if (!prods?.length) {
-            listaProdPromo.innerHTML = '<p class="text-muted small mb-0">Sin productos vinculados.</p>';
+        
+        const promoEncontrada = promosData.find(p => String(p.id_promo) === String(idPromo));
+        const prods = promoEncontrada?.productos;
+
+        if (!prods || prods.length === 0) {
+            listaProdPromo.innerHTML = '<p class="text-muted small mb-0 text-center py-2">Sin productos vinculados.</p>';
             return;
         }
 
-        listaProdPromo.innerHTML = prods.map(pr => `
-            <div class="d-flex align-items-center justify-content-between py-2 border-bottom small">
+        listaProdPromo.innerHTML = `<div class="small fw-bold mb-2 text-info">Productos vinculados:</div>` + 
+            prods.map(pr => `
+            <div class="d-flex align-items-center justify-content-between py-2 border-bottom small bg-light px-2 mb-1 rounded">
                 <div>
-                    <span class="fw-bold">${esc(pr.producto_nombre)}</span>
-                    <span class="text-muted ms-2">$${Number(pr.precio_venta).toLocaleString('es-CO')}</span>
+                    <span class="fw-bold text-dark">${esc(pr.producto_nombre)}</span>
                 </div>
-                <button class="btn btn-sm text-danger p-0" onclick="MarketingMod.desvincular(${idPromo}, ${pr.id_producto})" title="Desvincular">
+                <button class="btn btn-sm text-danger p-0 ps-2" onclick="MarketingMod.desvincular(${idPromo}, ${pr.id_producto})" title="Desvincular">
                     <i class="fa fa-times-circle"></i>
                 </button>
             </div>`).join('');
@@ -325,9 +377,11 @@ const MarketingMod = (() => {
             fileInput.value = '';
         }
 
-        btnGuardarTxt.textContent = 'Actualizar Promoción';
+        btnSubmitTxt.textContent = 'Actualizar Promoción';
         if (btnCancelar) btnCancelar.style.display = 'block';
         campoTipo?.dispatchEvent(new Event('change'));
+        
+        // Scroll suave hacia el formulario
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -335,7 +389,6 @@ const MarketingMod = (() => {
     async function eliminarPromo(id) {
         if (!confirm('¿Eliminar esta promoción y sus vinculaciones?')) return;
         try {
-            // CORRECCIÓN: Se cambió 'eliminar' por 'eliminar_promocion' para coincidir con el PHP
             const res = await apiFetch('eliminar_promocion', fd({ id_promo: id }));
             if (res.success) {
                 showToast(res.message || 'Eliminada', 'success');
@@ -385,16 +438,24 @@ const MarketingMod = (() => {
 
         campoIdEdit.value = '';
         if (btnCancelar) btnCancelar.style.display = 'none';
-        if (btnGuardarTxt) btnGuardarTxt.textContent = 'Guardar Promoción';
+        if (btnSubmitTxt) btnSubmitTxt.textContent = 'Guardar Promoción';
         campoTipo?.dispatchEvent(new Event('change'));
     }
 
-    // ---- Llenar select ----
+    // ---- Llenar select de Promociones (Interno) ----
     function llenarSelectPromos(promos) {
         if (!asigPromo) return;
         const act = (Array.isArray(promos) ? promos : []).filter(p => p.id_estado_promocion == 1);
+        
+        // Guardar selección actual si existe para no perderla al recargar
+        const currentVal = asigPromo.value;
+
         asigPromo.innerHTML = '<option value="" disabled selected>Selecciona una promoción</option>'
             + act.map(p => `<option value="${p.id_promo}">${esc(p.nombre)}</option>`).join('');
+        
+        if(currentVal && act.find(p => String(p.id_promo) === String(currentVal))) {
+            asigPromo.value = currentVal;
+        }
     }
 
     // ---- API pública ----
@@ -412,23 +473,37 @@ const MarketingMod = (() => {
 
 document.addEventListener('DOMContentLoaded', () => MarketingMod.init());
 
-// ---- Cargar promociones (Global para uso externo si es necesario) ----
+// ---- Cargar promociones (Global) ----
 async function cargarPromocionesAdmin() {
     try {
         if (typeof apiFetch !== 'function') {
-            console.error("❌ apiFetch no está definida");
+            console.error("❌ apiFetch no está definida.");
             return;
         }
 
+        // 1. Cargar Promociones
         const res = await apiFetch('listar_promociones', null, 'GET');
 
         if (res.success) {
             MarketingMod.renderTabla(res.data);
             MarketingMod.llenarSelectPromos(res.data);
 
-            if (typeof llenarSelect === 'function') {
-                const resProd = await apiFetch('listar_productos', null, 'GET');
-                if (resProd.success) llenarSelect('asigProducto', resProd.data, 'Selecciona un producto');
+            // 2. Cargar Productos (CORRECCIÓN IMPORTANTE)
+            // Antes fallaba porque 'llenarSelect' no existía. Ahora lo hacemos manual aquí.
+            const resProd = await apiFetch('listar_productos', null, 'GET');
+            const selectProd = document.getElementById('asigProducto');
+            
+            if (resProd.success && selectProd) {
+                // Guardar selección actual
+                const currentProdVal = selectProd.value;
+                
+                selectProd.innerHTML = '<option value="" disabled selected>Selecciona un producto</option>'
+                    + resProd.data.map(p => `<option value="${p.id_producto}">${esc(p.nombre_producto || p.nombre)}</option>`).join('');
+                
+                // Restaurar selección si es válida
+                if(currentProdVal && resProd.data.find(p => String(p.id_producto) === String(currentProdVal))) {
+                    selectProd.value = currentProdVal;
+                }
             }
         } else {
             console.error("Error al cargar promos:", res.error);
