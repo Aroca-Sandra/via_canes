@@ -557,7 +557,7 @@ async function cargarPromocionesTienda() {
                                         data-nombre="${p.nombre}"
                                         data-precio="${Math.round(precioFinal)}"
                                         data-imagen="${imgSrc}"
-                                        data-stock="999"
+                                        data-stock="${p.stock}"
                                         data-tipo="producto">
                                     <i class="fa fa-cart-plus me-1"></i> Agregar
                                 </button>

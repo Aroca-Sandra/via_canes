@@ -102,7 +102,7 @@ tipo: 'producto'
 };
 }
 
-function crearCard(p) {
+function crearCard(p, index) {
 const badgeDescuento = p.porcentajeVisual > 0
 ? `<div class="position-absolute top-0 end-0 m-3" style="z-index: 10;">
 <span class="badge bg-danger rounded-pill px-3 py-2 fw-bold shadow-sm">-${p.porcentajeVisual}% OFF</span>
@@ -116,6 +116,7 @@ const precioTachado = p.precioOriginal > p.precioFinal
 // ✨ CAMBIO AQUÍ: Limpiamos los puntos '../' solo para el atributo data-imagen
 // Así el carrito recibe la ruta correcta relativa a la raíz 'img/producto.png'
 const imgParaCarrito = p.img.replace(/^\.\.\//, '');
+const delay = index * 100; // Efecto cascada en la animación
 
 return `
 <div class="col-12 col-sm-6 col-lg-3 mb-4 fade-in">

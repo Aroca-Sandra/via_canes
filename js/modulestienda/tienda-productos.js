@@ -2,7 +2,7 @@
 // TIENDA PÚBLICA - VÍA CANES (tienda-productos.js)
 // ================================================================
 
-// ✅ CORRECCIÓN: Definir correctamente la URL de la API
+// Definir correctamente la URL de la API
 const API_TIENDA = '../api/productos_data.php?vista=tienda'; 
 
 let productosTienda = [];

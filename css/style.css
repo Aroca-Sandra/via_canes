@@ -27,9 +27,9 @@
 .category-banner {
     position: relative;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1300px;
     min-height: 350px;
-    aspect-ratio: 1200 / 350;
+    aspect-ratio: 1300 / 350;
     margin: 0 auto 2rem auto;
     border-radius: 12px;
     overflow: hidden;
@@ -667,46 +667,50 @@ margin-bottom: 3px !important;
    ========================================== */
 .floating-buttons {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
+    bottom: 30px;
+    right: 30px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    z-index: 9998;
+    gap: 15px;
+    
+    /* ⚠️ CAMBIO CLAVE: 
+       Bootstrap Offcanvas usa z-index: 1045.
+       Ponemos esto en 1040 para que quede DETRÁS del menú, 
+       pero AÚN ENCIMA del contenido normal (que suele ser < 1000). */
+    z-index: 1040; 
 }
 
-/* Botón de WhatsApp (pastilla con texto) */
+/* Botón de WhatsApp */
 .btn-whatsapp {
     display: flex;
     align-items: center;
     gap: 10px;
     background: linear-gradient(135deg, #25D366, #128C7E);
     color: white !important;
-    padding: 12px 20px;
+    padding: 12px 24px;
     border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
     box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     animation: pulse-green 2s infinite;
+    /* Aseguramos que no tenga z-index propio mayor al contenedor */
+    z-index: auto; 
 }
 
 .btn-whatsapp:hover {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
     color: white !important;
+    text-decoration: none;
 }
 
-.btn-whatsapp i {
-    font-size: 1.4rem;
-}
-
-/* Botón Paw (huella de mascota) */
+/* Botón Paw (huella) */
 .btn-paw {
     width: 55px;
     height: 55px;
-    background: linear-gradient(135deg, #FF6B9D, #C44569);
+    background: linear-gradient(135deg, var(--primary-color, #0d6efd), #0a58ca);
     color: white !important;
     border-radius: 50%;
     display: flex;
@@ -714,22 +718,49 @@ margin-bottom: 3px !important;
     justify-content: center;
     text-decoration: none;
     font-size: 1.6rem;
-    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     align-self: flex-end;
+    z-index: auto;
 }
 
 .btn-paw:hover {
     transform: translateY(-3px) scale(1.1) rotate(15deg);
-    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+    box-shadow: 0 8px 25px rgba(13, 110, 253, 0.6);
     color: white !important;
 }
 
-/* Animación de pulso para WhatsApp */
 @keyframes pulse-green {
     0% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
     50% { box-shadow: 0 4px 25px rgba(37, 211, 102, 0.7); }
     100% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+}
+
+/* Responsive: En móvil se ajustan para no estorbar */
+@media (max-width: 576px) {
+    .floating-buttons {
+        bottom: 20px;
+        right: 20px;
+        gap: 12px;
+    }
+    
+    .btn-whatsapp {
+        width: 55px;
+        height: 55px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+        animation: none;
+    }
+    
+    .btn-whatsapp span { display: none; }
+    .btn-whatsapp i { font-size: 1.6rem; margin: 0; }
+
+    .btn-paw {
+        width: 50px;
+        height: 50px;
+        font-size: 1.4rem;
+    }
 }
 
 /* ==========================================
@@ -904,108 +935,7 @@ margin-bottom: 3px !important;
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-    /* ============================
-        Banner promocional medio
-        ============================ */
-  .mid-promo-banner {
-    /* Fondo con degradado de colores vivos y alegres */
-    background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%) !important;
-    /* Borde más visible y colorido */
-    border: 2px solid rgba(37, 207, 249, 0.6) !important;
-    border-radius: 24px;
-    padding: 2.5rem;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
-    position: relative;
-    overflow: hidden;
-    /* Sombra suave para darle volumen al banner */
-    box-shadow: 0 10px 30px rgba(37, 207, 249, 0.15);
-  }
-  /* Esfera brillante violeta en la esquina superior derecha */
-  .mid-promo-banner::before {
-    content: '';
-    position: absolute;
-    top: -40%;
-    right: -10%;
-    width: 350px;
-    height: 350px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
-    border-radius: 50%;
-    filter: blur(20px);
-    z-index: 0;
-  }
-.mid-promo-banner::after {
-  content: '';
-  position: absolute;
-  bottom: -40%;
-  left: -10%;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(244, 63, 94, 0.35) 0%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(20px);
-  z-index: 0;
-    }
 
-    .mid-promo-icon {
-        font-size: 3.5rem;
-        color: #ff7300; 
-        animation: float 4s ease-in-out infinite;
-        position: relative;
-        z-index: 1;
-        flex-shrink: 0;
-        filter: drop-shadow(0 4px 12px rgba(255, 115, 0, 0.4));
-    }
-
-    .mid-promo-content {
-        flex: 1;
-        min-width: 250px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .mid-promo-content h4 {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #0284c7;
-        margin-bottom: 0.5rem;
-    }
-
-    .mid-promo-content p {
-        color: #0f172a;
-        font-size: 0.92rem;
-        line-height: 1.6;
-        margin-bottom: 0;
-    }
-
-    .mid-promo-cta {
-        background: #ff7300;
-        color: #fff;
-        border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 50px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: 'Inter', sans-serif;
-        position: relative;
-        z-index: 1;
-        text-decoration: none;
-        white-space: nowrap;
-        flex-shrink: 0;
-         box-shadow: 0 4px 15px rgba(255, 115, 0, 0.4);
-    }
-
-    .mid-promo-cta:hover {
-        background:#0284c7;
-        transform: translateY(-3px);
-          box-shadow: 0 10px 25px rgba(2, 132, 199, 0.5);
-        color: #fff;
-    }
 /* Cards */
         .help-card {
             border: none;
@@ -1268,64 +1198,7 @@ margin-bottom: 3px !important;
                 right: 20px;
             }
         }
-/* 4. BANNER PUBLICITARIO INTERMEDIO */
-.mid-promo-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
-    border: 1px dashed #ffe8a1;
-    border-radius: 16px;
-    padding: 2rem;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
 
-.mid-promo-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #ffc107;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    color: #ffffff;
-}
-
-.mid-promo-content {
-    flex: 1;
-    min-width: 280px;
-}
-
-.mid-promo-content h4 {
-    color: #856404;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-}
-
-.mid-promo-content p {
-    color: #856404;
-    margin: 0;
-    opacity: 0.9;
-}
-
-.mid-promo-cta {
-    background-color: var(--text-dark);
-    color: #ffffff;
-    text-decoration: none;
-    padding: 0.8rem 1.8rem;
-    border-radius: 50px;
-    font-weight: 700;
-    transition: var(--transition-smooth);
-    white-space: nowrap;
-}
-
-.mid-promo-cta:hover {
-    background-color: #000000;
-    color: #ffffff;
-    transform: translateX(4px);
-}
 #productGrid .text-warning:not(img),
 #productGrid small.text-warning,
 #productGrid .alert-warning,
@@ -1474,4 +1347,258 @@ background-color: #e9ecef;
 }
 .progress-bar {
 transition: width 0.4s ease;
+}
+/* ============================
+   BANNER PROMOCIONAL DESTACADO
+   ============================ */
+.mid-promo-banner {
+    /* Fondo vibrante con degradado de 3 colores de marca */
+    background: linear-gradient(135deg, 
+        var(--primary) 0%, 
+        var(--secondary) 50%, 
+        var(--accent) 100%) !important;
+    border: 3px solid var(--accent) !important;
+    border-radius: 24px;
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3);
+    animation: banner-glow 3s ease-in-out infinite;
+}
+
+/* 🔆 Efecto de brillo pulsante en el banner */
+@keyframes banner-glow {
+    0%, 100% { box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3); }
+    50% { box-shadow: 0 15px 50px rgba(255, 208, 0, 0.5); }
+}
+
+/* ✨ Patrón decorativo de fondo (puntos sutiles) */
+.mid-promo-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 0;
+}
+
+/* 🟡 Esfera brillante amarilla (accent) - esquina superior derecha */
+.mid-promo-banner::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -15%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, 
+        rgba(255, 208, 0, 0.5) 0%, 
+        transparent 70%);
+    border-radius: 50%;
+    filter: blur(30px);
+    z-index: 0;
+    animation: pulse-sphere 4s ease-in-out infinite;
+}
+
+@keyframes pulse-sphere {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 0.9; }
+}
+
+/* 🎯 Ícono principal con efecto de rebote */
+.mid-promo-icon {
+    font-size: 4rem;
+    color: var(--white);
+    animation: bounce-icon 2s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.3));
+    background: rgba(255, 255, 255, 0.2);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes bounce-icon {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(-5deg); }
+    75% { transform: translateY(-4px) rotate(5deg); }
+}
+
+/* 📝 Contenido de texto - RESALTADO */
+.mid-promo-content {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+    z-index: 2;
+}
+
+.mid-promo-content h4 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+    text-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1.3;
+}
+
+/* 🔥 Badge de "OFERTA" junto al título con animación de llama */
+.mid-promo-content h4::before {
+    content: '🔥';
+    font-size: 1.4rem;
+    animation: flame 1s ease-in-out infinite;
+}
+
+@keyframes flame {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.mid-promo-content p {
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.7;
+    margin-bottom: 0;
+    opacity: 1;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.3px;
+}
+
+/* 🔘 Botón CTA con efecto de brillo que lo cruza */
+.mid-promo-cta {
+    background: var(--accent); /* Amarillo vibrante */
+    color: var(--primary-dark) !important;
+    border: 2px solid var(--white);
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    z-index: 2;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(255, 208, 0, 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+}
+
+/* 💫 Efecto de brillo que cruza el botón */
+.mid-promo-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.5), 
+        transparent);
+    transition: left 0.6s ease;
+}
+
+.mid-promo-cta:hover::before {
+    left: 100%;
+}
+
+.mid-promo-cta:hover {
+    background: var(--white);
+    color: var(--primary-dark) !important;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    border-color: var(--accent);
+}
+
+/* 🏷️ Badge flotante de descuento (esquina superior) */
+.mid-promo-banner .promo-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--white);
+    color: var(--secondary);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    animation: badge-pulse 2s ease-in-out infinite;
+    border: 2px solid var(--secondary);
+}
+
+@keyframes badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+@media (max-width: 768px) {
+    .mid-promo-banner {
+        padding: 2rem 1.5rem;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .mid-promo-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 3rem;
+    }
+    
+    .mid-promo-content {
+        text-align: center;
+    }
+    
+    .mid-promo-content h4 {
+        font-size: 1.3rem;
+        justify-content: center;
+    }
+    
+    .mid-promo-content p {
+        font-size: 0.9rem;
+    }
+    
+    .mid-promo-cta {
+        padding: 0.8rem 2rem;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .promo-badge {
+        top: 10px;
+        right: 10px;
+        font-size: 0.75rem;
+        padding: 6px 12px;
+    }
 }
