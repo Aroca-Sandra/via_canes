@@ -1,23 +1,29 @@
-/* =========================
-   VARIABLES & RESET
-========================= */
+/* ==========================================================================
+   VARIABLES & RESET RADICAL (VÍA CANES AUTH)
+   ========================================================================== */
 :root {
-    --primary: #2596be;
-    --primary-light: #3b82f6;
-    --primary-dark: #1e3a5f;
-    --accent: #f97316;
-    --bg: #f8f7f4;
+    /* CONTROL DE COLOR CORPORATIVO TROPICAL PREMIUM */
+    --primary: #0891b2;         /* Cian vibrante base */
+    --primary-light: #22d3ee;   /* Cian claro interactivo para enfoques */
+    --primary-dark: #0e7490;    /* Azul océano oscuro para degradados y hovers */
+    --secondary: #f43f5e;       /* Fucsia enérgico para acciones comerciales */
+    --accent: #fbbf24;          /* Amarillo alerta para destaques y detalles */
+    
     --white: #ffffff;
-    --text: #334155;
-    --text-light: #64748b;
-    --muted: #94a3b8;
-    --border: #e2e8f0;
-    --success: #16a34a;
-    --danger: #dc2626;
+    --bg: #f0fdfa;              /* Fondo menta/turquesa suave general */
+    --text: #134e4a;            /* Verde océano profundo para máxima lectura de títulos */
+    --text-light: #2d7a75;      /* Tono medio legible para subtítulos y etiquetas */
+    --muted: #94a3b8;           /* Gris neutro para iconos decorativos fijos */
+    --border: #cbd5e1;          /* Gris claro nítido para bordes de inputs */
+    
+    /* ALERTAS E INTERFAZ */
+    --success: #10B981;
+    --danger: #ef4444;
     --success-light: #dcfce7;
     --danger-light: #fee2e2;
-    --shadow: 0 10px 30px rgba(0, 0, 0, .08);
-    --shadow-primary: 0 10px 25px rgba(37, 150, 190, .20); /* Ajustado al color primary */
+    
+    --shadow: 0 10px 30px rgba(19, 78, 74, 0.06);
+    --shadow-primary: 0 10px 25px rgba(8, 145, 178, 0.15);
     --transition: .3s ease;
 }
 
@@ -27,16 +33,16 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Inter', sans-serif;
+body { 
+    font-family: 'Inter', sans-serif;   
     background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
+    color: var(--text);    
+    overflow-x: hidden;    
     line-height: 1.5;
 }
 
-a {
-    text-decoration: none;
+a {  
+    text-decoration: none;  
     color: inherit;
 }
 
@@ -45,30 +51,30 @@ img {
     max-width: 100%;
 }
 
-/* =========================
+/* ==========================================================================
    LAYOUT PRINCIPAL
-========================= */
+   ========================================================================== */
 .auth-page {
+    
     min-height: 100vh;
     display: flex;
 }
 
-/* =========================
-   PANEL IZQUIERDO (Decorativo)
-========================= */
+/* ==========================================================================
+   PANEL IZQUIERDO (Decorativo unificado en degradado Cian a Oscuro)
+   ========================================================================== */
 .auth-decor {
     width: 45%;
-    background: linear-gradient(145deg, var(--primary-dark), var(--primary));
+    background: linear-gradient(145deg, var(--primary-dark), var(--primary)) !important;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 40px;
-    color: white;
+    color: var(--white);
 }
 
-/* Círculos decorativos de fondo */
 .auth-decor::before,
 .auth-decor::after {
     content: '';
@@ -111,7 +117,7 @@ img {
     width: 55px;
     height: 55px;
     object-fit: contain;
-    background: rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, .15);
     padding: 8px;
     border-radius: 18px;
 }
@@ -119,37 +125,41 @@ img {
 .auth-logo span {
     font-size: 1.8rem;
     font-weight: 800;
-    color: #fff;
+    color: var(--white);
 }
 
 .auth-logo span em {
     font-style: normal;
 }
 
+/* Círculo del Pug unificado al Amarillo de tu marca */
 .auth-decor-img {
     width: 240px;
     height: 240px;
     border-radius: 50%;
     object-fit: cover;
     margin: 0 auto 30px;
-    border: 5px solid rgba(255, 255, 255, .08);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, .3);
+    background-color: var(--accent) !important; /* Pasado a amarillo #fbbf24 */
+    border: 5px solid rgba(255, 255, 255, .2) !important;
+    box-shadow: 0 15px 40px rgba(19, 78, 74, 0.25) !important;
 }
 
 .auth-decor h2 {
     font-size: 1.8rem;
+    font-weight: 800;
     margin-bottom: 12px;
+    color: var(--white);
 }
 
 .auth-decor p {
-    color: rgba(255, 255, 255, .75);
+    color: rgba(255, 255, 255, .85);
     line-height: 1.7;
     font-size: .95rem;
 }
 
-/* =========================
-   PANEL DERECHO (Formulario)
-========================= */
+/* ==========================================================================
+   PANEL DERECHO (Formularios e Inputs de Control)
+   ========================================================================== */
 .auth-form-panel {
     flex: 1;
     display: flex;
@@ -164,7 +174,7 @@ img {
     max-width: 470px;
 }
 
-/* Botón Volver */
+/* Botón Volver a la Tienda flotante */
 .auth-back {
     display: inline-flex;
     align-items: center;
@@ -172,21 +182,22 @@ img {
     margin-bottom: 1.5rem;
     color: var(--text-light);
     font-size: .92rem;
-    font-weight: 600;
+    font-weight: 700;
     transition: var(--transition);
 }
 
 .auth-back:hover {
     color: var(--primary);
+    transform: translateX(-2px);
 }
 
-/* Alertas (Error/Success) */
+/* Alertas de Validación */
 .auth-error,
 .auth-success {
     padding: 14px 16px;
     border-radius: 14px;
     margin-bottom: 18px;
-    display: none; /* Oculto por defecto */
+    display: none; 
     font-size: .9rem;
     font-weight: 600;
     animation: fadeIn 0.3s ease;
@@ -195,25 +206,24 @@ img {
 .auth-error {
     background: var(--danger-light);
     color: var(--danger);
-    border: 1px solid rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.1);
 }
 
 .auth-success {
     background: var(--success-light);
     color: var(--success);
-    border: 1px solid rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.1);
 }
 
-/* Clase utilitaria para mostrar alertas desde JS si no usas style.display */
 .auth-error.show,
 .auth-success.show {
     display: block;
 }
 
-/* Tabs (Login/Register) */
+/* Pestañas Superiores de Control (Login / Registrarse) */
 .auth-tabs {
-    background: #eef2ff;
-    border-radius: 14px;
+    background: rgba(8, 145, 178, 0.08) !important; /* Cápsula traslúcida en tono cian */
+    border-radius: 50px;
     padding: 5px;
     display: flex;
     margin-bottom: 28px;
@@ -224,7 +234,7 @@ img {
     height: 46px;
     border: none;
     background: transparent;
-    border-radius: 12px;
+    border-radius: 50px;
     cursor: pointer;
     font-weight: 700;
     color: var(--text-light);
@@ -233,12 +243,12 @@ img {
 }
 
 .auth-tab.active {
-    background: #fff;
-    color: var(--primary);
-    box-shadow: var(--shadow);
+    background: var(--white) !important;
+    color: var(--primary) !important; /* Resalta en tu cian oficial */
+    box-shadow: var(--shadow) !important;
 }
 
-/* Formularios */
+/* Formularios de entrada */
 .auth-form {
     display: none;
     animation: fadeIn 0.4s ease;
@@ -250,25 +260,27 @@ img {
 
 .auth-form h1 {
     font-size: 2rem;
+    font-weight: 800;
     margin-bottom: 8px;
-    color: var(--text);
+    color: var(--text); /* Verde océano profundo */
 }
 
 .auth-subtitle {
     color: var(--text-light);
     margin-bottom: 30px;
     font-size: 0.95rem;
+    font-weight: 600;
 }
 
-/* Campos de Input */
 .auth-field {
     margin-bottom: 18px;
 }
 
+/* Etiquetas superiores de cada input */
 .auth-label {
     display: block;
     margin-bottom: 8px;
-    font-size: .8rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--text-light);
     text-transform: uppercase;
@@ -286,23 +298,22 @@ img {
     transform: translateY(-50%);
     color: var(--muted);
     font-size: 1rem;
-    pointer-events: none; /* Para que el click pase al input */
+    pointer-events: none; 
 }
 
+/* Estilizado premium de inputs */
 .auth-input,
 .auth-select {
     width: 100%;
     height: 56px;
-    border: 1.5px solid var(--border);
+    border: 1.5px solid var(--border) !important;
     border-radius: 16px;
-    /* Padding: Top Bottom Left Right */
-    /* Left 46px deja espacio para el icono */
-    /* Right 50px deja espacio para el botón de ver contraseña */
     padding: 0 50px 0 46px; 
     font-size: .95rem;
+    font-weight: 600;
     transition: var(--transition);
     font-family: inherit;
-    background: #fff;
+    background: var(--white);
     color: var(--text);
 }
 
@@ -318,11 +329,10 @@ img {
 .auth-input:focus,
 .auth-select:focus {
     outline: none;
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, .1);
+    border-color: var(--primary) !important; /* Enfoca con tu cian */
+    box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.15) !important;
 }
 
-/* Botón toggle password */
 .auth-pw-toggle {
     position: absolute;
     right: 15px;
@@ -341,14 +351,13 @@ img {
     color: var(--primary);
 }
 
-/* Grid para Nombre/Apellido */
 .auth-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
 }
 
-/* Medidor de Fuerza de Contraseña */
+/* Indicadores de Seguridad de Clave */
 .pw-strength {
     display: flex;
     gap: 6px;
@@ -363,23 +372,22 @@ img {
     transition: background-color 0.3s ease;
 }
 
-/* Colores dinámicos controlados por JS o clases */
-.pw-bar.weak { background: #ef4444; }
-.pw-bar.medium { background: #f59e0b; }
-.pw-bar.strong { background: #22c55e; }
+.pw-bar.weak { background: var(--danger); }
+.pw-bar.medium { background: var(--accent); }
+.pw-bar.strong { background: var(--success); }
 
 .pw-hint {
     margin-top: 10px;
     font-size: .85rem;
     font-weight: 600;
-    display: none; /* Oculto por defecto */
+    display: none; 
 }
 
 .pw-hint.show {
     display: block;
 }
 
-/* Checkbox Términos */
+/* Checkbox de recordar e hipervínculos */
 .auth-check {
     display: flex;
     align-items: flex-start;
@@ -391,7 +399,7 @@ img {
     width: 18px;
     height: 18px;
     margin-top: 3px;
-    accent-color: var(--primary);
+    accent-color: var(--primary); /* Sincroniza al cian */
     cursor: pointer;
 }
 
@@ -400,159 +408,305 @@ img {
     color: var(--text-light);
     line-height: 1.5;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .auth-check a {
-    color: var(--primary);
-    font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    color: var(--primary) !important; /* Enlaces en cian oficial */
+    font-weight: 700;
+    text-decoration: none !important;
+}
+.auth-check a:hover {
+    color: var(--primary-dark) !important;
+    text-decoration: underline !important;
 }
 
 .auth-check div[style*="margin-left:auto"] {
     margin-left: auto;
 }
 
-/* Botones Principales */
+/* Animación global de entrada fluida */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* ==========================================================================
+   BOTONES PRINCIPALES Y COMPONENTES DE CONTROL DE ACCIÓN
+   ========================================================================== */
+
+/* Botón Iniciar Sesión / Registrarse adaptado al formato píldora corporativo */
 .auth-btn-primary {
     width: 100%;
     height: 54px;
     border: none;
-    border-radius: 16px;
-    background: var(--primary);
-    color: #fff;
+    border-radius: 50px !important; /* Pasado a píldora en armonía con el carrito */
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+    color: var(--white) !important;
     font-weight: 700;
     font-size: .95rem;
     cursor: pointer;
-    transition: var(--transition);
-    box-shadow: var(--shadow-primary);
-    display: flex;
+    box-shadow: var(--shadow-primary) !important;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 .auth-btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(14, 116, 144, 0.3) !important;
+    filter: brightness(1.05);
 }
 
 .auth-btn-primary:active {
     transform: translateY(0);
 }
 
-/* Botón Secundario / Google */
+/* Botón Secundario / Registro con Google */
 .auth-btn-google {
     width: 100%;
     height: 54px;
-    border-radius: 16px;
-    border: 1.5px solid var(--border);
-    background: #fff;
+    border-radius: 50px !important; /* Pasado a píldora suave */
+    border: 1.5px solid var(--border) !important;
+    background: var(--white) !important;
+    color: var(--text) !important; /* Texto unificado en verde océano */
     cursor: pointer;
     font-weight: 700;
-    transition: var(--transition);
     margin-top: 18px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    transition: var(--transition);
 }
 
 .auth-btn-google:hover {
-    box-shadow: var(--shadow);
-    background: #f8fafc;
+    box-shadow: var(--shadow) !important;
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
 }
 
+/* Icono oficial de Google */
 .auth-btn-google i {
     color: #ea4335;
+    font-size: 1.1rem;
 }
 
-/* Botón Volver (Texto) */
+/* Botón Volver (Texto de retorno centrado inferior) */
 .auth-back-btn {
     border: none;
     background: none;
-    color: var(--text-light);
+    color: var(--text-light) !important;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     font-size: .92rem;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    padding: 10px;
+    text-decoration: none !important; /* Retiramos subrayado estático */
+    padding: 12px;
     width: 100%;
     text-align: center;
-    transition: color 0.2s;
+    display: block;
+    transition: var(--transition);
 }
 
 .auth-back-btn:hover {
-    color: var(--primary);
+    color: var(--secondary) !important; /* Enciende en fucsia como feedback de salida */
+    text-decoration: underline !important;
 }
 
-/* =========================
-   LOADER
-========================= */
+/* ==========================================================================
+   PANTALLA DE CARGA (LOADER DEL PERRO INTEGRADO)
+   ========================================================================== */
 .loader-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(255, 255, 255, .92);
-    backdrop-filter: blur(6px);
-    display: none; /* Controlado por JS */
+    background: rgba(255, 255, 255, .95) !important; /* Fondo opaco nítido */
+    backdrop-filter: blur(8px) !important;
+    display: none; /* Controlado mediante JS como d-flex */
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 10000;
 }
 
 .loader-content {
     text-align: center;
 }
 
+/* Animación del perrito saltando en color cian oficial */
 .loader-dog {
-    font-size: 4rem;
-    color: var(--primary);
-    animation: dogBounce .6s infinite alternate;
+    font-size: 4.5rem;
+    color: var(--primary) !important;
+    animation: dogBounce .6s cubic-bezier(0.25, 0.8, 0.25, 1) infinite alternate !important;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgba(8, 145, 178, 0.15));
 }
 
 .loader-text {
-    margin-top: 15px;
-    font-weight: 700;
-    color: var(--primary-dark);
+    margin-top: 20px;
+    font-weight: 800;
+    color: var(--primary-dark) !important; /* Texto en azul océano oscuro */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
 }
 
 @keyframes dogBounce {
     from { transform: translateY(0); }
-    to { transform: translateY(-18px); }
+    to { 
+        transform: translateY(-22px); 
+        filter: drop-shadow(0 20px 15px rgba(19, 78, 74, 0.15));
+    }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
+/* ==========================================================================
+   CONSULTAS DE MEDIOS RESPONSIVAS (MEDIA QUERIES CONSOLIDADAS)
+   ========================================================================== */
 @media (max-width: 991px) {
     .auth-decor {
-        display: none;
+        display: none !important; /* Oculta el bloque del perrito en tabletas y móviles */
     }
     
     .auth-form-panel {
-        width: 100%;
+        width: 100% !important;
+        background: var(--bg);
     }
 }
 
 @media (max-width: 600px) {
     .auth-form-panel {
-        padding: 20px;
-        align-items: flex-start; /* Mejor scroll en móviles pequeños */
-        padding-top: 40px;
+        padding: 24px;
+        align-items: flex-start; /* Permite scroll vertical fluido si el teclado móvil se despliega */
+        padding-top: 50px;
     }
     
     .auth-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important; /* Convierte los campos nombre/apellido a 1 columna */
         gap: 0;
     }
     
     .auth-form h1 {
         font-size: 1.75rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .auth-input, .auth-select {
+        height: 52px; /* Inputs ligeramente más compactos en celulares */
     }
 }
+/* ==========================================================================
+   BLINDAJE RESPONSIVO FINAL PARA EL FORMULARIO MÓVIL
+   ========================================================================== */
+@media (max-width: 600px) {
+    /* Forzar que el contenedor de inputs respire con mejor aire en celulares */
+    .auth-container {
+        padding: 10px 4px !important;
+    }
+    
+    /* El botón de iniciar sesión se adapta de forma óptima a las pantallas táctiles */
+    .auth-btn-primary, .auth-btn-google {
+        height: 50px !important; /* Un poco más compacto pero fácil de presionar con el dedo */
+        font-size: 0.92rem !important;
+    }
+
+    /* Ajuste para que las pestañas superiores no compriman el texto en pantallas mini */
+    .auth-tab {
+        font-size: 0.85rem !important;
+        height: 42px !important;
+    }
+}
+/* ==========================================================================
+   SOLUCIÓN AL 100% DE ZOOM: AJUSTE ELÁSTICO POR ALTURA DE MONITOR
+   ========================================================================== */
+
+/* 
+   Esta regla se activa automáticamente al 100% de zoom en pantallas estándar 
+   o laptops, comprimiendo los espacios muertos verticalmente.
+*/
+@media (max-height: 800px) {
+    /* 1. Reducir la separación superior de la página y el título */
+    .auth-logo {
+        margin-bottom: 15px !important; /* Espacio del logo del pug reducido */
+    }
+    .auth-decor-img {
+        width: 180px !important; /* Imagen del pug un poco más compacta */
+        height: 180px !important;   
+        margin-bottom: 15px !important;
+    }
+    .auth-decor h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* 2. Compactar el bloque del formulario derecho */
+    .auth-form-panel {
+        padding: 20px 40px !important; /* Más aire en los costados y menos arriba/abajo */
+    }
+    .auth-form h1 {
+        font-size: 1.65rem !important; /* Título "Crear cuenta" ligeramente más pequeño */
+        margin-bottom: 4px !important;
+    }
+    .auth-subtitle {
+        margin-bottom: 12px !important; /* Reduce la separación del subtítulo */
+        font-size: 0.88rem !important;
+    }
+    .auth-tabs {
+        margin-bottom: 16px !important; /* Acerca las pestañas a los campos de texto */
+    }
+
+    /* 3. Ajuste clave: Reducción de la altura de los campos de texto y márgenes */
+    .auth-field {
+        margin-bottom: 10px !important; /* Reduce drásticamente la separación entre cajas */
+    }
+    .auth-label {
+        margin-bottom: 4px !important; /* Acerca la etiqueta al input */
+        font-size: 0.8rem !important;
+    }
+    .auth-input,
+    .auth-select {
+        height: 42px !important; /* Inputs más estilizados y compactos (ahorran más de 40px en total) */
+        border-radius: 10px !important;
+        font-size: 0.9rem !important;
+    }
+    .auth-input-wrap i.field-icon,
+    .auth-pw-toggle {
+        font-size: 0.85rem !important;
+    }
+
+    /* 4. Compactar la casilla de verificación y el botón final */
+    .auth-check {
+        margin-bottom: 12px !important;
+    }
+    .auth-check label {
+        font-size: 0.88rem !important;
+    }
+    .auth-btn-primary {
+        height: 44px !important; /* Botón proporcional y estilizado */
+        font-size: 0.95rem !important;
+        border-radius: 50px !important;
+    }
+    .auth-btn-google {
+        height: 44px !important;
+        margin-top: 10px !important;
+        font-size: 0.95rem !important;
+    }
+    .auth-back-btn {
+        padding: 6px !important;
+    }
+}
+
+/* 
+   Ajuste extremo secundario para pantallas ultra compactas 
+   (como laptops de 13 pulgadas al 100% de zoom)
+*/
+@media (max-height: 720px) {
+    .auth-decor-img {
+        width: 140px !important;
+        height: 140px !important;
+    }
+    .auth-input, .auth-select {
+        height: 38px !important;
+    }
+    .auth-btn-primary, .auth-btn-google {
+        height: 40px !important;
+    }
+}
+

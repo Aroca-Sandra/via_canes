@@ -1,67 +1,101 @@
-/* ==========================================
-   VARIABLES Y ESTILOS BASE COMPARTIDOS
-   ========================================== */
-:root {
-  --banner-title-color: #1a365d;
-  --banner-text-color: #2d3748;
-  --banner-font-family: 'Inter', sans-serif;
-  --banner-text-shadow: -1px -1px 0 #ffffff, 
-                        1px -1px 0 #ffffff, 
-                       -1px  1px 0 #ffffff, 
-                        1px  1px 0 #ffffff, 
-                        0px 3px 6px rgba(0, 0, 0, 0.15);
-                                    --primary-blue: #0046be;
-            --light-blue: #f0f5ff;
-            --text-dark: #1a1a1a;
-            --text-gray: #666;
-            --white: #ffffff;
-            --whatsapp-green: #25d366;
+/* ==========================================================================
+   🐾 STYLE.CSS v2.0 - VERSIÓN FINAL OPTIMIZADA
+   Petshop Premium - Banners, Productos, Servicios, Carrito y Componentes
+   Paleta: Verde Azulado / Cian / Dorado / Coral
+   ========================================================================== */
 
+/* ==========================================================================
+   1. VARIABLES GLOBALES
+   ========================================================================== */
+:root {
+    /* Paleta principal */
+    --primary: #0891b2;
+    --primary-dark: #0e7490;
+    --secondary: #ff8c00;
+    --accent: #ffd000;
+    
+    --white: #ffffff;
+    --bg: #ecfeff;
+    --bg-light: #ecfeff;
+    
+    --text: #134e4a;
+    --text-light: #64748b;
+    --text-dark: #134e4a;
+    --text-gray: #64748b;
+
+    /* Sombras */
+    --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+    /* Transiciones */
+    --transition: 0.3s ease;
+    --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Bordes redondeados */
+    --radius: 24px;
+    --radius-sm: 12px;
+    --radius-lg: 30px;
+
+    /* Variables específicas de Banners */
+    --banner-title-color: #134e4a;
+    --banner-text-color: #0f766e;
+    --banner-font-family: 'Inter', sans-serif;
+    --banner-text-shadow: 
+        -1px -1px 0 #ffffff, 
+        1px -1px 0 #ffffff,
+        -1px 1px 0 #ffffff, 
+        1px 1px 0 #ffffff,
+        0px 3px 6px rgba(0, 0, 0, 0.15);
+
+    --primary-blue: #0891b2;
+    --light-blue: #ecfeff;
+    --whatsapp-green: #25d366;
 }
 
-
-/* ==========================================
-   ESTRUCTURA GENERAL DE BANNERS (.hero y .category-banner)
-   ========================================== */
+/* ==========================================================================
+   2. BANNERS HERO Y DE CATEGORÍAS
+   ========================================================================== */
 .hero,
 .category-banner {
     position: relative;
     width: 100%;
-    max-width: 1300px;
-    min-height: 350px;
-    aspect-ratio: 1300 / 350;
-    margin: 0 auto 2rem auto;
-    border-radius: 12px;
+    max-width: 1200px;
+    min-height: 220px;
+    aspect-ratio: 1200 / 220;
+    margin: 0 auto 1.5rem;
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center right;
-    background-size: cover;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 30px 40px;
+    padding: 15px 35px;
+    box-shadow: var(--shadow-md);
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 105%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 .hero {
     background-image: url('../img/banners/banner-index.png');
-    background-position: center center;
-    background-size: cover;  
+    background-size: cover;
+}
+
+.category-banner.active,
+.hero.active {
+    animation: bannerSlideIn 0.6s ease-out;
 }
 
 .banner-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-        rgba(255, 255, 255, 0.75) 0%,   
-        rgba(255, 255, 255, 0.3) 40%,  
-        transparent 80%);              
+    inset: 0;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.75) 0%, 
+        rgba(255, 255, 255, 0.3) 40%, 
+        transparent 80%);
     z-index: 1;
     pointer-events: none;
 }
@@ -75,8 +109,8 @@
     margin: 0 auto;
     display: flex;
     flex-direction: row;
-    align-items: flex-start; 
-    justify-content: space-between; 
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 15px;
 }
 
@@ -85,309 +119,220 @@
     position: relative;
     z-index: 5;
     width: 100%;
-    max-width: 420px;
+    max-width: 380px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     text-align: left;
     font-family: var(--banner-font-family);
-    color: var(--banner-title-color) !important;
+    color: var(--banner-title-color);
 }
 
 .hero h1,
 .banner-title {
     font-family: var(--banner-font-family);
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 800;
     line-height: 1.2;
     color: var(--banner-title-color);
     text-shadow: var(--banner-text-shadow);
     text-align: left;
-    margin: 0;
+    margin: 0 0 2px 0;
 }
 
 .hero p,
-.banner-description {
+.banner-description,
+.hero-text p {
     font-family: var(--banner-font-family);
-    font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.5;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.4;
     color: var(--banner-text-color);
     text-shadow: var(--banner-text-shadow);
     text-align: left;
-    margin: 0; 
+    margin: 0;
+    max-width: 360px;
 }
 
-/* ==========================================
-   COMPONENTES ADICIONALES (BADGES E ICONOS)
-   ========================================== */
+/* Badges y Stats de Banner */
 .banner-badge {
-    align-self: flex-start; 
-    background: rgba(255, 255, 255, 0.6); 
-    padding: 0.4rem 1rem;
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 4px 10px;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: capitalize;
-    color: #1a365d;
-    border: 1px solid rgba(26, 54, 93, 0.15);
-    margin-bottom: 0.2rem;
+    color: var(--banner-title-color);
+    border: 1px solid rgba(8, 145, 178, 0.2);
+    margin-bottom: 4px;
 }
 
 .banner-stats {
     display: flex;
-    gap: 0.8rem;
-    flex-wrap: nowrap;          
-    margin-top: 2.8rem;
+    gap: 8px;
+    flex-wrap: nowrap;
+    margin-top: 12px;
     align-items: center;
-    justify-content: flex-start; 
-    width: 100%;                
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.banner-stats div {
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+.banner-stats div span {
+    font-size: 0.78rem;
 }
 
 .stat-item {
     display: flex;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
     gap: 1.5rem;
-    background: rgba(255, 255, 255, 0.75); 
+    background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 50px;
     font-size: 0.9rem;
     font-weight: 600;
-    border: 1px solid rgba(26, 54, 93, 0.2); 
-    color: #1a365d !important; 
-    white-space: nowrap;        
+    border: 1px solid rgba(8, 145, 178, 0.2);
+    color: var(--banner-title-color);
+    white-space: nowrap;
     transition: all 0.25s ease;
 }
 
 .stat-item i,
 .stat-item span {
-    color: #1a365d !important; 
-    font-size: 1.0rem;
+    color: var(--banner-title-color);
+    font-size: 0.78rem;
     transition: color 0.25s ease;
 }
 
 .stat-item:hover {
-    background: #ffd000 !important; 
-    border-color: #ffd000;
+    background: var(--accent);
+    border-color: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(26, 54, 93, 0.25);
+    box-shadow: 0 4px 12px rgba(255, 208, 0, 0.4);
 }
 
-.stat-item:hover i,
-.stat-item:hover span {
-    color: #1a365d !important;            
-}
-
-/* ==========================================
-   BOTÓN DESTACADO (SUPERIOR DERECHO)
-   ========================================== */
+/* Botón destacado del banner - CORREGIDO */
 .hero .btn-main,
 .category-banner .btn-main {
     position: absolute;
     top: 10px;
     right: 200px;
     z-index: 12;
-    display: inline-flex;    
+    display: inline-flex;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.98rem 1.5rem; 
-    font-size: 1.9rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem; /* ✅ Corregido: era 1.9rem (ilegible) */
     font-weight: 800;
-    border-radius: 12px; 
-    background: rgba(255, 208, 0, 0.617) !important; 
+    border-radius: var(--radius-sm);
+    background: rgba(255, 208, 0, 0.85);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);   
-    border: 1px solid rgba(255, 255, 255, 0.4); 
-    color: #1a365d !important; 
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--banner-title-color);
     font-family: var(--banner-font-family);
     text-decoration: none;
-    white-space: nowrap;        
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
     transition: all 0.25s ease;
 }
 
 .hero .btn-main i,
 .category-banner .btn-main i {
-    color: #1a365d !important;
-    font-size: 1.0rem;
+    color: var(--banner-title-color);
+    font-size: 1rem;
     transition: color 0.25s ease;
 }
 
 .hero .btn-main:hover,
 .category-banner .btn-main:hover {
-    background: rgba(26, 54, 93, 0.9) !important;
-    color: #ffffff !important;
+    background: var(--primary-dark);
+    color: var(--white); /* ✅ Corregido: era #ffffff directo */
     border-color: rgba(255, 255, 255, 0.6);
-    transform: scale(0.98);
+    transform: scale(1.02);
 }
 
 .hero .btn-main:hover i,
 .category-banner .btn-main:hover i {
-    color: #ffffff !important;
+    color: var(--white);
 }
 
-/* Rutas de Fondos */
-.banner-perros { background-image: url('../img/banners/banner-perros.png'); }
-.banner-gatos { background-image: url('../img/banners/banner-gatos.png'); }
-.banner-higiene { background-image: url('../img/banners/banner-higiene.png'); }
-.banner-salud { background-image: url('../img/banners/banner-salud.png'); }
+/* Accesibilidad: focus visible */
+.hero .btn-main:focus-visible,
+.category-banner .btn-main:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* Rutas de fondos de banners */
+.banner-perros    { background-image: url('../img/banners/banner-perros.png'); }
+.banner-gatos     { background-image: url('../img/banners/banner-gatos.png'); }
+.banner-higiene   { background-image: url('../img/banners/banner-higiene.png'); }
+.banner-salud     { background-image: url('../img/banners/banner-salud.png'); }
 .banner-servicios { background-image: url('../img/banners/banner-servicios.jpg'); }
-.banner-citas { background-image: url('../img/banners/banner-citas.png'); }
-.banner-otros { background-image: url('../img/banners/banner-otros_animales.png'); }
-.banner-ofertas { background-image: url('../img/banners/banner-ofertas.jpg');}
+.banner-citas     { background-image: url('../img/banners/banner-citas.png'); }
+.banner-otros     { background-image: url('../img/banners/banner-otros_animales.png'); }
+.banner-ofertas   { background-image: url('../img/banners/banner-ofertas.jpg'); }
 
-.category-banner.active,
-.hero.active { 
-    animation: bannerSlideIn 0.6s ease-out; 
-}
-
-@keyframes bannerSlideIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================================
-   TITULOS DE SECCIÓN
-   ========================================== */
+/* ==========================================================================
+   3. TÍTULOS DE SECCIÓN
+   ========================================================================== */
 .section-title {
     text-align: center;
     margin-bottom: 45px;
 }
+
 .section-title h2 {
     font-size: 2rem;
     font-weight: 800;
     color: var(--text);
 }
+
 .section-title p {
     color: var(--text-light);
     margin-top: 10px;
 }
-/* Botones Autenticación */
-.btn-green {
-background: var(--primary);
-color: white;
-border: none;
-padding: 10px;
-width: 100%;
-font-weight: bold;
-border-radius: 12px;
-font-size: 0.9rem ;
-cursor: pointer;
-transition: 0.3s;
-margin-top: 5px;
-transition: 0.3s;
-text-transform: uppercase;
-letter-spacing: 1px;
-height: 45px;
-font-weight: 800;
-}
-/* --- SEPARADOR "O" ESTILO IMAGEN --- */
-.separator-container {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 20px 0;
-}
 
-/* Crea las líneas finas de los lados */
-.separator-container::before,
-.separator-container::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #cbd5e1; /* Línea gris clara */
-}
-
-/* Espacio interno para la letra "O" */
-.separator-container span {
-  padding: 0 15px;
-  color: #64748b;
-  font-size: 0.9rem;
-  font-family: sans-serif;
-}
-
-.btn-green:hover {
-background: var(--primary-dark);
-transform: translateY(-2px);
-}
-
-.btn-google {
-background: #ffffff;
-color: #444;
-border: 1.5px solid #e2e8f0;
-width: 100%;
-padding: 12px; /* Un poco más de aire */
-border-radius: 12px;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 12px; /* Este espacio separa el icono del texto */
-cursor: pointer;
-font-weight: 600;
-transition: 0.3s;
-font-size: 0.95rem;
-font-family: 'Roboto', sans-serif; /* Tipografía recomendada */
-}
-
-/* Estilo específico para el icono azul */
-.btn-google i {
-color: #4285f4;
-font-size: 1.2rem;
-}
-
-.btn-google:hover {
-background: #f8fafc;
-border-color: #cbd5e1;
-box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* Separador "O" */
-.auth-form p {
-margin: 10px 0;
-color: #94a3b8;
-font-size: 0.8rem;
-position: relative;
-padding-top: 0 !important;
-margin-bottom: 3px !important;
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   PRODUCTOS
-   ========================================== */
+/* ==========================================================================
+   4. PRODUCTOS
+   ========================================================================== */
 .products-section {
     padding: 70px 5%;
 }
+
 .main-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 25px;
 }
+
 .product-card {
     background: var(--white);
     border-radius: 20px;
     overflow: hidden;
     padding: 20px;
     position: relative;
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
 }
+
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(8, 145, 178, 0.25), 0 0 0 2px var(--primary);
 }
+
 .product-badge {
     position: absolute;
     top: 15px;
@@ -396,9 +341,11 @@ margin-bottom: 3px !important;
     color: var(--white);
     padding: 6px 12px;
     border-radius: 30px;
-    font-size: .75rem;
+    font-size: 0.75rem;
     font-weight: 700;
+    z-index: 2;
 }
+
 .img-wrapper {
     width: 100%;
     height: 220px;
@@ -410,116 +357,150 @@ margin-bottom: 3px !important;
     overflow: hidden;
     margin-bottom: 20px;
 }
+
 .img-wrapper img {
     max-width: 85%;
     max-height: 85%;
     object-fit: contain;
-    transition: var(--transition);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .product-card:hover .img-wrapper img {
-    transform: scale(1.08);
+    transform: scale(1.15) rotate(3deg);
 }
+
 .brand-tag {
-    font-size: .8rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-light);
     text-transform: uppercase;
     margin-bottom: 8px;
 }
+
 .product-title {
     font-size: 1rem;
     font-weight: 700;
     margin-bottom: 10px;
     min-height: 50px;
 }
+
 .price-tag {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--primary);
     margin-bottom: 20px;
 }
+
+/* Botón "Agregar" */
 .btn-add {
     margin-top: auto;
-    border: none;
-    background: #eff6ff;
+    margin-bottom: 12px;
+    border: 2px solid var(--primary);
+    background: var(--white);
     color: var(--primary);
     border-radius: 50px;
-    padding: 12px 20px;
+    padding: 10px 20px;
     font-weight: 700;
-    transition: var(--transition);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-}
-.btn-add:hover {
-    background: var(--primary);
-    color: var(--white);
-    transform: translateY(-2px);
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* ==========================================
-   SERVICIOS
-   ========================================== */
+.btn-add:hover {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--white);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(8, 145, 178, 0.3);
+}
+
+.btn-add:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   5. SERVICIOS
+   ========================================================================== */
 .card-servicio-informativa {
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
 }
+
 .card-servicio-informativa:hover {
     transform: translateY(-4px);
 }
+
 .services-section {
     padding: 80px 5%;
     background: var(--white);
 }
+
 .services-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 }
+
 .service-card {
     background: var(--white);
-    border-radius: 30px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    transition: var(--transition);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .service-card:hover {
     transform: translateY(-10px);
     box-shadow: var(--shadow-lg);
 }
+
 .service-card img {
     width: 100%;
     height: 260px;
     object-fit: cover;
+    transition: transform 0.5s ease;
 }
+
+.service-card:hover img {
+    transform: scale(1.05);
+}
+
 .service-info {
     padding: 25px;
     text-align: center;
 }
+
 .service-info h3 {
     font-size: 1.4rem;
     font-weight: 800;
     color: var(--primary);
     margin-bottom: 10px;
 }
+
 .service-info p {
     color: var(--text-light);
 }
 
-/* ==========================================
-   SIDEBAR CARRITO
-   ========================================== */
+/* ==========================================================================
+   6. CARRITO LATERAL & CHECKOUT
+   ========================================================================== */
 .cart-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.5);
+    background: rgba(19, 78, 74, 0.4);
     display: none;
     z-index: 1500;
 }
+
 .cart-overlay.active {
     display: block;
 }
+
 .cart-sidebar {
     position: fixed;
     top: 0;
@@ -530,163 +511,473 @@ margin-bottom: 3px !important;
     z-index: 2000;
     display: flex;
     flex-direction: column;
-    transition: .4s ease;
-    box-shadow: -10px 0 40px rgba(0,0,0,.15);
+    transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: -10px 0 40px rgba(19, 78, 74, 0.12);
 }
+
 .cart-sidebar.active {
     right: 0;
 }
+
 .cart-header {
     padding: 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(19, 78, 74, 0.06);
 }
+
 .cart-header h3 {
+    color: var(--text);
     font-weight: 800;
     margin: 0;
+    font-size: 1.3rem;
+    letter-spacing: -0.3px;
 }
+
 .close-cart {
     background: none;
     border: none;
     font-size: 1.4rem;
+    color: var(--text-light);
     cursor: pointer;
+    transition: var(--transition);
 }
+
+.close-cart:hover {
+    color: var(--text);
+    transform: scale(1.1) rotate(90deg);
+}
+
+.close-cart:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
 .cart-items {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
 }
+
 .empty-cart {
     text-align: center;
     color: var(--text-light);
     margin-top: 50px;
+    font-weight: 600;
 }
+
 .cart-footer {
     padding: 25px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid rgba(19, 78, 74, 0.06);
+    background-color: var(--bg);
 }
+
 .cart-total {
     display: flex;
     justify-content: space-between;
     font-size: 1.2rem;
     font-weight: 800;
+    color: var(--text);
     margin-bottom: 20px;
 }
-.checkout-btn {
+
+.cart-total span:last-child {
+    color: var(--primary);
+}
+
+/* Tarjeta Resumen Independiente */
+.card.shadow-sm {
+    border: none;
+    background-color: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 24px;
+}
+
+#total {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.progress {
+    background-color: rgba(19, 78, 74, 0.08);
+    border-radius: 50px;
+    overflow: hidden;
+    height: 8px;
+}
+
+#envio-barra,
+.progress-bar {
+    background: var(--accent);
+    border-radius: 50px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Botones de checkout */
+.checkout-btn,
+.btn-finalizar-compra {
     width: 100%;
     border: none;
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--secondary) 0%, #ff6b6b 100%);
     color: var(--white);
-    padding: 14px;
+    padding: 14px 24px;
     border-radius: 50px;
     font-weight: 700;
-    transition: var(--transition);
-}
-.checkout-btn:hover {
-    background: var(--primary-dark);
-}
-
-/* ==========================================
-   PANEL ADMIN
-   ========================================== */
-.admin-section {
-    padding: 80px 5%;
-}
-.admin-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-}
-.admin-card {
-    background: var(--white);
-    border-radius: 25px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-.admin-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-}
-.admin-card i {
-    font-size: 3rem;
-    color: var(--primary);
-    margin-bottom: 20px;
-}
-.admin-card h4 {
-    font-weight: 800;
-    margin-bottom: 10px;
-}
-.admin-card p {
-    color: var(--text-light);
-    font-size: .95rem;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* ==========================================
-   FOOTER
-   ========================================== */
-.main-footer {
-    background: #0f172a;
+.checkout-btn:hover,
+.btn-finalizar-compra:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 140, 0, 0.45);
+    filter: brightness(1.05);
+}
+
+.checkout-btn:focus-visible,
+.btn-finalizar-compra:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.btn-success,
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
     color: var(--white);
-    padding: 70px 5% 30px;
+    padding: 10px 20px;
+    transition: var(--transition);
+    cursor: pointer;
 }
+
+.btn-success:hover,
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Opciones de Pago */
+.payment-option input[type="radio"] {
+    display: none;
+}
+
+.payment-option label {
+    display: block;
+    padding: 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 0.8rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-option input[type="radio"]:checked + label {
+    border-color: #0D8FBF;
+    background: rgba(13, 143, 191, 0.05);
+    color: #0D8FBF;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   7. CARRITO VACÍO
+   ========================================================================== */
+.carrito-container {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 10px;
+}
+
+.carrito-vacio {
+    display: none;
+    text-align: center;
+    padding: 50px 24px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.img-vacio {
+    width: 250px;
+    margin-bottom: 15px;
+    object-fit: contain;
+}
+
+figure {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carrito-vacio figure {
+    margin-bottom: 24px;
+    text-align: center;
+    background-color: var(--bg);
+    border-radius: 20px;
+    opacity: 0.9;
+    border: 2px dashed rgba(19, 78, 74, 0.15);
+    padding: 20px;
+}
+
+.carrito-vacio h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.4px;
+}
+
+.carrito-vacio p {
+    color: var(--text-light);
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* Botón seguir comprando */
+.btn-seguir-comprando {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.btn-seguir-comprando:hover {
+    background-color: var(--primary-dark);
+    color: var(--white);
+    border-color: var(--primary-dark);
+    transform: translateX(-4px);
+    box-shadow: 0 6px 16px rgba(19, 78, 74, 0.25);
+}
+
+.btn-seguir-comprando:active {
+    transform: translateX(0);
+}
+
+.btn-seguir-comprando:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   8. AUTENTICACIÓN
+   ========================================================================== */
+.btn-green {
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-weight: 800;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    height: 45px;
+}
+
+.btn-green:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-green:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.btn-google {
+    background: var(--white);
+    color: #444;
+    border: 1.5px solid #e2e8f0;
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    font-size: 0.95rem;
+    font-family: 'Roboto', sans-serif;
+}
+
+.btn-google i {
+    color: #4285f4;
+    font-size: 1.2rem;
+}
+
+.btn-google:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.separator-container {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.separator-container::before,
+.separator-container::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.separator-container span {
+    padding: 0 15px;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-family: sans-serif;
+}
+
+.auth-form p {
+    margin: 10px 0;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    position: relative;
+    padding-top: 0;
+    margin-bottom: 3px;
+}
+
+/* ==========================================================================
+   9. FOOTER (SIN !important)
+   ========================================================================== */
+.main-footer {
+    background: var(--primary-dark);
+    color: var(--white);
+    padding: 30px 0 15px;
+    width: 100%;
+}
+
+.main-footer .main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .footer-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 2.2fr 1fr 1fr 1.3fr;
     gap: 40px;
-}
-.footer-col h4 {
-    margin-bottom: 20px;
-    color: var(--primary);
-    font-weight: 800;
-}
-.footer-col a {
-    display: block;
-    color: #cbd5e1;
-    text-decoration: none;
-    margin-bottom: 10px;
-    transition: var(--transition);
-}
-.footer-col a:hover {
-    color: var(--white);
-    padding-left: 5px;
-}
-.footer-bottom {
-    border-top: 1px solid rgba(255,255,255,.1);
-    margin-top: 40px;
-    padding-top: 20px;
-    text-align: center;
-    color: #94a3b8;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
 }
 
-/* ==========================================
-   BOTONES FLOTANTES (WhatsApp + Paw)
-   ========================================== */
+.footer-col h3,
+.footer-col h4 {
+    margin-bottom: 10px;
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-col a,
+.footer-col p {
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 5px;
+    text-decoration: none;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-col ul li a {
+    display: block;
+}
+
+.footer-col ul li a:hover {
+    color: var(--white);
+    padding-left: 4px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 25px;
+    padding-top: 12px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.72rem;
+    font-weight: 500;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-icons i {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.social-icons i:hover {
+    color: var(--secondary);
+}
+
+/* ==========================================================================
+   10. BOTONES FLOTANTES (WhatsApp + Paw)
+   ========================================================================== */
 .floating-buttons {
     position: fixed;
     bottom: 30px;
     right: 30px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    
-    /* ⚠️ CAMBIO CLAVE: 
-       Bootstrap Offcanvas usa z-index: 1045.
-       Ponemos esto en 1040 para que quede DETRÁS del menú, 
-       pero AÚN ENCIMA del contenido normal (que suele ser < 1000). */
-    z-index: 1040; 
+    gap: 14px;
+    z-index: 1040;
 }
 
-/* Botón de WhatsApp */
 .btn-whatsapp {
     display: flex;
     align-items: center;
     gap: 10px;
     background: linear-gradient(135deg, #25D366, #128C7E);
-    color: white !important;
+    color: var(--white);
     padding: 12px 24px;
     border-radius: 50px;
     text-decoration: none;
@@ -695,670 +986,74 @@ margin-bottom: 3px !important;
     box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     animation: pulse-green 2s infinite;
-    /* Aseguramos que no tenga z-index propio mayor al contenedor */
-    z-index: auto; 
 }
 
 .btn-whatsapp:hover {
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
-    color: white !important;
+    color: var(--white);
     text-decoration: none;
 }
 
-/* Botón Paw (huella) */
 .btn-paw {
     width: 55px;
     height: 55px;
-    background: linear-gradient(135deg, var(--primary-color, #0d6efd), #0a58ca);
-    color: white !important;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     font-size: 1.6rem;
-    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+    box-shadow: 0 4px 15px rgba(8, 145, 178, 0.4);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     align-self: flex-end;
-    z-index: auto;
 }
 
 .btn-paw:hover {
     transform: translateY(-3px) scale(1.1) rotate(15deg);
-    box-shadow: 0 8px 25px rgba(13, 110, 253, 0.6);
-    color: white !important;
+    box-shadow: 0 8px 25px rgba(8, 145, 178, 0.6);
+    color: var(--white);
 }
 
-@keyframes pulse-green {
-    0% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
-    50% { box-shadow: 0 4px 25px rgba(37, 211, 102, 0.7); }
-    100% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
-}
-
-/* Responsive: En móvil se ajustan para no estorbar */
-@media (max-width: 576px) {
-    .floating-buttons {
-        bottom: 20px;
-        right: 20px;
-        gap: 12px;
-    }
-    
-    .btn-whatsapp {
-        width: 55px;
-        height: 55px;
-        padding: 0;
-        justify-content: center;
-        border-radius: 50%;
-        animation: none;
-    }
-    
-    .btn-whatsapp span { display: none; }
-    .btn-whatsapp i { font-size: 1.6rem; margin: 0; }
-
-    .btn-paw {
-        width: 50px;
-        height: 50px;
-        font-size: 1.4rem;
-    }
-}
-
-/* ==========================================
-   OCULTAR PRECIOS EN SERVICIOS
-   ========================================== */
-.precio, .price, [class*="precio"], [class*="price"] {
-    display: none !important;
-}
-
-/* ==========================================
-   RESPONSIVE
-   ========================================== */
-@media (max-width: 1200px) {
-    .main-grid { grid-template-columns: repeat(3, 1fr); }
-    .admin-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 992px) {
-    .hero,
-    .category-banner {
-        aspect-ratio: 1936 / 544; 
-        min-height: 240px; 
-        background-position: center center; 
-        padding: 20px 30px;
-    }
-}
-
-@media (max-width: 900px) {
-    .hero { padding: 40px 30px; }
-    .hero h1 { font-size: 2.3rem; }
-    .main-grid { grid-template-columns: repeat(2, 1fr); }
-    .services-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 768px) {
-    .hero,
-    .category-banner {
-        padding: 20px;
-    }
-
-    .hero-content,
-    .banner-content { 
-        flex-direction: column;
-        align-items: flex-start; 
-        gap: 1.2rem;
-    }
-
-    .hero-text,
-    .banner-text { 
-        text-align: left; 
-        max-width: 100%; 
-    }
-
-    .hero h1,
-    .banner-title {
-        font-size: 2.2rem;
-    }
-
-    .banner-stats { 
-        justify-content: flex-start; 
-        gap: 0.6rem; 
-    }
-
-    .stat-item { 
-        font-size: 0.8rem; 
-        padding: 0.4rem 0.8rem; 
-    }
-    
-    /* Botón principal del banner en móvil */
-    .hero .btn-main,
-    .category-banner .btn-main {
-        position: relative;
-        top: auto;
-        right: auto;
-        width: auto; 
-        font-size: 0.88rem;
-        padding: 0.5rem 1.1rem;
-    }
-
-    .banner-overlay {
-        background: linear-gradient(180deg, 
-            rgba(22, 96, 125, 0.6) 0%,  
-            rgba(22, 96, 125, 0.4) 50%, 
-            rgba(22, 96, 125, 0.6) 100%); 
-    }
-}
-
-@media (max-width: 600px) {
-    .hero {
-        margin: 20px;
-        padding: 30px 20px;
-        text-align: center;
-    }
-    .hero h1 { font-size: 1.9rem; }
-    .main-grid { grid-template-columns: 1fr; }
-    .admin-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr; }
-    .cart-sidebar { width: 100%; }
-}
-
-@media (max-width: 576px) {
-    .floating-buttons {
-        bottom: 15px;
-        right: 15px;
-    }
-    .btn-whatsapp {
-        padding: 10px 16px;
-        font-size: 0.85rem;
-    }
-    .btn-whatsapp span {
-        display: none;
-    }
-    .btn-paw {
-        width: 48px;
-        height: 48px;
-        font-size: 1.4rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero h1,
-    .banner-title {
-        font-size: 1.8rem;
-    }
-    
-    .banner-stats {
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding-bottom: 5px;
-        width: 100%;
-    }
-}
-/* Estilo para las tarjetas del panel */
-.sketch-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    padding: 1.5rem;
-    border: 1px solid #f0f0f0;
-}
-
-/* Vista previa de imagen */
-#promoImgPreview img {
-    transition: transform 0.2s;
-}
-#promoImgPreview img:hover {
-    transform: scale(1.02);
-}
-
-/* Botón de quitar imagen */
-#btnQuitarImg {
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-/* Tabla personalizada */
-.table-vc th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #555;
-    border-bottom: 2px solid #dee2e6;
-}
-.table-vc td {
-    vertical-align: middle;
-}
-
-/* Animación de entrada */
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Cards */
-        .help-card {
-            border: none;
-            border-radius: 24px;
-            padding: 40px 30px;
-            height: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-        .help-card:hover { transform: translateY(-5px); }
-        .icon-box {
-            width: 50px;
-            height: 50px;
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        .btn-light-custom {
-            background-color: #f1f3f5;
-            border-radius: 50px;
-            color: var(--text-dark);
-            font-weight: 600;
-            padding: 10px 25px;
-            border: none;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .wa-link {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Accordion */
-        .accordion-item {
-            border: 1px solid #eee !important;
-            border-radius: 15px !important;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-        .accordion-button { font-weight: 600; padding: 20px; }
-        .accordion-button:not(.collapsed) {
-            background-color: transparent;
-            color: var(--primary-blue);
-            box-shadow: none;
-        }
-
-        /* Banner Final */
-        .contact-banner {
-            background-color: var(--primary-blue);
-            border-radius: 30px;
-            padding: 60px;
-            color: white;
-            margin-top: 80px;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-whatsapp-large {
-            background-color: #25d366;
-            color: white;
-            border-radius: 50px;
-            padding: 15px 30px;
-            font-weight: 700;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Footer */
-        footer { font-size: 0.8rem; color: #999; padding: 40px 0; }
-        footer a { color: #999; text-decoration: none; margin-left: 20px; }
-
-        /* --- NUEVOS ESTILOS: WHATSAPP FLOTANTE --- */
-        .whatsapp-float {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(135deg, #25D366, #128C7E);
-    color: white !important;
-    padding: 12px 20px;
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--whatsapp-green);
+    color: var(--white);
     border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    padding: 10px 20px;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
     transition: all 0.3s ease;
-    animation: pulse-green 2s infinite;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            background-color: #1ebe5d;
-            color: #FFF;
-        }
-
-        .float-text {
-            font-size: 16px;
-            font-weight: 700;
-            margin-left: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .float-text { display: none; }
-            .whatsapp-float {
-                padding: 15px;
-                border-radius: 50%;
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-  
-        /* Hero Section */
-        .hero-section {
-            padding: 80px 0 60px;
-            background: radial-gradient(circle at top right, #f0f7ff 0%, #ffffff 50%);
-            text-align: center;
-        }
-        .search-wrapper {
-            max-width: 600px;
-            margin: 30px auto 0;
-            position: relative;
-        }
-        .search-wrapper input {
-            border-radius: 50px;
-            padding: 15px 25px 15px 50px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .search-wrapper i {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-blue);
-        }
-
-        /* Cards */
-        .help-card {
-            border: none;
-            border-radius: 24px;
-            padding: 40px 30px;
-            height: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-        .help-card:hover { transform: translateY(-5px); }
-        .icon-box {
-            width: 50px;
-            height: 50px;
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-        .btn-light-custom {
-            background-color: #f1f3f5;
-            border-radius: 50px;
-            color: var(--text-dark);
-            font-weight: 600;
-            padding: 10px 25px;
-            border: none;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .wa-link {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Accordion */
-        .accordion-item {
-            border: 1px solid #eee !important;
-            border-radius: 15px !important;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-        .accordion-button { font-weight: 600; padding: 20px; }
-        .accordion-button:not(.collapsed) {
-            background-color: transparent;
-            color: var(--primary-blue);
-            box-shadow: none;
-        }
-
-        /* Banner Final */
-        .contact-banner {
-            background-color: var(--primary-blue);
-            border-radius: 30px;
-            padding: 60px;
-            color: white;
-            margin-top: 80px;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-whatsapp-large {
-            background-color: #25d366;
-            color: white;
-            border-radius: 50px;
-            padding: 15px 30px;
-            font-weight: 700;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Footer */
-        footer { font-size: 0.8rem; color: #999; padding: 40px 0; }
-        footer a { color: #999; text-decoration: none; margin-left: 20px; }
-
-        /* --- NUEVOS ESTILOS: WHATSAPP FLOTANTE --- */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--whatsapp-green);
-            color: #FFF;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 1000;
-            display: none; /* Se activa con el scroll */
-            align-items: center;
-            padding: 10px 20px;
-            text-decoration: none !important;
-            transition: all 0.3s ease;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            background-color: #1ebe5d;
-            color: #FFF;
-        }
-
-        .float-text {
-            font-size: 16px;
-            font-weight: 700;
-            margin-left: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .float-text { display: none; }
-            .whatsapp-float {
-                padding: 15px;
-                border-radius: 50%;
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-
-#productGrid .text-warning:not(img),
-#productGrid small.text-warning,
-#productGrid .alert-warning,
-#productGrid .fa-exclamation-triangle,
-#productGrid .fa-triangle-exclamation,
-#productGrid span:has(.fa-exclamation),
-#productGrid div:has(.fa-exclamation) {
-    display: none !important;
 }
 
-.carrito-container {
-max-width: 500px;
-margin: 30px auto;
-padding: 10px;
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #1ebe5d;
+    color: var(--white);
 }
 
-.carrito-vacio {
-display: none;
-text-align: center;
-padding: 50px 20px;
-background: white;
-border-radius: 18px;
-box-shadow:var(--shadow-soft);
-animation: fadeIn 0.4s ease-in-out;
-
+.float-text {
+    font-size: 16px;
+    font-weight: 700;
+    margin-left: 10px;
 }
 
-.img-vacio {
-width: 250px;
-margin-bottom: 15px;
-}
-
-.carrito-vacio h2 {
-font-size: 24px;
-margin-bottom: 10px;
-}
-
-.carrito-vacio p {
-color: #666;
-margin-bottom: 25px;
-}
-
-.btn-continuar {
-display: inline-block;
-padding: 14px 28px;
-background:#ff8c00;
-color: white;
-text-decoration: none;
-border-radius: 12px;
-transition: 0.3s;
-font-weight: bold;
-}
-
-.btn-continuar:hover {
-transform: translateY(-3px);
-box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-@keyframes fadeIn {
-from {opacity: 0; transform: translateY(10px);}
-to {opacity: 1; transform: translateY(0);}
-}
-figure {
-margin: 0;
-padding: 0;
-display: flex;
-justify-content: center;
-align-items: center;
-width: 100%;
-overflow: hidden;
-}
-
-.carrito-vacio figure {
-margin-bottom: 20px;
-text-align: center;
-background-color: #f8f9fa;
-border-radius: 20px;
-opacity: 0.8;
-border: 2px dashed #dee2e6 !important; /* Estilo decorativo */
-}
-
-/* Tarjeta del resumen (derecha) */
-.card.shadow-sm {
-border: none;
-border-radius: 15px;
-}
-
-#total {
-color: #1a73e8 !important; /* Combinar con el azul del header */
-}
-
-/* Barra de progreso de envío */
-.progress {
-background-color: #e9ecef;
-border-radius: 10px;
-overflow: hidden;
-}
-
-#envio-barra {
-transition: width 0.5s ease;
-}
-
-/* Botones personalizados */
-.btn-success {
-background-color: #2596be;
-border: none;
-border-radius: 8px;
-font-weight: 600;
-}
-
-.btn-primary {
-background-color: #1a73e8;
-border: none;
-border-radius: 8px;
-}
-
-/* Tarjeta del resumen (derecha) */
-.card.shadow-sm {
-border: none;
-border-radius: 15px;
-}
-
-#total {
-color: #1a73e8 !important; /* Combinar con el azul del header */
-}
-#envio-barra {
-transition: width 0.5s ease;
-}
-/* Botones personalizados */
-.btn-success {
-background-color: #28a745;
-border: none;
-border-radius: 8px;
-font-weight: 600;
-}
-.btn-primary {
-background-color: #1a73e8;
-border: none;
-border-radius: 8px;
-}
-/* Barra de envío */
-.progress {
-border-radius: 10px;
-overflow: hidden;
-background-color: #e9ecef;
-}
-.progress-bar {
-transition: width 0.4s ease;
-}
-/* ============================
-   BANNER PROMOCIONAL DESTACADO
-   ============================ */
+/* ==========================================================================
+   11. BANNER PROMOCIONAL DESTACADO
+   ========================================================================== */
 .mid-promo-banner {
-    /* Fondo vibrante con degradado de 3 colores de marca */
-    background: linear-gradient(135deg, 
-        var(--primary) 0%, 
-        var(--secondary) 50%, 
-        var(--accent) 100%) !important;
-    border: 3px solid var(--accent) !important;
-    border-radius: 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+    border: 3px solid var(--accent);
+    border-radius: var(--radius);
     padding: 2.5rem;
     display: flex;
     align-items: center;
@@ -1368,27 +1063,19 @@ transition: width 0.4s ease;
     margin-bottom: 3rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3);
+    box-shadow: 0 15px 40px rgba(8, 145, 178, 0.3);
     animation: banner-glow 3s ease-in-out infinite;
 }
 
-/* 🔆 Efecto de brillo pulsante en el banner */
-@keyframes banner-glow {
-    0%, 100% { box-shadow: 0 15px 40px rgba(255, 140, 0, 0.3); }
-    50% { box-shadow: 0 15px 50px rgba(255, 208, 0, 0.5); }
-}
-
-/* ✨ Patrón decorativo de fondo (puntos sutiles) */
 .mid-promo-banner::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
     background-size: 20px 20px;
     z-index: 0;
 }
 
-/* 🟡 Esfera brillante amarilla (accent) - esquina superior derecha */
 .mid-promo-banner::after {
     content: '';
     position: absolute;
@@ -1396,21 +1083,13 @@ transition: width 0.4s ease;
     right: -15%;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, 
-        rgba(255, 208, 0, 0.5) 0%, 
-        transparent 70%);
+    background: radial-gradient(circle, rgba(255, 208, 0, 0.5) 0%, transparent 70%);
     border-radius: 50%;
     filter: blur(30px);
     z-index: 0;
     animation: pulse-sphere 4s ease-in-out infinite;
 }
 
-@keyframes pulse-sphere {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.1); opacity: 0.9; }
-}
-
-/* 🎯 Ícono principal con efecto de rebote */
 .mid-promo-icon {
     font-size: 4rem;
     color: var(--white);
@@ -1430,13 +1109,6 @@ transition: width 0.4s ease;
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-@keyframes bounce-icon {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-8px) rotate(-5deg); }
-    75% { transform: translateY(-4px) rotate(5deg); }
-}
-
-/* 📝 Contenido de texto - RESALTADO */
 .mid-promo-content {
     flex: 1;
     min-width: 250px;
@@ -1449,9 +1121,7 @@ transition: width 0.4s ease;
     font-weight: 900;
     color: var(--white);
     margin-bottom: 0.6rem;
-    text-shadow: 
-        0 2px 8px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1461,16 +1131,10 @@ transition: width 0.4s ease;
     line-height: 1.3;
 }
 
-/* 🔥 Badge de "OFERTA" junto al título con animación de llama */
 .mid-promo-content h4::before {
     content: '🔥';
     font-size: 1.4rem;
     animation: flame 1s ease-in-out infinite;
-}
-
-@keyframes flame {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
 }
 
 .mid-promo-content p {
@@ -1479,15 +1143,13 @@ transition: width 0.4s ease;
     font-weight: 500;
     line-height: 1.7;
     margin-bottom: 0;
-    opacity: 1;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     letter-spacing: 0.3px;
 }
 
-/* 🔘 Botón CTA con efecto de brillo que lo cruza */
 .mid-promo-cta {
-    background: var(--accent); /* Amarillo vibrante */
-    color: var(--primary-dark) !important;
+    background: var(--white);
+    color: var(--primary);
     border: 2px solid var(--white);
     padding: 1rem 2.5rem;
     border-radius: 50px;
@@ -1500,7 +1162,7 @@ transition: width 0.4s ease;
     text-decoration: none;
     white-space: nowrap;
     flex-shrink: 0;
-    box-shadow: 0 6px 20px rgba(255, 208, 0, 0.5);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -1509,7 +1171,6 @@ transition: width 0.4s ease;
     overflow: hidden;
 }
 
-/* 💫 Efecto de brillo que cruza el botón */
 .mid-promo-cta::before {
     content: '';
     position: absolute;
@@ -1517,10 +1178,7 @@ transition: width 0.4s ease;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.5), 
-        transparent);
+    background: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.2), transparent);
     transition: left 0.6s ease;
 }
 
@@ -1529,15 +1187,19 @@ transition: width 0.4s ease;
 }
 
 .mid-promo-cta:hover {
-    background: var(--white);
-    color: var(--primary-dark) !important;
+    background: var(--primary-dark);
+    color: var(--white);
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.5);
     text-decoration: none;
-    border-color: var(--accent);
+    border-color: var(--white);
 }
 
-/* 🏷️ Badge flotante de descuento (esquina superior) */
+.mid-promo-cta:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
 .mid-promo-banner .promo-badge {
     position: absolute;
     top: 20px;
@@ -1554,51 +1216,1006 @@ transition: width 0.4s ease;
     border: 2px solid var(--secondary);
 }
 
+/* ==========================================================================
+   12. HELP CARDS, FAQ & CONTACTO
+   ========================================================================== */
+.help-card {
+    border: none;
+    border-radius: var(--radius);
+    padding: 40px 30px;
+    height: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-box {
+    width: 50px;
+    height: 50px;
+    background-color: var(--light-blue);
+    color: var(--primary-blue);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.btn-light-custom {
+    background-color: #f1f3f5;
+    border-radius: 50px;
+    color: var(--text-dark);
+    font-weight: 600;
+    padding: 10px 25px;
+    border: none;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.wa-link {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.accordion-item {
+    border: 1px solid #eee;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.accordion-button {
+    font-weight: 600;
+    padding: 20px;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: transparent;
+    color: var(--primary-blue);
+    box-shadow: none;
+}
+
+.contact-banner {
+    background-color: var(--primary-blue);
+    border-radius: var(--radius-lg);
+    padding: 60px;
+    color: var(--white);
+    margin-top: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-whatsapp-large {
+    background-color: #25d366;
+    color: var(--white);
+    border-radius: 50px;
+    padding: 15px 30px;
+    font-weight: 700;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Hero Section Search */
+.hero-section {
+    padding: 80px 0 60px;
+    background: radial-gradient(circle at top right, var(--light-blue) 0%, var(--white) 50%);
+    text-align: center;
+}
+
+.search-wrapper {
+    max-width: 600px;
+    margin: 30px auto 0;
+    position: relative;
+}
+
+.search-wrapper input {
+    border-radius: 50px;
+    padding: 15px 25px 15px 50px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-blue);
+}
+
+/* ==========================================================================
+   13. PANEL ADMIN
+   ========================================================================== */
+.sketch-card {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    border: 1px solid #f0f0f0;
+}
+
+#promoImgPreview img {
+    transition: transform 0.2s;
+}
+
+#promoImgPreview img:hover {
+    transform: scale(1.02);
+}
+
+#btnQuitarImg {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.table-vc th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table-vc td {
+    vertical-align: middle;
+}
+
+/* ==========================================================================
+   14. OCULTAR PRECIOS EN SERVICIOS
+   ========================================================================== */
+.precio,
+.price,
+[class*="precio"],
+[class*="price"] {
+    display: none;
+}
+
+#productGrid .text-warning:not(img),
+#productGrid small.text-warning,
+#productGrid .alert-warning,
+#productGrid .fa-exclamation-triangle,
+#productGrid .fa-triangle-exclamation {
+    display: none;
+}
+
+/* ==========================================================================
+   15. KEYFRAMES CENTRALIZADOS
+   ========================================================================== */
+@keyframes bannerSlideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(37, 211, 102, 0.7); }
+    100% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+}
+
+@keyframes banner-glow {
+    0%, 100% { box-shadow: 0 15px 40px rgba(8, 145, 178, 0.3); }
+    50% { box-shadow: 0 15px 50px rgba(255, 208, 0, 0.5); }
+}
+
+@keyframes pulse-sphere {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 0.9; }
+}
+
+@keyframes bounce-icon {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(-5deg); }
+    75% { transform: translateY(-4px) rotate(5deg); }
+}
+
+@keyframes flame {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
 @keyframes badge-pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.08); }
 }
 
-/* ============================
-   RESPONSIVE
-   ============================ */
+/* Animaciones premium */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes zoomInRotate { from { opacity: 0; transform: scale(0.5) rotate(-10deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); } 20%, 40%, 60%, 80% { transform: translateX(8px); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+@keyframes jelly { 0% { transform: scale(1, 1); } 30% { transform: scale(1.25, 0.75); } 40% { transform: scale(0.75, 1.25); } 50% { transform: scale(1.15, 0.85); } 65% { transform: scale(0.95, 1.05); } 75% { transform: scale(1.05, 0.95); } 100% { transform: scale(1, 1); } }
+@keyframes pawPrint { 0% { opacity: 0; transform: scale(0.3) rotate(-20deg); } 50% { opacity: 1; transform: scale(1) rotate(0deg); } 100% { opacity: 0; transform: scale(1.2) rotate(10deg); } }
+@keyframes tailWag { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
+@keyframes playfulJump { 0%, 100% { transform: translateY(0) rotate(0); } 20% { transform: translateY(-15px) rotate(-5deg); } 40% { transform: translateY(-5px) rotate(3deg); } 60% { transform: translateY(-20px) rotate(-3deg); } 80% { transform: translateY(-8px) rotate(2deg); } }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.3); } 28% { transform: scale(1); } 42% { transform: scale(1.3); } 70% { transform: scale(1); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+@keyframes floatRotate { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-12px) rotate(5deg); } }
+@keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes ripple { 0% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.5); } 100% { box-shadow: 0 0 0 20px rgba(8, 145, 178, 0); } }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.6), 0 0 0 0 rgba(8, 145, 178, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(8, 145, 178, 0), 0 0 0 20px rgba(8, 145, 178, 0); } 100% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.6), 0 0 0 0 rgba(8, 145, 178, 0.4); } }
+@keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+@keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes dotsBounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+@keyframes pawSpinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes skeletonPulse { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
+@keyframes textGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes glitch { 0%, 100% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } }
+@keyframes neonGlow { 0%, 100% { text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 20px var(--primary); } 50% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent); } }
+
+/* ==========================================================================
+   16. CLASES UTILITARIAS DE ANIMACIÓN
+   ========================================================================== */
+.animate-fade-up { animation: fadeInUp 0.6s ease-out both; }
+.animate-fade-down { animation: fadeInDown 0.6s ease-out both; }
+.animate-fade-left { animation: fadeInLeft 0.6s ease-out both; }
+.animate-fade-right { animation: fadeInRight 0.6s ease-out both; }
+.animate-zoom { animation: zoomIn 0.5s ease-out both; }
+.animate-zoom-rotate { animation: zoomInRotate 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both; }
+
+.product-card-hover-lift {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.shake { animation: shake 0.6s ease-in-out; }
+.wiggle-hover:hover { animation: wiggle 0.5s ease-in-out; }
+.jelly-click:active { animation: jelly 0.6s ease; }
+.paw-print { animation: pawPrint 1.5s ease-in-out; }
+.tail-wag { animation: tailWag 0.4s ease-in-out infinite; transform-origin: bottom center; }
+.playful-jump { animation: playfulJump 2s ease-in-out infinite; }
+.heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+.float { animation: float 3s ease-in-out infinite; }
+.float-rotate { animation: floatRotate 4s ease-in-out infinite; }
+.rotate-slow { animation: rotateSlow 8s linear infinite; }
+
+.shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s infinite;
+}
+
+.gradient-animated {
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+    background-size: 300% 300%;
+    animation: gradientShift 6s ease infinite;
+}
+
+.btn-ripple { animation: ripple 1.5s infinite; }
+.pulse-ring { animation: pulseRing 2s infinite; }
+
+.btn-magnetic {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-magnetic:hover {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 15px 30px rgba(8, 145, 178, 0.4);
+    letter-spacing: 1px;
+}
+
+.toast-enter { animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) both; }
+.toast-exit { animation: slideOutRight 0.3s ease-in both; }
+.bounce-in { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both; }
+.pop-in { animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) both; }
+
+.loading-dots span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: dotsBounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+.paw-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(8, 145, 178, 0.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: pawSpinner 1s linear infinite;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+.text-gradient-animated {
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textGradient 4s ease infinite;
+}
+
+.glitch-hover:hover { animation: glitch 0.3s ease infinite; }
+.neon-text { animation: neonGlow 2s ease-in-out infinite; }
+
+/* Delays escalonados */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-1000 { animation-delay: 1s; }
+
+.fade-in,
+.auth-form,
+.auth-error,
+.auth-success {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* ==========================================================================
+   17. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1200px) {
+    .main-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 992px) {
+    .hero,
+    .category-banner {
+        aspect-ratio: 1936 / 544;
+        min-height: 240px;
+        background-position: center center;
+        padding: 20px 30px;
+    }
+
+    .btn-add {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .btn-add span { display: none; }
+
+    .categories-row,
+    .navbar-bottom {
+        justify-content: flex-start;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        padding: 15px 20px;
+    }
+
+    .categories-row::-webkit-scrollbar,
+    .navbar-bottom::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+
+    .sticky-summary { position: sticky; top: 100px; }
+}
+
+@media (max-width: 900px) {
+    .hero { padding: 40px 30px; }
+    .hero h1 { font-size: 2.3rem; }
+    .main-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 25px; }
+}
+
 @media (max-width: 768px) {
+    .hero,
+    .category-banner { padding: 20px; }
+
+    .hero-content,
+    .banner-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.2rem;
+    }
+
+    .hero-text,
+    .banner-text {
+        text-align: left;
+        max-width: 100%;
+    }
+
+    .hero h1,
+    .banner-title { font-size: 2.2rem; }
+
+    .banner-stats {
+        justify-content: flex-start;
+        gap: 0.6rem;
+    }
+
+    .stat-item {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .hero .btn-main,
+    .category-banner .btn-main {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: auto;
+        font-size: 0.88rem;
+        padding: 0.5rem 1.1rem;
+    }
+
+    .banner-overlay {
+        background: linear-gradient(180deg, 
+            rgba(8, 145, 178, 0.6) 0%, 
+            rgba(8, 145, 178, 0.4) 50%, 
+            rgba(8, 145, 178, 0.6) 100%);
+    }
+
+    .float-text { display: none; }
+
+    .whatsapp-float {
+        padding: 15px;
+        border-radius: 50%;
+        bottom: 20px;
+        right: 20px;
+    }
+
     .mid-promo-banner {
         padding: 2rem 1.5rem;
         text-align: center;
         justify-content: center;
     }
-    
+
     .mid-promo-icon {
         width: 70px;
         height: 70px;
         font-size: 3rem;
     }
-    
-    .mid-promo-content {
-        text-align: center;
-    }
-    
+
+    .mid-promo-content { text-align: center; }
+
     .mid-promo-content h4 {
         font-size: 1.3rem;
         justify-content: center;
     }
-    
-    .mid-promo-content p {
-        font-size: 0.9rem;
-    }
-    
+
+    .mid-promo-content p { font-size: 0.9rem; }
+
     .mid-promo-cta {
         padding: 0.8rem 2rem;
         font-size: 0.9rem;
         width: 100%;
         justify-content: center;
     }
-    
+
     .promo-badge {
         top: 10px;
         right: 10px;
         font-size: 0.75rem;
         padding: 6px 12px;
     }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        margin: 20px;
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .hero h1 { font-size: 1.9rem; }
+    .main-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; text-align: center; }
+    .cart-sidebar { width: 100%; }
+}
+
+@media (max-width: 576px) {
+    .floating-buttons {
+        bottom: 20px;
+        right: 20px;
+        gap: 12px;
+    }
+
+    .btn-whatsapp {
+        width: 55px;
+        height: 55px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+        animation: none;
+    }
+
+    .btn-whatsapp span { display: none; }
+    .btn-whatsapp i { font-size: 1.6rem; margin: 0; }
+
+    .btn-paw {
+        width: 50px;
+        height: 50px;
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1,
+    .banner-title { font-size: 1.8rem; }
+
+    .banner-stats {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 5px;
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   18. ACCESIBILIDAD
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+        scroll-behavior: auto;
+    }
+}
+/* ==========================================================================
+   ANIMACIÓN MÁGICA: HUELLITA AL AGREGAR AL CARRITO
+   ========================================================================== */
+.magic-paw {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--primary); /* Usa el cian de tu marca */
+    pointer-events: none; /* Evita que la huella bloquee nuevos clics */
+    z-index: 9999;
+    opacity: 0;
+    animation: pawFloatUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    filter: drop-shadow(0 4px 6px rgba(8, 145, 178, 0.3)); /* Sombra suave */
+}
+
+/* Variación dorada para un efecto más "mágico" (opcional, cambia 'color' arriba si prefieres esta) */
+.magic-paw.gold {
+    color: var(--accent);
+    filter: drop-shadow(0 4px 6px rgba(255, 208, 0, 0.4));
+}
+
+@keyframes pawFloatUp {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5) rotate(0deg);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.2) rotate(-10deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.8) rotate(15deg);
+    }
+}
+/* =============================================
+   ANIMACIONES DE NOTIFICACIONES (TOAST)
+   ============================================= */
+
+/* 1. SLIDE IN RIGHT + TOAST ENTER (Entrada de notificación) */
+.toast {
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Efecto elástico */
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+    animation: toast-enter 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes toast-enter {
+    0% {
+        transform: translateX(100%) scale(0.7);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(-10px) scale(1.05);
+    }
+    70% {
+        transform: translateX(5px) scale(0.95);
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* 2. SLIDE OUT RIGHT + TOAST EXIT (Salida de notificación) */
+.toast.hiding {
+    animation: toast-exit 0.3s ease-in forwards;
+}
+
+@keyframes toast-exit {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* =============================================
+   ANIMACIÓN DE ERROR (SHAKE)
+   ============================================= */
+
+/* 3. SHAKE - Sacudida horizontal para errores */
+.shake {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-8px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(8px);
+    }
+}
+
+/* Versión más suave para inputs */
+.shake-soft {
+    animation: shake-soft 0.4s ease-in-out both;
+}
+
+@keyframes shake-soft {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* =============================================
+   ANIMACIÓN DE CONTADOR (POP IN)
+   ============================================= */
+
+/* 4. POP IN - Efecto rápido para el contador del carrito */
+#contador-carrito {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+#contador-carrito.popIn {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* =============================================
+   CLASES UTILITARIAS ADICIONALES
+   ============================================= */
+
+/* Borde rojo animado para inputs con error */
+.input-error {
+    border: 2px solid #dc3545 !important;
+    animation: shake-soft 0.4s ease-in-out;
+}
+
+/* Fondo rojo pulsante para errores */
+.error-highlight {
+    animation: error-pulse 0.5s ease-in-out;
+}
+
+@keyframes error-pulse {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: rgba(220, 53, 69, 0.1); }
+}
+/* ==================== BARRA DE PROGRESO ==================== */
+    .paso-circulo {
+        width: 30px; height: 30px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 50%;
+        font-size: 13px; font-weight: 700;
+        transition: all .3s ease;
+    }
+    .paso-circulo i { font-size: 12px; }
+    .paso-completado { background-color: #198754; color: #fff; border: 2px solid #198754; }
+    .paso-activo {
+        background-color: var(--primary, #0d6efd); color: #fff;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, .18);
+    }
+    .paso-pendiente { background-color: #fff; color: #adb5bd; border: 2px dashed #adb5bd; }
+    .paso-texto { font-size: 15px; font-weight: 500; color: #6c757d; }
+    .paso-texto-activo { color: var(--primary, #0d6efd); font-weight: 700; }
+    .paso-texto-finalizado { color: #198754; font-weight: 700; }
+    .paso-separador { color: #ced4da; font-size: 12px; }
+
+    /* Estado final: pedido confirmado */
+    .paso-finalizado {
+        background-color: #198754 !important; color: #fff !important;
+        border: 2px solid #198754 !important; box-shadow: none !important;
+    }
+
+    /* ==================== MÉTODOS DE PAGO ==================== */
+    .payment-option input { display: none; }
+    .payment-option label {
+        display: block; text-align: center;
+        padding: 18px 10px;
+        border: 2px solid #e9ecef; border-radius: 14px;
+        cursor: pointer; background: #fff;
+        font-weight: 600; color: #6c757d; font-size: .9rem;
+        transition: all .25s ease;
+        height: 100%;
+    }
+    .payment-option label:hover {
+        border-color: #cde6f7;
+        transform: translateY(-2px);
+    }
+    .payment-option input:checked + label {
+        border-color: var(--primary, #0d6efd);
+        background: #f0f7ff;
+        color: var(--primary, #0d6efd);
+        box-shadow: 0 4px 14px rgba(13, 110, 253, .12);
+    }
+
+    /* ==================== RESUMEN STICKY ==================== */
+    .sticky-summary { position: sticky; top: 100px; }
+    @media (max-width: 991.98px) { .sticky-summary { position: static; } }
+    .checkout-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px dashed #e9ecef;
+    }
+    .checkout-item:last-child { border-bottom: 0; }
+    .checkout-item img {
+        width: 44px; height: 44px; object-fit: cover;
+        border-radius: 10px; flex-shrink: 0;
+    }
+    .checkout-item .ci-nombre {
+        font-size: .85rem; font-weight: 600; color: #212529;
+        line-height: 1.2;
+    }
+    .checkout-item .ci-cantidad { font-size: .75rem; color: #adb5bd; }
+    .checkout-item .ci-precio {
+        font-size: .85rem; font-weight: 700; margin-left: auto; white-space: nowrap;
+    }
+
+    /* ==================== PANTALLA DE CONFIRMACIÓN ==================== */
+    .confirmacion-header { background: linear-gradient(135deg, #1d618a, #113d58); }
+
+    .confirmacion-icono {
+        position: relative;
+        width: 92px; height: 92px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2ecc71, #198754);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.4rem; color: #fff;
+        box-shadow: 0 12px 30px rgba(25, 135, 84, .45);
+        animation: iconoPop .55s cubic-bezier(.68, -.55, .27, 1.55) both;
+    }
+    .confirmacion-icono i { animation: checkPop .35s ease-out .45s both; }
+    .confirmacion-icono::after {
+        content: '';
+        position: absolute; inset: -6px;
+        border-radius: 50%;
+        border: 2px solid rgba(46, 204, 113, .55);
+        animation: ripple 1s ease-out .6s both;
+    }
+    @keyframes iconoPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes checkPop  { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes ripple    { from { transform: scale(.85); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
+
+    #pantalla-confirmacion .card { animation: aparecerSuave .45s ease-out both; }
+    @keyframes aparecerSuave { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    /* ==========================================
+   PAGO POR WHATSAPP (CHECKOUT)
+   ========================================== */
+.btn-wa-pago {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+    transition: all 0.3s ease;
+}
+.btn-wa-pago:hover {
+    background: linear-gradient(135deg, #1ebe5d, #0f7a6c);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+}
+#btnConfirmarPedido:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+/* ═══════════════════════════════════════════════════════
+   checkout.css — Vía Canes
+   Estilos exclusivos de checkout.html (progreso, pago,
+   resumen sticky y confirmación animada)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Barra de progreso (Carrito → Checkout → Confirmación) ── */
+.paso-circulo {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .95rem; flex-shrink: 0;
+    transition: all .3s ease;
+}
+.paso-completado  { background: #d1fae5; color: #059669; border: 2px solid #059669; }
+.paso-activo      {
+    background: var(--primary, #7c4a21); color: #fff;
+    border: 2px solid var(--primary, #7c4a21);
+    box-shadow: 0 0 0 5px rgba(124, 74, 33, .15);
+}
+.paso-pendiente   { background: #f3f4f6; color: #9ca3af; border: 2px solid #d1d5db; }
+.paso-finalizado  {
+    background: #059669; color: #fff; border: 2px solid #059669;
+    box-shadow: 0 0 0 5px rgba(5, 150, 105, .15);
+}
+
+.paso-texto            { color: #6b7280; font-weight: 500; font-size: .9rem; }
+.paso-texto-activo     { color: var(--primary, #7c4a21); font-weight: 700; }
+.paso-texto-finalizado { color: #059669; font-weight: 700; }
+.paso-separador        { color: #d1d5db; font-size: .8rem; }
+
+/* ── Tarjetas de método de pago (radios estilizados) ── */
+.payment-option input { display: none; }
+.payment-option label {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .25rem; width: 100%; height: 100%;
+    padding: 1rem .5rem; text-align: center;
+    background: #fafafa; border: 2px solid #e5e7eb; border-radius: 14px;
+    font-weight: 600; font-size: .9rem; cursor: pointer;
+    transition: all .2s ease;
+}
+.payment-option label:hover {
+    border-color: var(--primary, #7c4a21);
+    transform: translateY(-2px);
+}
+.payment-option input:checked + label {
+    background: #fff; border-color: var(--primary, #7c4a21);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+    color: var(--primary, #7c4a21);
+}
+/* Accesibilidad: si el usuario navega con Tab, se ve el foco */
+.payment-option input:focus-visible + label {
+    outline: 3px solid rgba(124, 74, 33, .35);
+    outline-offset: 2px;
+}
+
+/* ── Resumen pegajoso (columna derecha) ── */
+.sticky-summary { position: sticky; top: 90px; }
+
+/* ── Pantalla de confirmación ── */
+.confirmacion-header {
+    background: linear-gradient(135deg, var(--primary, #7c4a21) 0%, var(--primary-dark, #4e2e15) 100%);
+    position: relative; overflow: hidden;
+    animation: aparecerSuave .5s ease both;
+}
+.confirmacion-icono {
+    width: 84px; height: 84px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.4rem; color: #059669; position: relative;
+    animation: iconoPop .6s cubic-bezier(.68, -0.55, .27, 1.55) .15s both;
+}
+/* Anillo que late alrededor del check */
+.confirmacion-icono::after {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, .6);
+    animation: ripple 1.8s ease-out .6s infinite;
+}
+.confirmacion-icono i { animation: checkPop .4s ease .45s both; }
+
+/* ── Botón WhatsApp (lo crea el JS en la confirmación) ── */
+#btn-wa-confirmacion { background: #25d366; color: #fff; }
+#btn-wa-confirmacion:hover { background: #1fb857; color: #fff; }
+
+/* ── Animaciones ── */
+@keyframes iconoPop {
+    0%   { transform: scale(0); opacity: 0; }
+    70%  { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+@keyframes checkPop {
+    0%   { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+@keyframes ripple {
+    0%   { transform: scale(1);   opacity: .8; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes aparecerSuave {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Móvil: el resumen deja de ser sticky, progreso más compacto ── */
+@media (max-width: 991.98px) {
+    .sticky-summary { position: static; }
+    .paso-circulo   { width: 32px; height: 32px; font-size: .85rem; }
+    .paso-texto     { font-size: .8rem; }
+}
+/* Stepper */
+        .paso-circulo { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .paso-completado { background-color: #e2f0fd; color: #0d6efd; }
+        .paso-activo { background-color: var(--primary); color: white; }
+        .paso-pendiente { background-color: #e0e0e0; color: #6c757d; }
+        .paso-texto { font-size: 14px; font-weight: 500; color: #495057; }
+        .paso-texto-activo { color: var(--primary); font-weight: 700; }
+
+        /* Opciones de Pago */
+        .payment-option input[type="radio"] { display: none; }
+        .payment-option label {
+            display: block; padding: 15px; border: 2px solid #dee2e6; border-radius: 12px;
+            cursor: pointer; text-align: center; transition: all 0.2s ease; background: #fff; height: 100%;
+        }
+        .payment-option input[type="radio"]:checked + label {
+            border-color: var(--primary); background-color: #f0fdfa; color: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(15,118,110,0.1);
+        }
+
+        .btn-primary { background-color: var(--primary); border: none; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .hidden { display: none !important; }
+        /* ═══════════════════════════════════════════════
+   QR MÁS GRANDE Y NÍTIDO
+   ═══════════════════════════════════════════════ */
+#img-qr-real, 
+#canvas-qr-dinamico {
+    width: 280px !important;
+    height: 280px !important;
+    max-width: 80vw !important; /* Evita que se salga en celulares pequeños */
+    image-rendering: -webkit-optimize-contrast; /* Mejora la nitidez en Safari/Chrome */
+}
+
+/* Aumentar un poco el marco blanco que rodea al QR para que se vea más elegante */
+#qr-estatico-box .bg-white {
+    padding: 20px !important;
+}
+
+/* Asegurar que el contenedor del QR tenga espacio suficiente */
+#contenedor-pago-final {
+    padding: 2rem 1.5rem !important;
 }

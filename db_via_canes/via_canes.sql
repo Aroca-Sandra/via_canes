@@ -3,11 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-09-2026 a las 02:54:00
+-- Tiempo de generación: 28-10-2026 a las 05:57:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -21,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `via_canes`
 --
-CREATE DATABASE IF NOT EXISTS `via_canes` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `via_canes`;
 
 -- --------------------------------------------------------
 
@@ -30,10 +27,10 @@ USE `via_canes`;
 -- Estructura de tabla para la tabla `carrito`
 --
 
-DROP TABLE IF EXISTS `carrito`;
 CREATE TABLE `carrito` (
   `id_carrito` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
+  `guest_token` varchar(32) DEFAULT NULL,
   `fecha_creacion` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -43,7 +40,6 @@ CREATE TABLE `carrito` (
 -- Estructura de tabla para la tabla `categorias_producto`
 --
 
-DROP TABLE IF EXISTS `categorias_producto`;
 CREATE TABLE `categorias_producto` (
   `id_categoria` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL
@@ -66,7 +62,6 @@ INSERT INTO `categorias_producto` (`id_categoria`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `categoria_servicio`
 --
 
-DROP TABLE IF EXISTS `categoria_servicio`;
 CREATE TABLE `categoria_servicio` (
   `id_categoria_servicio` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -87,7 +82,6 @@ INSERT INTO `categoria_servicio` (`id_categoria_servicio`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `citas`
 --
 
-DROP TABLE IF EXISTS `citas`;
 CREATE TABLE `citas` (
   `id_cita` int(11) NOT NULL,
   `fecha_cita` date DEFAULT NULL,
@@ -104,7 +98,8 @@ CREATE TABLE `citas` (
 --
 
 INSERT INTO `citas` (`id_cita`, `fecha_cita`, `hora_cita`, `id_usuario`, `id_mascota`, `id_servicio`, `id_estado_cita`, `notas`) VALUES
-(1, '2026-08-29', '08:00:00', 13, 15, 9, 2, 'se cuida a Nerona  Canina * 8 horas');
+(1, '2026-08-29', '08:00:00', 13, 15, 9, 2, 'se cuida a Nerona  Canina * 8 horas'),
+(2, '2026-12-21', '09:00:00', 12, 12, 9, 1, '');
 
 -- --------------------------------------------------------
 
@@ -112,7 +107,6 @@ INSERT INTO `citas` (`id_cita`, `fecha_cita`, `hora_cita`, `id_usuario`, `id_mas
 -- Estructura de tabla para la tabla `compras_proveedor`
 --
 
-DROP TABLE IF EXISTS `compras_proveedor`;
 CREATE TABLE `compras_proveedor` (
   `id_compra` int(11) NOT NULL,
   `id_proveedor` int(11) DEFAULT NULL,
@@ -142,7 +136,6 @@ INSERT INTO `compras_proveedor` (`id_compra`, `id_proveedor`, `numero_factura`, 
 -- Estructura de tabla para la tabla `detalle_carrito`
 --
 
-DROP TABLE IF EXISTS `detalle_carrito`;
 CREATE TABLE `detalle_carrito` (
   `id_detalle` int(11) NOT NULL,
   `id_carrito` int(11) DEFAULT NULL,
@@ -158,7 +151,6 @@ CREATE TABLE `detalle_carrito` (
 -- Estructura de tabla para la tabla `detalle_pedido`
 --
 
-DROP TABLE IF EXISTS `detalle_pedido`;
 CREATE TABLE `detalle_pedido` (
   `id_detalle` int(11) NOT NULL,
   `id_pedido` int(11) DEFAULT NULL,
@@ -174,7 +166,6 @@ CREATE TABLE `detalle_pedido` (
 -- Estructura de tabla para la tabla `especie`
 --
 
-DROP TABLE IF EXISTS `especie`;
 CREATE TABLE `especie` (
   `id_especie` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -195,7 +186,6 @@ INSERT INTO `especie` (`id_especie`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estados_producto`
 --
 
-DROP TABLE IF EXISTS `estados_producto`;
 CREATE TABLE `estados_producto` (
   `id_estado_producto` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -216,7 +206,6 @@ INSERT INTO `estados_producto` (`id_estado_producto`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_cita`
 --
 
-DROP TABLE IF EXISTS `estado_cita`;
 CREATE TABLE `estado_cita` (
   `id_estado_cita` int(11) NOT NULL,
   `nombre` varchar(20) DEFAULT NULL
@@ -238,7 +227,6 @@ INSERT INTO `estado_cita` (`id_estado_cita`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_pago`
 --
 
-DROP TABLE IF EXISTS `estado_pago`;
 CREATE TABLE `estado_pago` (
   `id_estado_pago` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL
@@ -259,7 +247,6 @@ INSERT INTO `estado_pago` (`id_estado_pago`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_pedido`
 --
 
-DROP TABLE IF EXISTS `estado_pedido`;
 CREATE TABLE `estado_pedido` (
   `id_estado_pedido` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL
@@ -282,7 +269,6 @@ INSERT INTO `estado_pedido` (`id_estado_pedido`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `estado_promocion`
 --
 
-DROP TABLE IF EXISTS `estado_promocion`;
 CREATE TABLE `estado_promocion` (
   `id_estado_promocion` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -304,7 +290,6 @@ INSERT INTO `estado_promocion` (`id_estado_promocion`, `nombre`, `descripcion`) 
 -- Estructura de tabla para la tabla `estado_servicio`
 --
 
-DROP TABLE IF EXISTS `estado_servicio`;
 CREATE TABLE `estado_servicio` (
   `id_estado_servicio` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL
@@ -324,7 +309,6 @@ INSERT INTO `estado_servicio` (`id_estado_servicio`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `localidad`
 --
 
-DROP TABLE IF EXISTS `localidad`;
 CREATE TABLE `localidad` (
   `id_localidad` int(11) NOT NULL,
   `nombre_localidad` varchar(100) DEFAULT NULL
@@ -361,7 +345,6 @@ INSERT INTO `localidad` (`id_localidad`, `nombre_localidad`) VALUES
 -- Estructura de tabla para la tabla `mascota`
 --
 
-DROP TABLE IF EXISTS `mascota`;
 CREATE TABLE `mascota` (
   `id_mascota` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
@@ -389,13 +372,14 @@ INSERT INTO `mascota` (`id_mascota`, `id_usuario`, `foto_mascota`, `nombre_masco
 (4, 8, '../img/mascotas/mascota_8_1784516714.png', 'tito', 1, '', 5, '', 1, '4 años', 'gris blanco', 6.00, ''),
 (5, 5, '../img/mascotas/mascota_5_1783666394_3900.jpg', 'Toby', 1, NULL, 26, 'coker ingles', 1, '7 años', 'dorado', 15.00, ''),
 (6, 2, '../img/mascotas/mascota_2_1786737493_2610.jpg', 'Neron', 1, NULL, 26, 'coker ingles', 1, '12 años', 'dorado y pecas blancas', 16.00, ''),
-(7, 7, '../img/mascotas/mascota_7_1784528217.png', 'Oliver', 1, '', 7, '', 1, '6 años', 'beige', 6.00, 'es alergico al shampo insectisida'),
+(7, 7, '../img/mascotas/mascota_7_1784528217.png', 'nene', 1, NULL, 7, NULL, 1, '6 años', 'beige', 6.00, 'es alergico al shampo insectisida'),
 (8, 9, '../img/mascotas/mascota_9_1784531247_3871.png', 'kira', 1, NULL, 3, NULL, 2, '6 años', 'beige y pintas negras', 7.00, ''),
 (9, 8, '../img/mascotas/mascota_7_1784532981_9451.png', 'nala', 1, '', 7, '', 1, '6años', 'beige', 6.00, ''),
 (10, 10, '../img/mascotas/mascota_10_1784669410_4413.png', 'Bruno', 1, NULL, 4, NULL, 1, '7 años', 'Negro y dorado', 10.00, ''),
 (11, 11, '../img/mascotas/mascota_11_1784671457_1777.png', 'Loki', 1, NULL, 26, 'schnauzer', 1, '6 años', 'negro y mechones blancos', 6.00, ''),
-(12, 12, '../img/mascotas/mascota_12_1784676452_6157.png', 'Thor', 2, NULL, 20, NULL, 1, '6 meses', 'chocolate claro', 5.00, ''),
-(15, 13, '../img/mascotas/mascota_13_1787798927.jpg', 'Nerona', 1, '', 10, '', 2, '10 años', 'blanca y dorada', 15.00, '');
+(12, 12, '../img/mascotas/mascota_12_1792030595_c9ed63a2.png', 'Thor', 2, NULL, 20, NULL, 1, '5 años', 'chocolate claro', 5.00, ''),
+(15, 13, '../img/mascotas/mascota_13_1790380457.jpg', 'Nerona', 1, '', 10, '', 2, '10 años', 'blanca y dorada', 15.00, ''),
+(16, 7, '../img/mascotas/mascota_7_1790644537_856cd4b0.png', 'titi', 1, NULL, 26, 'caniche toy', 2, '3 años', 'blanco', 4.00, '');
 
 -- --------------------------------------------------------
 
@@ -403,7 +387,6 @@ INSERT INTO `mascota` (`id_mascota`, `id_usuario`, `foto_mascota`, `nombre_masco
 -- Estructura de tabla para la tabla `metodos_catalogo`
 --
 
-DROP TABLE IF EXISTS `metodos_catalogo`;
 CREATE TABLE `metodos_catalogo` (
   `id_metodo` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
@@ -427,7 +410,6 @@ INSERT INTO `metodos_catalogo` (`id_metodo`, `nombre`, `descripcion`) VALUES
 -- Estructura de tabla para la tabla `pagos`
 --
 
-DROP TABLE IF EXISTS `pagos`;
 CREATE TABLE `pagos` (
   `id_pago` int(11) NOT NULL,
   `id_pedido` int(11) DEFAULT NULL,
@@ -443,13 +425,17 @@ CREATE TABLE `pagos` (
 -- Estructura de tabla para la tabla `pedido`
 --
 
-DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE `pedido` (
   `id_pedido` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
   `fecha` datetime DEFAULT NULL,
   `total` decimal(10,2) DEFAULT NULL,
-  `id_estado_pedido` int(11) DEFAULT NULL
+  `subtotal` decimal(10,2) DEFAULT 0.00,
+  `costo_envio` decimal(10,2) DEFAULT 0.00,
+  `id_metodo_pago` int(11) DEFAULT NULL,
+  `id_estado_pedido` int(11) DEFAULT NULL,
+  `direccion_envio` varchar(255) DEFAULT NULL,
+  `notas` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -458,7 +444,6 @@ CREATE TABLE `pedido` (
 -- Estructura de tabla para la tabla `productos`
 --
 
-DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL,
   `id_categoria` int(11) DEFAULT NULL,
@@ -490,14 +475,15 @@ INSERT INTO `productos` (`id_producto`, `id_categoria`, `id_proveedor`, `nombre`
 (10, 3, 8, 'Pañitos Húmedos Limpieza Esencial x 50', 'Los pañitos húmedos Petys Limpieza Esencial son la solución ideal para limpiar a tu mascota de forma rápida, suave y sin necesidad de enjuague.', 6, 9000.00, 10500.00, '../img/img.productosperros/prod_1788499841_2610.png', 1, '0000000000000'),
 (11, 4, NULL, 'Incros Vital Comida Peces 100 g', '¡Nutrición total para tus peces! 🐟 Incros Vital es un alimento premium de 100 g elaborado en Colombia para peces de agua dulce en todas las etapas de su vida. Su fórmula balanceada es alta en proteínas, vitaminas y minerales para garantizar su salud y energía.', 6, 20000.00, 22000.00, '../img/img.productosperros/prod_1788499789_1070.png', 1, '0000000000'),
 (12, 1, 3, 'dogourmet-cachorros-leche-2Kg', 'Es un alimento completo y balanceado, formulado especialmente para satisfacer las necesidades nutricionales de los cachorros en etapa de crecimiento.', 6, 19000.00, 22000.00, '../img/img.productosperros/prod_1788553180_6129.png', 1, ''),
-(13, 1, 7, 'Chunky Perros Adultos Pollo y Arroz 2 Kg', '¡Nutrición equilibrada para tu mascota! 🐕 Chunky Adultos Pollo y Arroz es un concentrado elaborado con pollo de alta calidad que proporciona una alimentación saludable y completa para el bienestar general de tu perro.', 6, 18000.00, 20000.00, '../img/img.productosperros/prod_1788570459_2835.webp', 1, '00000000000'),
-(14, 1, 7, 'Agility Gold Perros Adultos Razas Grandes Sin Granos 3Kg', '¡Cuidado premium para tu peludo! 🐕 Agility Gold® Razas Grandes (15 kg) es un concentrado libre de granos diseñado para las necesidades de energía y tamaño de tu perro adulto. Su fórmula ofrece una nutrición óptima y equilibrada para su salud y bienestar.', 6, 59000.00, 6500.00, '../img/img.productosperros/prod_1788571965_7674.png', 1, '00000'),
+(13, 1, 7, 'Chunky Perros Adultos Pollo y Arroz 2 Kg', '¡Nutrición equilibrada para tu mascota! 🐕 Chunky Adultos Pollo y Arroz es un concentrado elaborado con pollo de alta calidad que proporciona una alimentación saludable y completa para el bienestar general de tu perro.', 6, 19000.00, 23000.00, '../img/img.productosperros/prod_1788570459_2835.webp', 1, '00000000000'),
+(14, 1, 7, 'Agility Gold Perros Adultos Razas Grandes Sin Granos 3Kg', '¡Cuidado premium para tu peludo! 🐕 Agility Gold® Razas Grandes (15 kg) es un concentrado libre de granos diseñado para las necesidades de energía y tamaño de tu perro adulto. Su fórmula ofrece una nutrición óptima y equilibrada para su salud y bienestar.', 6, 650000.00, 75000.00, '../img/img.productosperros/prod_1788571965_7674.png', 1, '00000'),
 (15, 4, 10, 'Piamontina Canarios 500 g', 'lo mejor para sus aves', 10, 8000.00, 10000.00, '../img/img.productosperros/prod_1788572947_9577.png', 1, '0'),
 (16, 3, 3, 'Mirringo Arena para gatos  x 10 Kg', 'Arena control de olores, aglutinación superior y fácil limpieza. ¡Mantén tu hogar fresco y cómodo para tu felino!', 6, 45000.00, 55000.00, '../img/img.productosperros/prod_6aa1ea4de68fa_6989.png', 1, NULL),
 (27, 1, 10, 'Pro Plan Wet Alimento Húmedo Salmón para gatos adultos 85 g', '', 6, 6500.00, 7500.00, '../img/img.productosperros/prod_6aa1cf4decd65_4037.jpg', 1, NULL),
 (28, 1, 3, 'Icros Goldf- Goldfish', 'Alimento de peces de agua dulce', 7, 20000.00, 22000.00, '../img/img.productosperros/prod_6aa1cfdd46ea9_2744.png', 1, NULL),
 (29, 3, 8, 'Petys Spray Eliminador de Olores 280 ml', '', 6, 19000.00, 23000.00, '../img/img.productosperros/prod_6aa1d0d63a06a_6008.png', 1, NULL),
-(30, 5, 8, 'Simparica - Perros De 2,6 Hasta 5 Kg', '', 6, 29000.00, 39000.00, '../img/img.productosperros/prod_6aa1d474e321d_5537.webp', 1, NULL);
+(30, 5, 8, 'Simparica - Perros De 2,6 Hasta 5 Kg', '', 6, 29000.00, 39000.00, '../img/img.productosperros/prod_6aa1d474e321d_5537.webp', 1, NULL),
+(31, 1, 2, 'Comida Para Perro Hills Adulto Cordero Razas Miniatura 4,5lb', '', 3, 106000.00, 116000.00, '../img/img.productosperros/prod_6ac06e542815b_2548.png', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -505,7 +491,6 @@ INSERT INTO `productos` (`id_producto`, `id_categoria`, `id_proveedor`, `nombre`
 -- Estructura de tabla para la tabla `producto_especie`
 --
 
-DROP TABLE IF EXISTS `producto_especie`;
 CREATE TABLE `producto_especie` (
   `id_producto` int(11) NOT NULL,
   `id_especie` int(11) NOT NULL
@@ -538,7 +523,8 @@ INSERT INTO `producto_especie` (`id_producto`, `id_especie`) VALUES
 (28, 3),
 (29, 1),
 (29, 2),
-(30, 1);
+(30, 1),
+(31, 1);
 
 -- --------------------------------------------------------
 
@@ -546,7 +532,6 @@ INSERT INTO `producto_especie` (`id_producto`, `id_especie`) VALUES
 -- Estructura de tabla para la tabla `producto_promocion`
 --
 
-DROP TABLE IF EXISTS `producto_promocion`;
 CREATE TABLE `producto_promocion` (
   `id_producto_promocion` int(11) NOT NULL,
   `id_producto` int(11) DEFAULT NULL,
@@ -564,7 +549,8 @@ INSERT INTO `producto_promocion` (`id_producto_promocion`, `id_producto`, `id_pr
 (40, 3, 1),
 (41, 5, 1),
 (42, 9, 2),
-(43, 16, 3);
+(45, 8, 3),
+(46, 7, 4);
 
 -- --------------------------------------------------------
 
@@ -572,7 +558,6 @@ INSERT INTO `producto_promocion` (`id_producto_promocion`, `id_producto`, `id_pr
 -- Estructura de tabla para la tabla `promociones`
 --
 
-DROP TABLE IF EXISTS `promociones`;
 CREATE TABLE `promociones` (
   `id_promo` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -591,9 +576,10 @@ CREATE TABLE `promociones` (
 --
 
 INSERT INTO `promociones` (`id_promo`, `nombre`, `descripcion`, `valor`, `tipo_descuento`, `fecha_inicio`, `fecha_fin`, `fecha_creacion`, `id_estado_promocion`, `foto_url`) VALUES
-(1, 'Cuidado y Higiene para tu mascota', 'kit petys +baño', 10.00, 'porcentaje', '2026-08-31', '2026-09-30', '2026-08-23', 1, 'img/promociones/promo_1787692570_e190aa4c.png'),
-(2, 'alimento cachorro', '', 10.00, 'porcentaje', '2026-08-31', '2026-09-30', '2026-08-23', 1, 'img/promociones/promo_1787692611_7e37446f.png'),
-(3, 'alimento adulto', '', 20.00, 'porcentaje', '2026-08-31', '2026-09-30', '2026-08-23', 1, 'img/promociones/promo_1787706811_3952.png');
+(1, 'Cuidado y Higiene para tu mascota', 'kit petys +baño', 10.00, 'porcentaje', '2026-08-31', '2026-11-30', '2026-08-23', 1, 'img/promociones/promo_1787692570_e190aa4c.png'),
+(2, 'alimento cachorro', '', 10.00, 'porcentaje', '2026-08-31', '2026-11-30', '2026-08-23', 1, 'img/promociones/promo_1787692611_7e37446f.png'),
+(3, 'alimento adulto', '', 20.00, 'porcentaje', '2026-08-31', '2026-11-30', '2026-08-23', 1, 'img/promociones/promo_1787706811_3952.png'),
+(4, 'Mes del felino', 'consienta tu felino las grandes ofertas', 10.00, 'porcentaje', '2026-09-26', '2026-11-30', '2026-09-10', 1, 'prod_6aa1ea4de68fa_6989');
 
 -- --------------------------------------------------------
 
@@ -601,7 +587,6 @@ INSERT INTO `promociones` (`id_promo`, `nombre`, `descripcion`, `valor`, `tipo_d
 -- Estructura de tabla para la tabla `proveedores`
 --
 
-DROP TABLE IF EXISTS `proveedores`;
 CREATE TABLE `proveedores` (
   `id_proveedor` int(11) NOT NULL,
   `nombre_empresa` varchar(100) DEFAULT NULL,
@@ -635,7 +620,6 @@ INSERT INTO `proveedores` (`id_proveedor`, `nombre_empresa`, `nit_cedula`, `cont
 -- Estructura de tabla para la tabla `raza`
 --
 
-DROP TABLE IF EXISTS `raza`;
 CREATE TABLE `raza` (
   `id_raza` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -682,7 +666,6 @@ INSERT INTO `raza` (`id_raza`, `nombre`, `id_especie`) VALUES
 -- Estructura de tabla para la tabla `recuperar_clave`
 --
 
-DROP TABLE IF EXISTS `recuperar_clave`;
 CREATE TABLE `recuperar_clave` (
   `id_token` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
@@ -734,7 +717,6 @@ INSERT INTO `recuperar_clave` (`id_token`, `id_usuario`, `token`, `fecha_creacio
 -- Estructura de tabla para la tabla `reseñas_productos`
 --
 
-DROP TABLE IF EXISTS `reseñas_productos`;
 CREATE TABLE `reseñas_productos` (
   `id_reseña` int(11) NOT NULL,
   `id_producto` int(11) DEFAULT NULL,
@@ -757,7 +739,6 @@ INSERT INTO `reseñas_productos` (`id_reseña`, `id_producto`, `id_usuario`, `es
 -- Estructura de tabla para la tabla `rol`
 --
 
-DROP TABLE IF EXISTS `rol`;
 CREATE TABLE `rol` (
   `id_rol` int(11) NOT NULL,
   `nombre_rol` varchar(50) NOT NULL
@@ -778,7 +759,6 @@ INSERT INTO `rol` (`id_rol`, `nombre_rol`) VALUES
 -- Estructura de tabla para la tabla `servicios`
 --
 
-DROP TABLE IF EXISTS `servicios`;
 CREATE TABLE `servicios` (
   `id_servicio` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
@@ -803,7 +783,7 @@ INSERT INTO `servicios` (`id_servicio`, `nombre`, `descripcion`, `precio`, `dura
 (6, 'Consulta Veterinaria General', 'Prioriza la salud de tu mascota con una atención médica experta y oportuna. Incluye examen físico completo (revisión de ojos, oídos, boca, piel, corazón y pulmones), control de peso, diagnóstico preliminar, receta médica detallada y orientación profesional para su cuidado diario.', 50000.00, 40, 2, 2, NULL),
 (7, 'Servicio de Paseos: Energía, Socialización y Libertad', 'Dale a tu perro el ejercicio y la distracción que necesita para mantenerse equilibrado y feliz. Incluye paseadores calificados, rutas seguras y controladas, dinámicas de socialización, hidratación constante y reportes en tiempo real con su ubicación y fotos.', 8000.00, 60, 1, 3, NULL),
 (8, 'Corte uñas canino y felino', 'Corte de Uñas Seguro para Perros y Gatos 🐶🐱Evita molestias, dolores y lesiones en sus patitas. Nuestro equipo profesional realiza un corte preciso, rápido y sin estrés, cuidando la salud de tu mascota.📅 ¡Agenda tu cita hoy mismo!', 8000.00, 20, 1, 1, NULL),
-(9, 'Guardería por Días o Pasadía', 'Cuidado del animal durante la jornada laboral de sus dueños.', 30000.00, 480, 1, 3, NULL);
+(9, 'Guardería por Días o Pasadía dia dia', 'Cuidado del animal durante la jornada laboral de sus dueños.', 30000.00, 480, 1, 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -811,7 +791,6 @@ INSERT INTO `servicios` (`id_servicio`, `nombre`, `descripcion`, `precio`, `dura
 -- Estructura de tabla para la tabla `sexo_mascotas`
 --
 
-DROP TABLE IF EXISTS `sexo_mascotas`;
 CREATE TABLE `sexo_mascotas` (
   `id_sexoMascota` int(11) NOT NULL,
   `sexo_mascota` varchar(50) DEFAULT NULL
@@ -831,7 +810,6 @@ INSERT INTO `sexo_mascotas` (`id_sexoMascota`, `sexo_mascota`) VALUES
 -- Estructura de tabla para la tabla `tipo_identificacion`
 --
 
-DROP TABLE IF EXISTS `tipo_identificacion`;
 CREATE TABLE `tipo_identificacion` (
   `id_tipo_id` int(11) NOT NULL,
   `sigla` varchar(10) DEFAULT NULL,
@@ -859,7 +837,6 @@ INSERT INTO `tipo_identificacion` (`id_tipo_id`, `sigla`, `nombre`) VALUES
 -- Estructura de tabla para la tabla `usuario`
 --
 
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL,
   `id_rol` int(11) DEFAULT NULL,
@@ -892,7 +869,7 @@ INSERT INTO `usuario` (`id_usuario`, `id_rol`, `foto_usuario`, `id_tipo_id`, `nu
 (9, 2, '../img/usuarios/user_1784687745_3171.png', 1, '10000101010', 'Sandra', 'Aroca', 'arocasandra8@gmail.com', '3001001010', '$2y$10$OF6nW1/jRghKyrYCdwE0E.q.rWkOUMYxnyG1.NxianBpC2crXLeoO', '2026-07-20 02:05:29', 16, 'calle 53 13 16'),
 (10, 2, '../img/usuarios/user_1784687815_1294.png', 1, '1000000101010', 'Laura', 'Sandoval', 'lsandoval@gmail.com', '31000100101', '$2y$10$0td7I8W8/Z/UC3QBaXaBMOGCXvoo2B3TLDu7Oj9L4z3UoIjtOlWuK', '2026-07-21 16:21:01', 7, ''),
 (11, 2, '../img/usuarios/user_11_1784674625.png', 1, '00000000000', 'Eric', 'Garcia', 'Mgarcia@gmail.com', '3010001010', '$2y$10$eJBUpdrUBaIvvT.ZVbHbgeVprNck2Bk7d5CJhJ1qIWN/gNPwLUwbO', '2026-07-21 17:00:34', 1, 'Calle 39B No. 19 - 30'),
-(12, 2, '../img/usuarios/user_1787779441_7954.png', 1, '10101000000', 'Santiago', 'Lopez', 'ssopez@gmail.com', '3000001010', '$2y$10$BXavSAcY3IRgwpZK1loSlOEwmOus4bIK7x3nVWN8NOZ5xWGvPyYgi', '2026-07-21 18:00:49', 9, 'calle 100 67 16'),
+(12, 2, '../img/usuarios/user_12_1792033836_ed335ce3.png', 1, '10101000000', 'Santiago Daniel', 'Lopez Sandoval', 'ssopez@gmail.com', '3000001010', '$2y$10$BXavSAcY3IRgwpZK1loSlOEwmOus4bIK7x3nVWN8NOZ5xWGvPyYgi', '2026-07-21 18:00:49', 9, 'calle 100 67 16'),
 (13, 2, '../img/usuarios/user_1787798029_8045.png', 1, '1000456967', 'Carlos', 'Sanchez', 'cararv@gmail.com', '3016540579', '$2y$10$JGccGDCFoReL3WG24R5rgeZokipqKZjw/n0DpILr4O3KueF6851I.', '2026-08-26 18:04:33', 18, 'carrera 52 3 66');
 
 --
@@ -904,7 +881,8 @@ INSERT INTO `usuario` (`id_usuario`, `id_rol`, `foto_usuario`, `id_tipo_id`, `nu
 --
 ALTER TABLE `carrito`
   ADD PRIMARY KEY (`id_carrito`),
-  ADD KEY `carrito_ibfk_1` (`id_usuario`);
+  ADD KEY `carrito_ibfk_1` (`id_usuario`),
+  ADD KEY `idx_guest_token` (`guest_token`);
 
 --
 -- Indices de la tabla `categorias_producto`
@@ -1159,7 +1137,7 @@ ALTER TABLE `categoria_servicio`
 -- AUTO_INCREMENT de la tabla `citas`
 --
 ALTER TABLE `citas`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `compras_proveedor`
@@ -1231,7 +1209,7 @@ ALTER TABLE `localidad`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_mascota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `metodos_catalogo`
@@ -1249,19 +1227,19 @@ ALTER TABLE `pagos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `producto_promocion`
 --
 ALTER TABLE `producto_promocion`
-  MODIFY `id_producto_promocion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_producto_promocion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `promociones`
 --
 ALTER TABLE `promociones`
-  MODIFY `id_promo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_promo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -1443,7 +1421,6 @@ ALTER TABLE `usuario`
   ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`id_tipo_id`) REFERENCES `tipo_identificacion` (`id_tipo_id`),
   ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_rol`) REFERENCES `rol` (`id_rol`),
   ADD CONSTRAINT `usuario_ibfk_3` FOREIGN KEY (`id_localidad`) REFERENCES `localidad` (`id_localidad`);
-SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

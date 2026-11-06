@@ -1,69 +1,78 @@
 // ================================================================
-// MOD-MASCOTAS.JS (CORREGIDO Y MEJORADO)
+// MOD-MASCOTAS.JS (VERSIÓN INDEPENDIENTE Y CORREGIDA)
 // ================================================================
 let mascotasData = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar selects usando la caché global o el respaldo
-    if (typeof cacheSelects !== 'undefined' && cacheSelects.especies) {
-        llenarSelect('masEspecie', cacheSelects.especies, 'id_especie', 'nombre', 'Seleccionar...');
-        llenarSelect('masSexo', cacheSelects.sexos, 'id_sexoMascota', 'sexo_mascota', 'Seleccionar...');
-        llenarSelect('masDueno', cacheSelects.clientes, 'id_usuario', 'nombre_completo', 'Seleccionar dueño...');
-        llenarSelect('miniMasEspecie', cacheSelects.especies, 'id_especie', 'nombre', 'Seleccionar...');
-        llenarSelect('miniMasSexo', cacheSelects.sexos, 'id_sexoMascota', 'sexo_mascota', 'Seleccionar...');
-    } else {
-        inicializarSelectsMascotas();
-    }
-
-    // Listeners especie -> raza
-    document.getElementById('masEspecie')?.addEventListener('change', (e) => 
+    // Cargamos los datos directamente sin depender de la caché global de main.js
+    inicializarSelectsMascotas();
+    
+    // Listeners para cascada Especie -> Raza
+    const selEspecie = document.getElementById('masEspecie');
+    if(selEspecie) selEspecie.addEventListener('change', (e) => 
         cargarRazas(e.target.value, 'masRaza', 'contEspecieDetalle', 'masEspecieDetalle', 'contRazaDetalle'));
     
-    document.getElementById('masRaza')?.addEventListener('change', (e) => 
+    const selRaza = document.getElementById('masRaza');
+    if(selRaza) selRaza.addEventListener('change', (e) => 
         toggleRazaDetalle(e.target, 'contRazaDetalle'));
-    
-    document.getElementById('miniMasEspecie')?.addEventListener('change', (e) => 
-        cargarRazas(e.target.value, 'miniMasRaza', 'miniContEspDetalle', 'miniMasEspDetalle', 'miniContRazaDetalle'));
-    
-    document.getElementById('miniMasRaza')?.addEventListener('change', (e) => 
-        toggleRazaDetalle(e.target, 'miniContRazaDetalle'));
 });
+
+/**
+ * Función auxiliar local para llenar un select dado un array de objetos
+ */
+function llenarSelectLocal(idSelect, datos, campoValor, campoTexto, placeholder) {
+    const sel = document.getElementById(idSelect);
+    if (!sel) return;
+
+    sel.innerHTML = `<option value="">${placeholder}</option>`;
+    
+    if (Array.isArray(datos)) {
+        datos.forEach(item => {
+            // Usamos optional chaining (?) por si el item viene vacío
+            const val = item[campoValor] || '';
+            const txt = item[campoTexto] || 'Sin nombre';
+            
+            const option = document.createElement('option');
+            option.value = val;
+            option.textContent = txt;
+            sel.appendChild(option);
+        });
+    }
+}
 
 async function inicializarSelectsMascotas() {
     try {
+        // Hacemos las 3 peticiones necesarias en paralelo
         const [clientes, especies, sexos] = await Promise.all([
             apiFetch('listar_clientes', null, 'GET'),
             apiFetch('listar_especies', null, 'GET'),
             apiFetch('listar_sexos_mascota', null, 'GET')
         ]);
         
+        // 1. Llenar Dueños (Clientes)
         if (clientes.success) {
-            const sel = document.getElementById('masDueno');
-            if (sel) {
-                sel.innerHTML = '<option value="">Seleccionar dueño...</option>';
-                clientes.data.forEach(c => sel.innerHTML += `<option value="${c.id_usuario}">${c.nombre_completo}</option>`);
-            }
+            llenarSelectLocal('masDueno', clientes.data, 'id_usuario', 'nombre_completo', 'Seleccionar dueño...');
+        } else {
+            console.warn('No se pudieron cargar los clientes:', clientes.error);
         }
+
+        // 2. Llenar Especies
         if (especies.success) {
-            ['masEspecie', 'miniMasEspecie'].forEach(id => {
-                const sel = document.getElementById(id);
-                if (sel) {
-                    sel.innerHTML = '<option value="">Seleccionar...</option>';
-                    especies.data.forEach(e => sel.innerHTML += `<option value="${e.id_especie}">${e.nombre}</option>`);
-                }
-            });
+            llenarSelectLocal('masEspecie', especies.data, 'id_especie', 'nombre', 'Seleccionar especie...');
+            // También llenamos el del mini-formulario si existe
+            llenarSelectLocal('miniMasEspecie', especies.data, 'id_especie', 'nombre', 'Seleccionar...');
         }
+
+        // 3. Llenar Sexos
         if (sexos.success) {
-            ['masSexo', 'miniMasSexo'].forEach(id => {
-                const sel = document.getElementById(id);
-                if (sel) {
-                    sel.innerHTML = '<option value="">Seleccionar...</option>';
-                    sexos.data.forEach(s => sel.innerHTML += `<option value="${s.id_sexoMascota}">${s.sexo_mascota}</option>`);
-                }
-            });
+            llenarSelectLocal('masSexo', sexos.data, 'id_sexoMascota', 'sexo_mascota', 'Seleccionar sexo...');
+            // También llenamos el del mini-formulario si existe
+            llenarSelectLocal('miniMasSexo', sexos.data, 'id_sexoMascota', 'sexo_mascota', 'Seleccionar...');
         }
+
     } catch (err) {
-        console.error('Error inicializando selects:', err);
+        console.error('Error crítico inicializando selects de mascotas:', err);
+        showToast('Error al cargar listas desplegables', 'danger');
     }
 }
 
@@ -72,25 +81,29 @@ async function cargarRazas(idEspecie, selectRazaId, contDetalleId, inputDetalleI
     const contDetalle = document.getElementById(contDetalleId);
     const contRazaDetalle = document.getElementById(contRazaDetalleId);
 
+    // Mostrar campo "Otra especie" si el ID de especie es 3 (ajustar según tu BD)
     if (contDetalle) contDetalle.style.display = idEspecie == 3 ? 'block' : 'none';
     
     if (!idEspecie) {
-        selectRaza.innerHTML = '<option value="">Primero especie</option>';
+        if(selectRaza) selectRaza.innerHTML = '<option value="">Primero seleccione especie</option>';
         return;
     }
     
     try {
         const json = await apiFetch('listar_razas', { id_especie: idEspecie }, 'GET');
-        selectRaza.innerHTML = '<option value="">Seleccionar...</option>';
-        if (json.success) {
-            json.data.forEach(r => {
-                selectRaza.innerHTML += `<option value="${r.id_raza}">${r.nombre}</option>`;
-            });
+        if(selectRaza) {
+            selectRaza.innerHTML = '<option value="">Seleccionar raza...</option>';
+            if (json.success) {
+                json.data.forEach(r => {
+                    selectRaza.innerHTML += `<option value="${r.id_raza}">${r.nombre}</option>`;
+                });
+            }
         }
     } catch (err) { 
         console.error('Error cargando razas:', err); 
     }
     
+    // Ocultar detalle de raza al cambiar de especie
     if (contRazaDetalle) contRazaDetalle.style.display = 'none';
 }
 
@@ -98,7 +111,8 @@ function toggleRazaDetalle(selectElement, contId) {
     const cont = document.getElementById(contId);
     if (cont && selectElement) {
         const selectedText = selectElement.options[selectElement.selectedIndex].text;
-        cont.style.display = selectedText.includes('Otra') ? 'block' : 'none';
+        // Si la raza seleccionada contiene "Otra", mostramos el input de texto
+        cont.style.display = selectedText.toLowerCase().includes('otra') ? 'block' : 'none';
     }
 }
 
@@ -111,37 +125,43 @@ async function renderMascotas() {
         const filtro = document.getElementById('buscarMascota').value.toLowerCase();
         const filtradas = json.data.filter(m =>
             (m.nombre_mascota || '').toLowerCase().includes(filtro) ||
-            (m.nombres + ' ' + m.apellidos || '').toLowerCase().includes(filtro) ||
+            ((m.nombres || '') + ' ' + (m.apellidos || '')).toLowerCase().includes(filtro) ||
             (m.especie || '').toLowerCase().includes(filtro) ||
             (m.raza || '').toLowerCase().includes(filtro)
         );
         
         const tbody = document.getElementById('tablaMascotas');
+        if (!tbody) return;
+
         if (filtradas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">Sin mascotas</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">No se encontraron mascotas</td></tr>';
             return;
         }
+
         tbody.innerHTML = filtradas.map(m => `
             <tr>
                 <td>${m.id_mascota}</td>
-                <td><img src="${m.foto_mascota || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.nombre_mascota)+'&background=ffd000&color=000'}"
-                    class="rounded-circle" width="35" height="35" style="object-fit:cover;"></td>
+                <td>
+                    <img src="${m.foto_mascota || 'https://ui-avatars.com/api/?name='+encodeURIComponent(m.nombre_mascota || 'M')+'&background=ffd000&color=000'}"
+                    class="rounded-circle border" width="40" height="40" style="object-fit:cover;">
+                </td>
                 <td><strong>${m.nombre_mascota}</strong></td>
-                <td>${m.especie || ''}${m.especie_detalle ? ' ('+m.especie_detalle+')' : ''}</td>
-                <td>${m.raza || ''}${m.raza_detalle ? ' ('+m.raza_detalle+')' : ''}</td>
+                <td>${m.especie || '-'} ${m.especie_detalle ? '<small class="text-muted">('+m.especie_detalle+')</small>' : ''}</td>
+                <td>${m.raza || '-'} ${m.raza_detalle ? '<small class="text-muted">('+m.raza_detalle+')</small>' : ''}</td>
                 <td>${m.sexo_mascota || '-'}</td>
                 <td>${m.edad_mascota || '-'}</td>
-                <td>${m.peso_mascota || '-'} kg</td>
-                <td><small>${m.nombres} ${m.apellidos}</small></td>
+                <td>${m.peso_mascota ? m.peso_mascota + ' kg' : '-'}</td>
+                <td><small>${m.nombres || ''} ${m.apellidos || ''}</small></td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="editarMascota(${m.id_mascota})"><i class="fa fa-edit"></i></button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(${m.id_mascota},'${(m.nombre_mascota||'').replace(/'/g,"\\'")}')" ><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editarMascota(${m.id_mascota})" title="Editar"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(${m.id_mascota},'${(m.nombre_mascota||'').replace(/'/g,"\\'")}')" title="Eliminar"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         `).join('');
     } catch (err) { console.error(err); }
 }
 
+// --- FUNCIONES DE IMAGEN ---
 window.previewMascotaImg = function(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -161,13 +181,14 @@ window.quitarMascotaImg = function() {
     document.getElementById('mascotaPreview').src = '';
 };
 
-// Botón "Nueva Mascota" en la tabla
+// --- GESTIÓN DEL FORMULARIO ---
+
 window.prepararNuevaMascota = function() {
-    // 🔧 MOVIDO AQUÍ: Se ejecuta primero que todo para asegurar que aparezca
-    showToast('✅ Formulario listo para registrar una nueva mascota', 'success'); 
     limpiarFormMascota();
-    document.getElementById('formMascota').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
+    showToast('✅ Formulario listo para nueva mascota', 'success');
+    const formCard = document.getElementById('formMascota')?.closest('.sketch-card');
+    if(formCard) formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
 window.limpiarFormMascota = function() {
     document.getElementById('formMascota').reset();
@@ -177,22 +198,23 @@ window.limpiarFormMascota = function() {
     document.getElementById('contRazaDetalle').style.display = 'none';
     
     const razaSelect = document.getElementById('masRaza');
-    if(razaSelect) razaSelect.innerHTML = '<option value="">Primero especie</option>';
+    if(razaSelect) razaSelect.innerHTML = '<option value="">Primero seleccione especie</option>';
 };
 
-// FUNCIÓN PRINCIPAL PARA GUARDAR
+// --- GUARDAR / ACTUALIZAR ---
 window.guardarMascota = async function() {
     const idEdit = document.getElementById('masIdEdit').value;
     const idDueno = document.getElementById('masDueno').value;
     const nombre = document.getElementById('masNombre').value.trim();
     const especie = document.getElementById('masEspecie').value;
 
-    // Validación estricta
     if (!idDueno || !nombre || !especie) {
         return showToast('⚠️ Dueño, Nombre y Especie son obligatorios', 'danger');
     }
 
     const formData = new FormData();
+    // No necesitamos appendear 'action' aquí porque apiFetch lo hace automáticamente si pasamos un objeto/FormData
+    
     if (idEdit) formData.append('id_mascota', idEdit);
     
     formData.append('id_usuario', idDueno);
@@ -213,8 +235,8 @@ window.guardarMascota = async function() {
     }
     
     try {
-        // Usamos apiFetch que es el estándar del panel
         const res = await apiFetch('guardar_mascota_admin', formData);
+        
         if (res.success) {
             showToast(res.message || '✅ Mascota guardada correctamente');
             limpiarFormMascota();
@@ -227,6 +249,7 @@ window.guardarMascota = async function() {
     }
 };
 
+// --- EDITAR ---
 window.editarMascota = function(id) {
     const m = mascotasData.find(x => x.id_mascota == id);
     if (!m) return;
@@ -234,19 +257,25 @@ window.editarMascota = function(id) {
     document.getElementById('masIdEdit').value = m.id_mascota;
     document.getElementById('masDueno').value = m.id_usuario;
     document.getElementById('masNombre').value = m.nombre_mascota;
-    document.getElementById('masEspecie').value = m.id_especie;
     
+    // 1. Setear Especie
+    const selEspecie = document.getElementById('masEspecie');
+    selEspecie.value = m.id_especie;
+    
+    // 2. Cargar Razas basadas en esa especie y luego seleccionar la raza
     cargarRazas(m.id_especie, 'masRaza', 'contEspecieDetalle', 'masEspecieDetalle', 'contRazaDetalle').then(() => {
         const selectRaza = document.getElementById('masRaza');
-        selectRaza.value = m.id_raza || '';
-        
-        const selectedText = selectRaza.options[selectRaza.selectedIndex].text;
-        if (selectedText.includes('Otra')) {
-            document.getElementById('contRazaDetalle').style.display = 'block';
+        if(selectRaza) {
+            selectRaza.value = m.id_raza || '';
+            
+            const selectedOption = selectRaza.options[selectRaza.selectedIndex];
+            if (selectedOption && selectedOption.text.toLowerCase().includes('otra')) {
+                document.getElementById('contRazaDetalle').style.display = 'block';
+            }
         }
     });
     
-    if (m.id_especie == 3) {
+    if (m.id_especie == 3) { 
         document.getElementById('contEspecieDetalle').style.display = 'block';
         document.getElementById('masEspecieDetalle').value = m.especie_detalle || '';
     }
@@ -266,12 +295,15 @@ window.editarMascota = function(id) {
         quitarMascotaImg();
     }
     
-    document.getElementById('formMascota').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const formCard = document.getElementById('formMascota')?.closest('.sketch-card');
+    if(formCard) formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
     showToast('Editando a ' + m.nombre_mascota, 'info');
 };
 
+// --- ELIMINAR ---
 window.eliminarMascota = async function(id, nombre) {
-    if (!confirmar(`¿Eliminar a "${nombre}"?`)) return;
+    if (!confirm(`¿Estás seguro de eliminar a "${nombre}"?`)) return;
     try {
         const res = await apiFetch('eliminar_mascota_admin', { id_mascota: id });
         if (res.success) {
@@ -285,13 +317,14 @@ window.eliminarMascota = async function(id, nombre) {
     }
 };
 
+// --- MINI FORMULARIO (PARA CITAS) ---
 window.toggleMiniFormMascota = function() {
     const form = document.getElementById('miniFormMascota');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    if(form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
 };
 
 window.guardarMascotaRapida = async function() {
-    const idUsuario = document.getElementById('citaCliente').value;
+    const idUsuario = document.getElementById('citaCliente')?.value;
     if (!idUsuario) { 
         return showToast('⚠️ Selecciona un cliente primero', 'warning'); 
     }
@@ -321,14 +354,12 @@ window.guardarMascotaRapida = async function() {
     try {
         const res = await apiFetch('guardar_mascota_admin', formData);
         if (res.success) {
-            showToast('✅ Mascota registrada');
-            const nuevoId = res.id;
+            showToast('✅ Mascota registrada rápidamente');
             if (typeof cargarMascotasDelCliente === 'function') {
                 await cargarMascotasDelCliente(idUsuario); 
             }
-            document.getElementById('citaMascota').value = nuevoId;
             toggleMiniFormMascota();
-            
+            // Limpiar campos mini
             ['miniMasNombre','miniMasPeso','miniMasEdad','miniMasColor','miniMasObs','miniMasEspDetalle','miniMasRazaDetalle'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';

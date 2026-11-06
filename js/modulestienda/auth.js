@@ -116,6 +116,14 @@ async function handleLogin(e) {
         
         if (data.success) {
             showMessage('success', data.message);
+            // ✅ CORRECCIÓN: Guardamos los datos en la variable 'viaCanesUsuario'
+            // para que el header la pueda leer.
+            localStorage.setItem('viaCanesUser', JSON.stringify({
+                email: email,
+                nombres: "Usuario", // Se actualizará con los datos reales al entrar al panel
+                apellidos: ""
+            }));
+
             setTimeout(() => window.location.href = data.redirect, 1000);
         }
     } catch (err) {

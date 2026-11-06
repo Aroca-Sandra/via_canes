@@ -59,23 +59,56 @@
 <a href="#" onclick="cerrarSesion()" class="dropdown-item text-danger fw-bold"><i class="fa fa-sign-out-alt"></i>Cerrar sesión</a>
 </div>
 </div>
+<!-- Carrito de compras con disparador de menú lateral (Offcanvas) -->
 <button class="util-item border-0 bg-transparent position-relative p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoLateral">
 <i class="fa fa-shopping-cart fs-5"></i>
 <span>Carrito</span>
+<!-- Globo indicador de cantidad (Controlado por JS) -->
 <span id="contador-carrito" class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="display:none;">0</span>
 </button>
-<a href="ayuda.html" class="util-item"><i class="fa fa-phone"></i><span>Ayuda</span></a>
+
+<!-- Central de Ayuda -->
+<a href="ayuda.html" class="util-item" aria-label="Central de ayuda">
+<i class="fa fa-phone"></i> <span>Ayuda</span>
+</a>
+
 </div>
 </div>
+
+<!-- Barra inferior: Accesos directos a Categorías y Filtros URL -->
 <div class="categories-row">
-<a href="perros.html" class="cat-item"><div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div><span>Perros</span></a>
-<a href="gatos.html" class="cat-item"><div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div><span>Gatos</span></a>
-<a href="otros-animales.html" class="cat-item"><div class="img-circle"><img src="../img/p-otros.png" alt="Otros" class="cat-img"></div><span>Otros Animales</span></a>
-<a href="higiene.html" class="cat-item"><div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div><span>Higiene</span></a>
-<a href="salud.html" class="cat-item"><div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div><span>Salud</span></a>
-<a href="servicios.html" class="cat-item"><div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div><span>Servicios</span></a>
-<a href="citas.html" class="cat-item"><div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div><span>Citas</span></a>
-<a href="promociones.html" class="cat-item"><div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div><span>Promociones</span></a>
+<a href="../index.html?tipo=especie&valor=Perros" class="cat-item">
+<div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div>
+<span>Perros</span>
+</a>
+<a href="../index.html?tipo=especie&valor=Gatos" class="cat-item">
+<div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div>
+<span>Gatos</span>
+</a>
+<a href="../index.html?tipo=especie&valor=Otra%20Especie" class="cat-item">
+<div class="img-circle"><img src="../img/p-otros.png" alt="Otra Especie" class="cat-img"></div>
+<span>Otra Especie</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Higiene" class="cat-item">
+<div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div>
+<span>Higiene</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Salud" class="cat-item">
+<div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div>
+<span>Salud</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Servicios" class="cat-item">
+<div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div>
+<span>Servicios</span>
+</a>
+<a href="../index.html?tipo=categoria&valor=Citas" class="cat-item">
+<div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div>
+<span>Citas</span>
+</a>
+<a href="promociones.html" class="cat-item">
+<div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div>
+<span>Promociones</span>
+</a>
 </div>
 </header>
 
@@ -85,12 +118,11 @@
 <h5>¡Hola, <span id="welcomeUserName">Usuario</span>! 👋</h5>
 <p>Bienvenido a tu panel de control. Aquí podrás gestionar tus citas, pedidos y el historial médico de tus mascotas.</p>
 <div class="btn-custom-group">
-<button class="btn btn-light btn-custom-pill fw-bold">
-<i class="fa fa-calendar-plus me-2"></i> Agendar Cita
-</button>
-<button class="btn btn-outline-light btn-custom-pill fw-bold">
-<i class="fa fa-store me-2"></i> Ir a la Tienda
-</button>
+<button class="btn btn-light btn-custom-pill fw-bold mt-3 px-4 rounded-pill " data-bs-toggle="modal" data-bs-target="#modalNuevaCita"><i class="fa fa-calendar-plus me-1 text-dark"></i> Agendar Cita</button>
+<a href="../index.html" class="btn btn-outline-light btn-custom-pill fw-bold mt-3 px-4 rounded-pill">
+<i class="fa fa-store me-2"></i> Ir a la tienda
+</a>
+
 </div>
 </div>
 </section>
@@ -277,6 +309,23 @@ MAIN LAYOUT ARCHITECTURE
 <th class="py-3 text-end" style="width:150px;">Total</th>
 <th class="py-3 text-center" style="width:160px;">Estado</th>
 <th class="px-4 py-3 text-end" style="width:100px;">Detalles</th>
+<div class="modal fade" id="modalDetallePedido" tabindex="-1">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">Pedido <span id="detNumPedido">#...</span></h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body" id="detCuerpo"></div>
+<div class="modal-footer">
+<a href="#" id="detBtnWhatsApp" class="btn btn-success d-none" target="_blank">
+<i class="fa fa-whatsapp me-1"></i> Consultar por WhatsApp
+</a>
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+</div>
+</div>
+</div>
+</div>
 </tr>
 </thead>
 <tbody id="tabla-pedidos-cuerpo"></tbody>
@@ -419,130 +468,129 @@ MAIN LAYOUT ARCHITECTURE
 
 <!-- MODAL REGISTRO MASCOTA  -->
 <div class="modal fade" id="modalRegistroMascota" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            
-            <div class="modal-header border-0 p-4 pb-2">
-                <h4 class="fw-bold mb-0" id="modalTitulo">🐾 Nueva Mascota</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            
-            <div class="modal-body px-4 pb-4">
-                <form id="formNuevaMascota" class="needs-validation" novalidate>
-                    <input type="hidden" name="id_usuario" value="1">
-                    <input type="hidden" id="mascotaIdEdit" name="id_mascota" value="">
-                    
-                    <!-- Foto Mascota -->
-                    <div class="text-center mb-4">
-                        <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-light overflow-hidden position-relative" style="width:140px;height:140px;cursor:pointer;border:2px solid #ddd;" onclick="document.getElementById('inputFoto').click()">
-                            <i class="fa fa-camera text-secondary fs-1" id="iconCamera"></i>
-                            <img id="imgPreview" src="" class="w-100 h-100 rounded-circle object-fit-cover" style="display:none;">
-                        </div>
-                        <small class="text-muted d-block mt-2">Click para subir foto</small>
-                        <input type="file" id="inputFoto" name="foto_mascota" hidden accept="image/*" onchange="previsualizarImagen(this)">
-                        <input type="hidden" id="mascotaFotoBase64">
-                    </div>
+<div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal-content border-0 shadow-lg rounded-4">
 
-                    <!-- CONTENEDOR PRINCIPAL DE LAS DOS COLUMNAS -->
-                    <div class="row g-4">
-                        
-                        <!-- COLUMNA 1: DATOS BÁSICOS, ESPECIE Y RAZA -->
+<div class="modal-header border-0 p-4 pb-2">
+<h4 class="fw-bold mb-0" id="modalTitulo">🐾 Nueva Mascota</h4>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body px-4 pb-4">
+<form id="formNuevaMascota" class="needs-validation" novalidate>
+<input type="hidden" name="id_usuario" value="1">
+<input type="hidden" id="mascotaIdEdit" name="id_mascota" value="">
+
+<!-- Foto Mascota -->
+<div class="text-center mb-4">
+<div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-light overflow-hidden position-relative" style="width:140px;height:140px;cursor:pointer;border:2px solid #ddd;" onclick="document.getElementById('inputFoto').click()">
+<i class="fa fa-camera text-secondary fs-1" id="iconCamera"></i>
+<img id="imgPreview" src="" class="w-100 h-100 rounded-circle object-fit-cover" style="display:none;">
+</div>
+<small class="text-muted d-block mt-2">Click para subir foto</small>
+<input type="file" id="inputFoto" name="foto_mascota" hidden accept="image/*" onchange="previsualizarImagen(this)">
+<input type="hidden" id="mascotaFotoBase64">
+</div>
+
+<!-- CONTENEDOR PRINCIPAL DE LAS DOS COLUMNAS -->
+<div class="row g-4">
+
+<!-- COLUMNA 1: DATOS BÁSICOS, ESPECIE Y RAZA -->
 <!-- COLUMNA 1: DATOS BÁSICOS, ESPECIE Y RAZA -->
 <div class="col-md-6">
-    <!-- nombre_mascota -->
-    <div class="mb-3">
-        <label class="fw-bold mb-2 small text-dark" for="nombreMascota">Nombre de la Mascota</label>
-        <input type="text" class="form-control" id="nombreMascota" name="nombre_mascota" required placeholder="Ej: Neron">
-    </div>
-
-    <!-- id_especie -->
-    <div class="mb-3">
-        <label class="fw-bold mb-2 small text-dark">Especie</label>
-        <div class="d-flex gap-2 flex-wrap">
-            <input type="radio" class="btn-check" name="id_especie" id="perro" value="1" checked onclick="manejarCambioEspecie(this.value)">
-            <label class="btn btn-outline-primary rounded-pill px-3" for="perro">🐶 Perro</label>
-            
-            <input type="radio" class="btn-check" name="id_especie" id="gato" value="2" onclick="manejarCambioEspecie(this.value)">
-            <label class="btn btn-outline-primary rounded-pill px-3" for="gato">🐱 Gato</label>
-            
-            <input type="radio" class="btn-check" name="id_especie" id="otro" value="3" onclick="manejarCambioEspecie(this.value)">
-            <label class="btn btn-outline-primary rounded-pill px-3" for="otro">🐾 Otro</label>
-        </div>
-    </div>
-
-    <!-- Contenedor Detalle Especie (Oculto por defecto con d-none) -->
-    <div class="mb-3 d-none" id="contenedorEspecieDetalle">
-        <label class="fw-bold mb-2 small text-dark" for="especie_detalle">Especifique la especie:</label>
-        <input type="text" id="especie_detalle" name="especie_detalle" class="form-control" placeholder="Ej: Conejo, Ave...">
-    </div>
-
-    <!-- id_raza -->
-    <div class="mb-3" id="contenedorRazaMascota">
-        <label class="fw-bold mb-2 small text-dark" for="razaMascota">Raza</label>
-        <select class="form-select" id="razaMascota" name="id_raza" required onchange="verificarOtraRaza()">
-            <option value="" selected disabled>Selecciona una raza...</option>
-        </select>
-    </div>
-
-    <!-- Contenedor Detalle Raza (Oculto por defecto con d-none) -->
-    <div class="mb-3 d-none" id="contenedorRazaDetalle">
-        <label class="fw-bold mb-2 small text-dark" for="raza_detalle">Detalle raza:</label>
-        <input type="text" id="raza_detalle" name="raza_detalle" class="form-control" placeholder="Escriba la raza">
-    </div>
+<!-- nombre_mascota -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark" for="nombreMascota">Nombre de la Mascota</label>
+<input type="text" class="form-control" id="nombreMascota" name="nombre_mascota" required placeholder="Ej: Neron">
 </div>
 
-                        <!-- COLUMNA 2: CARACTERÍSTICAS FÍSICAS Y MÉDICAS -->
-                        <div class="col-md-6">
-                            <!-- id_sexoMascota  -->
-                            <div class="mb-3">
-                                <label class="fw-bold mb-2 small text-dark" for="mascotaSelectSexo">Sexo</label>
-                                <select id="mascotaSelectSexo" name="id_sexoMascota" class="form-select" required>
-                                    <option value="" selected disabled>Selecciona el sexo...</option>
-                                    <option value="1">Macho</option>
-                                    <option value="2">Hembra</option>
-                                </select>
-                            </div>
+<!-- id_especie -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark">Especie</label>
+<div class="d-flex gap-2 flex-wrap">
+<input type="radio" class="btn-check" name="id_especie" id="perro" value="1" checked onclick="manejarCambioEspecie(this.value)">
+<label class="btn btn-outline-primary rounded-pill px-3" for="perro">🐶 Perro</label>
 
-                            <!-- edad_mascota  -->
-                            <div class="mb-3">
-                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputEdad">Edad</label>
-                                <input type="text" id="mascotaInputEdad" name="edad_mascota" class="form-control" placeholder="Ej: 3 años" required>
-                            </div>
+<input type="radio" class="btn-check" name="id_especie" id="gato" value="2" onclick="manejarCambioEspecie(this.value)">
+<label class="btn btn-outline-primary rounded-pill px-3" for="gato">🐱 Gato</label>
 
-                            <!-- color_mascota  -->
-                            <div class="mb-3">
-                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputColor">Color</label>
-                                <input type="text" id="mascotaInputColor" name="color_mascota" class="form-control" placeholder="Ej: Dorado" required>
-                            </div>
-
-                            <!-- peso_mascota  -->
-                            <div class="mb-3">
-                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputPeso">Peso (Kg)</label>
-                                <input type="number" step="0.1" id="mascotaInputPeso" name="peso_mascota" class="form-control" placeholder="12.5" required>
-                            </div>
-
-                            <!-- observaciones_mascota  -->
-                            <div class="mb-3">
-                                <label class="fw-bold mb-2 small text-dark" for="mascotaInputObservaciones">Observaciones Médicas</label>
-                                <textarea id="mascotaInputObservaciones" name="observaciones_mascota" class="form-control" rows="2" placeholder="Alergias, condiciones..."></textarea>
-                            </div>
-                        </div> <!-- Cierre correcto de Columna 2 -->
-                        
-                    </div> <!-- Fin del .row -->
-
-                    <!-- BOTONES DE ACCIÓN ACORDES AL DISEÑO -->
-                    <div class="text-end mt-4">
-                        <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" id="btnGuardarMascota" class="btn btn-warning text-dark rounded-pill px-4 fw-bold">Guardar Mascota</button>
-                    </div>
-                    
-                </form>
-            </div>
-            
-        </div>
-    </div>
+<input type="radio" class="btn-check" name="id_especie" id="otro" value="3" onclick="manejarCambioEspecie(this.value)">
+<label class="btn btn-outline-primary rounded-pill px-3" for="otro">🐾 Otro</label>
+</div>
 </div>
 
+<!-- Contenedor Detalle Especie (Oculto por defecto con d-none) -->
+<div class="mb-3 d-none" id="contenedorEspecieDetalle">
+<label class="fw-bold mb-2 small text-dark" for="especie_detalle">Especifique la especie:</label>
+<input type="text" id="especie_detalle" name="especie_detalle" class="form-control" placeholder="Ej: Conejo, Ave...">
+</div>
+
+<!-- id_raza -->
+<div class="mb-3" id="contenedorRazaMascota">
+<label class="fw-bold mb-2 small text-dark" for="razaMascota">Raza</label>
+<select class="form-select" id="razaMascota" name="id_raza" required onchange="verificarOtraRaza()">
+<option value="" selected disabled>Selecciona una raza...</option>
+</select>
+</div>
+
+<!-- Contenedor Detalle Raza (Oculto por defecto con d-none) -->
+<div class="mb-3 d-none" id="contenedorRazaDetalle">
+<label class="fw-bold mb-2 small text-dark" for="raza_detalle">Detalle raza:</label>
+<input type="text" id="raza_detalle" name="raza_detalle" class="form-control" placeholder="Escriba la raza">
+</div>
+</div>
+
+<!-- COLUMNA 2: CARACTERÍSTICAS FÍSICAS Y MÉDICAS -->
+<div class="col-md-6">
+<!-- id_sexoMascota  -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark" for="mascotaSelectSexo">Sexo</label>
+<select id="mascotaSelectSexo" name="id_sexoMascota" class="form-select" required>
+<option value="" selected disabled>Selecciona el sexo...</option>
+<option value="1">Macho</option>
+<option value="2">Hembra</option>
+</select>
+</div>
+
+<!-- edad_mascota  -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark" for="mascotaInputEdad">Edad</label>
+<input type="text" id="mascotaInputEdad" name="edad_mascota" class="form-control" placeholder="Ej: 3 años" required>
+</div>
+
+<!-- color_mascota  -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark" for="mascotaInputColor">Color</label>
+<input type="text" id="mascotaInputColor" name="color_mascota" class="form-control" placeholder="Ej: Dorado" required>
+</div>
+
+<!-- peso_mascota  -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark" for="mascotaInputPeso">Peso (Kg)</label>
+<input type="number" step="0.1" id="mascotaInputPeso" name="peso_mascota" class="form-control" placeholder="12.5" required>
+</div>
+
+<!-- observaciones_mascota  -->
+<div class="mb-3">
+<label class="fw-bold mb-2 small text-dark" for="mascotaInputObservaciones">Observaciones Médicas</label>
+<textarea id="mascotaInputObservaciones" name="observaciones_mascota" class="form-control" rows="2" placeholder="Alergias, condiciones..."></textarea>
+</div>
+</div> <!-- Cierre correcto de Columna 2 -->
+
+</div> <!-- Fin del .row -->
+
+<!-- BOTONES DE ACCIÓN ACORDES AL DISEÑO -->
+<div class="text-end mt-4">
+<button type="button" class="btn btn-light rounded-pill px-4 fw-bold border" data-bs-dismiss="modal">Cancelar</button>
+<button type="submit" id="btnGuardarMascota" class="btn btn-warning text-dark rounded-pill px-4 fw-bold">Guardar Mascota</button>
+</div>
+
+</form>
+</div>
+
+</div>
+</div>
+</div>
 
 <!-- MODAL NUEVA CITA -->
 <div class="modal fade" id="modalNuevaCita" tabindex="-1" aria-hidden="true">
@@ -578,13 +626,13 @@ MAIN LAYOUT ARCHITECTURE
 <label class="form-label fw-bold small text-dark">Bloque Horario</label>
 <select id="citaSelectHora" name="hora_cita" class="form-select" required>
 <option value="" selected disabled>Selecciona hora...</option>
-  <option value="">Selecciona un horario...</option>
-  <option value="09:00:00">09:00 AM</option>
-  <option value="10:00:00">10:00 AM</option>
-  <option value="11:00:00">11:00 AM</option>
-  <option value="14:00:00">02:00 PM</option>
-  <option value="15:00:00">03:00 PM</option>
-  <option value="16:00:00">04:00 PM</option>
+<option value="">Selecciona un horario...</option>
+<option value="09:00:00">09:00 AM</option>
+<option value="10:00:00">10:00 AM</option>
+<option value="11:00:00">11:00 AM</option>
+<option value="14:00:00">02:00 PM</option>
+<option value="15:00:00">03:00 PM</option>
+<option value="16:00:00">04:00 PM</option>
 </select>
 </div>
 <div class="col-12">
@@ -600,117 +648,125 @@ MAIN LAYOUT ARCHITECTURE
 </div>
 </div>
 </div>
-    <!-- PIE DE PÁGINA (FOOTER)                         -->
+<!-- PIE DE PÁGINA (FOOTER)                         -->
 <!-- ============================================= -->
 <footer class="main-footer">
-  <div class="footer-grid">
+<div class="footer-grid">
 
-    <!-- Columna 1: Branding y Redes Sociales -->
-    <div class="footer-col">
-      <div class="logo-text" style="color: white; margin-bottom: 1rem;">Vía Canes</div>
-      <p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">El destino preferido para los amantes de las mascotas que buscan calidad, confianza y un toque de alegría en cada servicio.</p>
-      <div class="social-icons">
-        <h4>Síguenos</h4>
-        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="mailto:contacto@viacanes.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
-      </div>
-    </div>
+<!-- Columna 1: Branding y Redes Sociales -->
+<div class="footer-col">
+<div class="logo-text" style="color: white; margin-bottom: 1rem;">Vía Canes</div>
+<p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">El destino preferido para los amantes de las mascotas que buscan calidad, confianza y un toque de alegría en cada servicio.</p>
+<div class="social-icons">
+<h4>Síguenos</h4>
+<a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+<a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+<a href="mailto:contacto@viacanes.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+</div>
+</div>
 
-    <!-- Columna 2: Navegación Interna -->
-    <div class="footer-col">
-      <h3>Explorar</h3>
-      <ul>
-        <li><a href="../index.html">Tienda Online</a></li>
-        <li><a href="../index.html?tipo=categoria&valor=Higiene">Baño y Estética</a></li>
-        <li><a href="../index.html?tipo=categoria&valor=Citas">Agendar Cita</a></li>
-        <li><a href="../index.html?tipo=categoria&valor=Servicios">Paseos</a></li>
-        <li><a href="../index.html?tipo=categoria&valor=Servicios">Guardería</a></li>
-      </ul>
-    </div>
+<!-- Columna 2: Navegación Interna -->
+<div class="footer-col">
+<h3>Explorar</h3>
+<ul>
+<li><a href="../index.html">Tienda Online</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Higiene">Baño y Estética</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Citas">Agendar Cita</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Servicios">Paseos</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Servicios">Guardería</a></li>
+</ul>
+</div>
 
-    <!-- Columna 3: Soporte -->
-    <div class="footer-col">
-      <h3>Soporte</h3>
-      <ul>
-        <li><a href="ayuda.html">Contacto</a></li>
-        <li><a href="ayuda.html">Ayuda</a></li>
-        <li><a href="ayuda.html">Términos</a></li>
-        <li><a href="ayuda.html">Preguntas Frecuentes</a></li>
-      </ul>
-    </div>
+<!-- Columna 3: Soporte -->
+<div class="footer-col">
+<h3>Soporte</h3>
+<ul>
+<li><a href="ayuda.html">Contacto</a></li>
+<li><a href="ayuda.html">Ayuda</a></li>
+<li><a href="ayuda.html">Términos</a></li>
+<li><a href="ayuda.html">Preguntas Frecuentes</a></li>
+</ul>
+</div>
 
-    <!-- Columna 4: Ubicación -->
-    <div class="footer-col">
-      <h3>Ubicación</h3>
-      <p style="opacity: 0.7; font-size: 0.9rem;">Carrera 56 #3-00</p>
-      <div style="margin-top: 1rem; display: flex; align-items: center; gap: 8px; color: var(--accent);">
-        <i class="fa-solid fa-map-location-dot"></i>
-        <a href="https://maps.google.com/?q=Carrera+56+3" target="_blank" rel="noopener noreferrer"
-           style="color: var(--accent); text-decoration: none;">Ver en el mapa</a>
-      </div>
-    </div>
+<!-- Columna 4: Ubicación -->
+<div class="footer-col">
+<h3>Ubicación</h3>
+<p style="opacity: 0.7; font-size: 0.9rem;">Carrera 56 #3-00</p>
+<div style="margin-top: 1rem; display: flex; align-items: center; gap: 8px; color: var(--accent);">
+<i class="fa-solid fa-map-location-dot"></i>
+<a href="https://maps.google.com/?q=Carrera+56+3" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent); text-decoration: none;">Ver en el mapa</a>
+</div>
+</div>
 
-  </div>
+</div>
 
-  <div class="text-center mt-5 pt-4 border-top opacity-50 small">
-    © 2026 Vía Canes — Todos los derechos reservados.
-  </div>
+<div class="text-center mt-5 pt-4 border-top opacity-50 small">
+© 2026 Vía Canes — Todos los derechos reservados.
+</div>
 </footer>
-    <!-- ============================================= -->
-    <!-- BOTONES FLOTANTES (WhatsApp y Paw)            -->
-    <!-- ============================================= -->
-    <div class="floating-buttons">
-        <!-- Botón Compra por WhatsApp -->
-        <a href="https://wa.me/573001234567?text=Hola%20Vía%20Canes,%20quiero%20hacer%20un%20pedido" 
-           class="btn-whatsapp" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           aria-label="Compra por WhatsApp">
-            <i class="fa-brands fa-whatsapp"></i>
-            <span>Compra por WhatsApp</span>
-        </a>
+<!-- ============================================= -->
+<!-- BOTONES FLOTANTES (WhatsApp y Paw)            -->
+<!-- ============================================= -->
+<div class="floating-buttons">
+<!-- Botón Compra por WhatsApp -->
+<a href="https://wa.me/573000000000?text=Hola%20Vía%20Canes,%20quiero%20hacer%20un%20pedido"
+class="btn-whatsapp"
+target="_blank"
+rel="noopener noreferrer"
+aria-label="Compra por WhatsApp">
+<i class="fa-brands fa-whatsapp"></i>
+<span>Compra por WhatsApp</span>
+</a>
 
-        <!-- Botón Paw (huella de mascota) - Volver arriba -->
-        <a href="#top" class="btn-paw" aria-label="Volver arriba" title="Volver arriba">
-            <i class="fa-solid fa-paw"></i>
-        </a>
-    </div>
-    <!-- MENÚ LATERAL DE CARRITO (Offcanvas) -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoLateral">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="offcanvas-title fw-bold">
-                <i class="fa fa-shopping-cart me-2"></i>Tu Carrito
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body d-flex flex-column">
-            <div id="cart-items" class="flex-grow-1">
-                <p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
-            </div>
-            <div class="border-top pt-3 mt-3">
-                <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
-                    <span>Total:</span>
-                    <span id="cart-total">$0</span>
-                </div>
-                <a href="html/carrito.html" class="btn btn-primary w-100 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2" id="btn-checkout" style="pointer-events: none; opacity: 0.6;">
-                    <i class="fa fa-credit-card"></i> Continuar
-                </a>
-            </div>
-        </div>
-    </div>
+<!-- Botón Paw (huella de mascota) - Volver arriba -->
+<a href="#top" class="btn-paw" aria-label="Volver arriba" title="Volver arriba">
+<i class="fa-solid fa-paw"></i>
+</a>
+</div>
+<!-- MENÚ LATERAL DE CARRITO (Offcanvas) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carritoLateral">
+<div class="offcanvas-header border-bottom">
+<h3 class="offcanvas-title fw-bold">
+<i class="fa fa-shopping-cart me-2"></i>Tu Carrito
+</h3>
+<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+</div>
+<div class="offcanvas-body d-flex flex-column">
+<div id="cart-items" class="flex-grow-1">
+<p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
+</div>
+<div class="border-top pt-3 mt-3">
+<div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+<span>Total:</span>
+<span id="cart-total">$0</span>
+</div>
+<a href="../html/carrito.html" class="btn btn-primary w-100 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2" id="btn-checkout" style="pointer-events: none; opacity: 0.6;">
+<i class="fa fa-credit-card"></i> Ir al carrito y pagar
+</a>
+</div>
+</div>
+</div>
 
-    <!-- TOAST NOTIFICACIONES -->
-    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
-        <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body" id="toastMsg">Operación exitosa</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    </div>
+<!-- TOAST NOTIFICACIONES -->
+<div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
+<div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+<div class="d-flex">
+<div class="toast-body" id="toastMsg">Operación exitosa</div>
+<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+</div>
+</div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/modulestienda/header-sesion.js"></script>
+<script src="../js/modulestienda/tienda-mostrar.js" type="module"></script>
+<script src="../js/modulestienda/main.js" defer type="module"></script>
+<script src="../js/modulestienda/tienda-productos.js" defer></script>
+<script src="../js/modulestienda/carrito.js" defer type="module"></script>
+<script src="../js/modulestienda/tienda-promociones.js" type="module"></script>
 <script src="../js/modulestienda/panel-usuario.js"></script>
 
 </body>
 </html>
+
+

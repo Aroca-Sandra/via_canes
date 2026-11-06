@@ -17,7 +17,7 @@
 </head>
 <body id="top">
 
-<!-- =====================a======================== -->
+<!-- ============================================= -->
 <!-- ENCABEZADO (HEADER) - Navegación fija superior -->
 <!-- ============================================= -->
 <header class="sticky-top">
@@ -26,7 +26,7 @@
 <div class="navbar-top">
 
 <!-- Contenedor del Logo de la marca -->
-<a href="/via_canes/index.html" class="logo-container text-decoration-none">
+<a href="../index.html" class="logo-container text-decoration-none">
 <img src="../img/logo.png" alt="Logo Vía Canes" class="logo-img">
 <span class="logo-text">Vía Canes</span>
 </a>
@@ -39,11 +39,23 @@
 
 <!-- Iconos de Utilidad (Cuenta, Carrito, Ayuda) -->
 <div class="utility-icons">
+    
+<!-- ✅ CONTENEDOR DE CUENTA CON IDs PARA JS -->
+<div class="dropdown-cuenta" id="contenedor-cuenta-header">
+    <a href="#" class="util-item dropdown-toggle" id="btn-cuenta-header">
+        <i class="fa fa-user" id="icono-cuenta-header"></i>
+        <span id="texto-cuenta-header">Cuenta <i class="fa fa-caret-down mini-flecha"></i></span>
+    </a>
 
-<!-- Mi Cuenta -->
-<a href="auth.html" class="util-item">
-<i class="fa fa-user"></i> <span>Cuenta</span>
-</a>
+    <!-- Tarjeta flotante que se despliega (Se manipulará con JS) -->
+    <div class="dropdown-content" id="dropdown-cuenta-header">
+        <div class="dropdown-card">
+            <p class="dropdown-welcome" id="dropdown-welcome-msg">¡Bienvenido a Vía Canes!</p>
+            <a href="html/auth.html" class="btn-iniciar-sesion" id="dropdown-btn-login">Iniciar sesión o crear cuenta</a>
+        </div>
+    </div>
+</div>
+
 <!-- Central de Ayuda -->
 <a href="ayuda.html" class="util-item" aria-label="Central de ayuda">
 <i class="fa fa-phone"></i> <span>Ayuda</span>
@@ -55,40 +67,39 @@
 <!-- Barra inferior: Accesos directos a Categorías y Filtros URL -->
 <div class="categories-row">
 <a href="../index.html?tipo=especie&valor=Perros" class="cat-item">
-<div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img"></div>
+<div class="img-circle"><img src="../img/p-perro.png" alt="Perros" class="cat-img" loading="eager"></div>
 <span>Perros</span>
 </a>
 <a href="../index.html?tipo=especie&valor=Gatos" class="cat-item">
-<div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img"></div>
+<div class="img-circle"><img src="../img/p-gato.png" alt="Gatos" class="cat-img" loading="eager"></div>
 <span>Gatos</span>
 </a>
 <a href="../index.html?tipo=especie&valor=Otra%20Especie" class="cat-item">
-<div class="img-circle"><img src="../img/p-otros.png" alt="Otra Especie" class="cat-img"></div>
+<div class="img-circle"><img src="../img/p-otros.png" alt="Otra Especie" class="cat-img" loading="eager"></div>
 <span>Otra Especie</span>
 </a>
 <a href="../index.html?tipo=categoria&valor=Higiene" class="cat-item">
-<div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img"></div>
+<div class="img-circle"><img src="../img/p-higiene.png" alt="Higiene" class="cat-img" loading="eager"></div>
 <span>Higiene</span>
 </a>
 <a href="../index.html?tipo=categoria&valor=Salud" class="cat-item">
-<div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img"></div>
+<div class="img-circle"><img src="../img/salud.png" alt="Salud" class="cat-img" loading="eager"></div>
 <span>Salud</span>
 </a>
 <a href="../index.html?tipo=categoria&valor=Servicios" class="cat-item">
-<div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div>
+<div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img" loading="eager"></div>
 <span>Servicios</span>
 </a>
 <a href="../index.html?tipo=categoria&valor=Citas" class="cat-item">
-<div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div>
+<div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img" loading="eager"></div>
 <span>Citas</span>
 </a>
 <a href="promociones.html" class="cat-item">
-<div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div>
+<div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img" loading="eager"></div>
 <span>Promociones</span>
 </a>
 </div>
 </header>
-
 <main class="container mt-5">
 <div class="row">
 <div class="col-lg-8">
@@ -97,30 +108,36 @@
 <div id="lista-productos-carrito">
 </div>
 
+
+
+
 <div class="alert alert-light border text-center p-5 d-none" id="carrito-compras-vacio">
-<img src="../img/carrito-compras-vacio.png" alt="Vacío" style="width: 120px;" class="mb-3 opacity-50">
+<img src="../img/carrito-compras-vacio.png" alt="Vacío" style="width: 120px;" class="mb-3 opacity-50" loading="lazy">
 <h3 class="fw-bold">Tu carrito está vacío</h3>
 <p class="text-muted">¡Tu mascota está esperando un regalo! 🐾</p>
-<a href="/via_canes/index.html" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ir a la tienda</a>
+<a href="../index.html" class="btn btn-primary mt-3 px-4 rounded-pill fw-bold">Ir a la tienda</a>
 </div>
 </section>
 </div>
 
 <div class="col-lg-4">
+    <div class="container" style="margin-top: 20px; margin-bottom: 10px;">
+<a href="../index.html" class="btn-seguir-comprando">
+<i class="fa-solid fa-arrow-left"></i> Seguir comprando
+</a>
+</div>
 <div class="card shadow-sm p-4 border-0 rounded-4 sticky-top" style="top: 100px;">
-<h4 class="mb-4 fw-bold">Resumen</h4>
+<h4 class="mb-4 fw-bold">Resumen de compra</h4>
 
 <div class="d-flex justify-content-between mb-2">
-<span class="text-muted">Subtotal (Neto):</span>
+<span id="subtotal-texto" class="text-muted">Subtotal: artículos</span>
 <span id="subtotal" class="fw-bold text-dark">$0</span>
 </div>
+
+
 <div class="d-flex justify-content-between mb-2">
-<span class="text-muted">IVA (19%):</span>
-<span id="iva" class="text-dark">$0</span>
-</div>
-<div class="d-flex justify-content-between mb-2">
-<span class="text-muted">Transporte:</span>
-<span class="text-success fw-bold">Gratis</span>
+<span class="text-muted">Valor de envío a domicilio:</span>
+<span id="envio" class="text-success fw-bold">$0</span>
 </div>
 
 <div class="mt-4 mb-3 p-3 bg-light rounded-3 border-0 text-center">
@@ -135,84 +152,204 @@
 <hr class="my-3 opacity-50">
 
 <div class="d-flex justify-content-between mb-4 align-items-center">
-<strong class="fs-5 text-dark">Total</strong>
+<strong class="fs-5 text-dark">Total a pagar</strong>
 <strong id="total" class="fs-3 text-dark">$0</strong>
 </div>
 
-<button id="btn-finalizar" class="btn w-100 py-3 fw-bold rounded-3 fs-5 shadow-sm border-0 text-white"
-style="background-color: var(--primary);">
-Comenzar pedido
+<button id="btn-finalizar" class="btn w-100 py-3 fw-bold rounded-3 fs-5 shadow-sm border-0 text-white" style="background-color: var(--primary);">
+Finalizar Compra
 </button>
 
 <button id="btn-confirmar-vaciar" class="btn btn-link text-danger w-100 mt-3 text-decoration-none small fw-semibold">
 <i class="fa fa-trash-can me-1"></i> Vaciar mi carrito
+
 </button>
 </div>
 </div>
 </div>
 </main>
 
-    <!-- PIE DE PÁGINA (FOOTER) COMPLETO -->
-    <footer class="main-footer">
-        <div class="footer-grid">
-      
-          <!-- Columna 1: Branding y Redes Sociales -->
-          <div class="footer-col">
-            <div class="logo-text" style="color: white; margin-bottom: 1rem;">Vía Canes</div>
-            <p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">El destino preferido para los amantes de las mascotas que buscan calidad, confianza y un toque de alegría en cada servicio.</p>
-            <div class="social-icons">
-              <h4>Síguenos</h4>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-              <a href="mailto:contacto@viacanes.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
-            </div>
-          </div>
-      
-          <!-- Columna 2: Navegación Interna -->
-          <div class="footer-col">
-            <h3>Explorar</h3>
-            <ul>
-              <li><a href="../index.html">Tienda Online</a></li>
-              <li><a href="../index.html?tipo=categoria&valor=Higiene">Baño y Estética</a></li>
-              <li><a href="../index.html?tipo=categoria&valor=Citas">Agendar Cita</a></li>
-              <li><a href="../index.html?tipo=categoria&valor=Servicios">Paseos</a></li>
-              <li><a href="../index.html?tipo=categoria&valor=Servicios">Guardería</a></li>
-            </ul>
-          </div>
-      
-          <!-- Columna 3: Soporte -->
-          <div class="footer-col">
-            <h3>Soporte</h3>
-            <ul>
-              <li><a href="ayuda.html">Contacto</a></li>
-              <li><a href="ayuda.html">Ayuda</a></li>
-              <li><a href="ayuda.html">Términos</a></li>
-              <li><a href="ayuda.html">Preguntas Frecuentes</a></li>
-            </ul>
-          </div>
-      
-          <!-- Columna 4: Ubicación -->
-          <div class="footer-col">
-            <h3>Ubicación</h3>
-            <p style="opacity: 0.7; font-size: 0.9rem;">Carrera 56 #3-00</p>
-            <div style="margin-top: 1rem; display: flex; align-items: center; gap: 8px; color: var(--accent);">
-              <i class="fa-solid fa-map-location-dot"></i>
-              <a href="https://maps.google.com/?q=Carrera+56+3" target="_blank" rel="noopener noreferrer"
-                 style="color: var(--accent); text-decoration: none;">Ver en el mapa</a>
-            </div>
-          </div>
-      
-        </div>
-      
-        <div class="text-center mt-5 pt-4 border-top opacity-50 small">
-          © 2026 Vía Canes — Todos los derechos reservados.
-        </div>
-    </footer>
 
-    <!-- BOTONES FLOTANTES (WhatsApp y Paw) -->
-    <div class="floating-buttons">
+
+
+<!-- ============================================= -->
+<!-- PIE DE PÁGINA (FOOTER)                         -->
+<!-- ============================================= -->
+<footer class="main-footer">
+<!-- 🟢 CONTENEDOR AGREGADO: Centraliza y alinea todo con la cabecera -->
+<div class="main-container">
+
+<div class="footer-grid">
+
+<!-- Columna 1: Branding y Redes Sociales -->
+<div class="footer-col">
+<div class="logo-text" style="color: white; margin-bottom: 1rem;">Vía Canes</div>
+<p style="opacity: 0.7; font-size: 0.9rem; line-height: 1.6;">El destino preferido para los amantes de las mascotas que buscan calidad, confianza y un toque de alegría en cada servicio.</p>
+<div class="social-icons">
+<h4>Síguenos</h4>
+<a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+<a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+<a href="mailto:contacto@viacanes.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+</div>
+</div>
+
+<!-- Columna 2: Navegación Interna -->
+<div class="footer-col">
+<h3>Explorar</h3>
+<ul>
+<li><a href="../index.html">Tienda Online</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Higiene">Baño y Estética</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Citas">Agendar Cita</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Servicios">Paseos</a></li>
+<li><a href="../index.html?tipo=categoria&valor=Servicios">Guardería</a></li>
+</ul>
+</div>
+
+<!-- Columna 3: Soporte -->
+<div class="footer-col">
+<h3>Soporte</h3>
+<ul>
+<li><a href="ayuda.html">Contacto</a></li>
+<li><a href="ayuda.html">Ayuda</a></li>
+<li><a href="ayuda.html">Términos</a></li>
+<li><a href="ayuda.html">Preguntas Frecuentes</a></li>
+</ul>
+</div>
+
+<!-- Columna 4: Ubicación -->
+<div class="footer-col">
+<h3>Ubicación</h3>
+<p style="opacity: 0.7; font-size: 0.9rem;">Carrera 56 #3-00</p>
+<div style="margin-top: 1rem; display: flex; align-items: center; gap: 8px; color: var(--accent);">
+<i class="fa-solid fa-map-location-dot"></i>
+<a href="https://maps.google.com/?q=Carrera+56+3" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent); text-decoration: none;">Ver en el mapa</a>
+</div>
+</div>
+
+</div>
+
+<!-- El texto de copyright ahora también se alineará de forma perfecta al centro de la grilla -->
+<div class="text-center mt-5 pt-4 border-top opacity-50 small" style="text-align: center;">
+© 2026 Vía Canes — Todos los derechos reservados.
+</div>
+
+</div>
+</footer>
+
+<!-- ======================================================== -->
+<!-- MODAL DE AUTENTICACIÓN DINÁMICA (IN SITU EN EL CARRITO)  -->
+<!-- ======================================================== -->
+<div class="modal fade" id="modalAuthInSitu" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+<div class="modal-body p-0">
+<div class="row g-0">
+
+<!-- Columna Izquierda (Diseño Informativo de Vía Canes) -->
+<div class="col-md-5 text-white p-4 d-flex flex-column justify-content-center align-items-center text-center"
+style="background: linear-gradient(135deg, #1d618a, #113d58);">
+<div class="logo-container mb-3 text-white">
+<span class="logo-text text-white fs-3">Vía Canes</span>
+</div>
+<div class="rounded-circle bg-warning d-flex align-items-center justify-content-center mb-4 shadow-sm"
+style="width: 140px; height: 140px; overflow: hidden; border: 4px solid rgba(255,255,255,0.2); background-color: #f1c40f !important;">
+<img src="../img/p-perro.png" alt="Mascota Vía Canes" style="width: 85%; height: 85%; object-fit: contain;">
+</div>
+<h4 class="fw-bold px-2">El cuidado que tu mascota merece</h4>
+<p class="small opacity-75 px-3 mt-2">Gestiona citas, productos y la salud de tu mascota desde un solo lugar.</p>
+</div>
+
+<!-- Columna Derecha (Formularios Intercambiables) -->
+<div class="col-md-7 bg-white p-5 position-relative">
+<!-- Botón para cerrar la ventana x -->
+<button type="button" class="btn-close position-absolute top-0 end-0 m-3 shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+
+<!-- Pestañas para alternar entre Ingresar y Registrarse -->
+<div class="d-flex justify-content-center mb-4 bg-light p-1 rounded-pill" style="max-width: 280px; margin: 0 auto;" role="tablist">
+<button type="button" class="btn btn-sm btn-primary rounded-pill px-4 w-50 fw-bold border-0 shadow-sm" id="btnTabLogin" role="tab" aria-selected="true" style="background-color: var(--primary);">Ingresar</button>
+<button type="button" class="btn btn-sm text-secondary rounded-pill px-4 w-50 fw-bold border-0 bg-transparent" id="btnTabRegistro" role="tab" aria-selected="false">Registrarse</button>
+</div>
+
+<!-- VISTA 1: FORMULARIO PARA INICIAR SESIÓN -->
+<div id="wrapper-login-insitu" role="tabpanel">
+<h3 class="fw-extrabold text-dark mb-1" style="font-family: 'Inter', sans-serif; font-weight: 800;">Bienvenido</h3>
+<p class="text-muted small mb-4">Inicia sesión para continuar con tu compra 🐾</p>
+
+<form id="formLoginInSitu" novalidate>
+<div class="mb-3">
+<label class="form-label text-secondary small fw-bold" for="authEmail">CORREO ELECTRÓNICO</label>
+<div class="input-group">
+<span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-envelope"></i></span>
+<input type="email" class="form-control bg-light border-start-0 py-2.5 shadow-none" placeholder="correo@ejemplo.com" required id="authEmail">
+</div>
+</div>
+
+<div class="mb-4">
+<label class="form-label text-secondary small fw-bold" for="authPassword">CONTRASEÑA</label>
+<div class="input-group">
+<span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
+<input type="password" class="form-control bg-light border-start-0 py-2.5 shadow-none" placeholder="••••••••" required id="authPassword">
+</div>
+</div>
+
+<button type="submit" class="btn w-100 py-3 fw-bold text-white shadow-sm border-0" style="background-color: var(--primary); border-radius: 8px;">
+<i class="fa-solid fa-right-to-bracket me-2"></i> Iniciar sesión
+</button>
+</form>
+</div>
+
+<!-- VISTA 2: FORMULARIO PARA REGISTRARSE (Oculto al inicio) -->
+<div id="wrapper-registro-insitu" class="d-none" role="tabpanel">
+<h3 class="fw-extrabold text-dark mb-1" style="font-family: 'Inter', sans-serif; font-weight: 800;">Crear Cuenta</h3>
+<p class="text-muted small mb-4">Únete a Vía Canes para guardar tu pedido 🐾</p>
+
+<form id="formRegistroInSitu" novalidate>
+<div class="row g-2 mb-2">
+<div class="col-6">
+<label class="form-label text-secondary small fw-bold" for="regNombres">NOMBRES</label>
+<input type="text" class="form-control bg-light py-2 shadow-none" placeholder="Ej. Juan" required id="regNombres">
+</div>
+<div class="col-6">
+<label class="form-label text-secondary small fw-bold" for="regApellidos">APELLIDOS</label>
+<input type="text" class="form-control bg-light py-2 shadow-none" placeholder="Ej. Pérez" required id="regApellidos">
+</div>
+</div>
+
+<div class="mb-2">
+<label class="form-label text-secondary small fw-bold" for="regCelular">CELULAR</label>
+<input type="tel" class="form-control bg-light py-2 shadow-none" placeholder="Ej. 3001234567" required id="regCelular">
+</div>
+
+<div class="mb-2">
+<label class="form-label text-secondary small fw-bold" for="regEmail">CORREO ELECTRÓNICO</label>
+<input type="email" class="form-control bg-light py-2 shadow-none" placeholder="tu@correo.com" required id="regEmail">
+</div>
+
+<div class="mb-3">
+<label class="form-label text-secondary small fw-bold" for="regPassword">CONTRASEÑA</label>
+<input type="password" class="form-control bg-light py-2 shadow-none" placeholder="Crea tu clave" required id="regPassword">
+</div>
+
+<button type="submit" class="btn w-100 py-3 fw-bold text-white shadow-sm border-0" style="background-color: var(--primary); border-radius: 8px;">
+<i class="fa-solid fa-user-plus me-2"></i> Registrarme y comprar
+</button>
+</form>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ============================================= -->
+<!-- BOTONES FLOTANTES (WhatsApp y Paw)            -->
+<!-- ============================================= -->
+   <div class="floating-buttons">
         <!-- Botón Compra por WhatsApp -->
-        <a href="https://wa.me/573001234567?text=Hola%20Vía%20Canes,%20quiero%20hacer%20un%20pedido" 
+        <a href="https://wa.me/573000000000?text=Hola%20Vía%20Canes,%20quiero%20hacer%20un%20pedido" 
            class="btn-whatsapp" 
            target="_blank" 
            rel="noopener noreferrer"
@@ -221,48 +358,54 @@ Comenzar pedido
             <span>Compra por WhatsApp</span>
         </a>
 
-        <!-- Botón Paw (huella de mascota) - Volver arriba -->
-        <a href="#top" class="btn-paw" aria-label="Volver arriba" title="Volver arriba">
-            <i class="fa-solid fa-paw"></i>
-        </a>
-    </div>
+<!-- Botón Paw (huella de mascota) - Volver arriba -->
+<a href="#top" class="btn-paw" aria-label="Volver arriba" title="Volver arriba">
+<i class="fa-solid fa-paw"></i>
+</a>
+</div>
+<!-- MENÚ LATERAL DE CARRITO (Offcanvas) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="carritoLateral">
+<div class="offcanvas-header border-bottom">
+<h5 class="offcanvas-title fw-bold">
+<i class="fa fa-shopping-cart me-2"></i>Tu Carrito
+</h5>
+<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+</div>
+<div class="offcanvas-body d-flex flex-column">
+<div id="cart-items" class="flex-grow-1">
+<p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
+</div>
+<div class="border-top pt-3 mt-3">
+<div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+<span>Total:</span>
+<span id="cart-total">$0</span>
+</div>
+<a href="html/carrito.html" class="btn btn-primary w-100 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2" id="btn-checkout" style="pointer-events: none; opacity: 0.6;">
+<i class="fa fa-credit-card"></i> Ir al carrito y pagar
+</a>
+</div>
+</div>
+</div>
 
-    <!-- MENÚ LATERAL DE CARRITO (Offcanvas) -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoLateral">
-        <div class="offcanvas-header border-bottom">
-            <h5 class="offcanvas-title fw-bold">
-                <i class="fa fa-shopping-cart me-2"></i>Tu Carrito
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body d-flex flex-column">
-            <div id="cart-items" class="flex-grow-1">
-                <p class="text-center text-muted mt-5">Tu carrito está vacío 🐾</p>
-            </div>
-            <div class="border-top pt-3 mt-3">
-                <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
-                    <span>Total:</span>
-                    <span id="cart-total">$0</span>
-                </div>
-                <a href="html/carrito.html" class="btn btn-primary w-100 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2" id="btn-checkout" style="pointer-events: none; opacity: 0.6;">
-                    <i class="fa fa-credit-card"></i> Continuar
-                </a>
-            </div>
-        </div>
-    </div>
+<!-- TOAST NOTIFICACIONES -->
+<div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
+<div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+<div class="d-flex">
+<div class="toast-body" id="toastMsg">Operación exitosa</div>
+<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+</div>
+</div>
+</div>
 
-    <!-- TOAST NOTIFICACIONES -->
-    <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
-        <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body" id="toastMsg">Operación exitosa</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    </div>
-    <!-- SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
-    <script type="module" src="../js/modulestienda/main.js"></script>
- <script src="../js/modulestienda/carrito.js" defer type="module"></script>
 
-       </html>
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ <script src="../js/modulestienda/header-sesion.js"></script>
+<script type="module" src="../js/modulestienda/main.js"></script>
+<script src="js/modulestienda/tienda-mostrar.js"></script>
+<script src="../js/modulestienda/carrito.js" defer type="module"></script>
+
+
+</body>
+</html>
+

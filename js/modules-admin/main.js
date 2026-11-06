@@ -5,7 +5,7 @@
 const API = '../api/panel-admin_data.php';
 
 // Compatibilidad con mod-mascotas.js
-const API_URL = API;
+const API_URL = API;u
 
 // ================================================================
 // FETCH GENÉRICO (usado internamente si se necesita)
@@ -243,7 +243,7 @@ function llenarSelect(id, data, placeholder = 'Seleccionar...') {
             || item.id_servicio
             || item.id_usuario
             || item.id_producto
-            || item.id_prom                    // ← CORREGIDO: era id_promo
+            || item.id_promo                    // ← CORREGIDO: era id_promo
             || item.id_proveedor
             || item.id_categoria
             || item.id_estado_producto

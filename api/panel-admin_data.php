@@ -86,7 +86,7 @@ try {
             responder(['success' => true, 'data' => $stmt->fetchAll()]);
             break;
 
-        case 'guardar_usuario':
+                case 'guardar_usuario':
             $requeridos = ['id_tipo_id', 'numero_documento', 'nombres', 'apellidos', 'email', 'id_rol'];
             foreach ($requeridos as $campo) {
                 if (empty($_POST[$campo])) responderError("El campo '$campo' es obligatorio");
@@ -99,6 +99,7 @@ try {
             $id_usuario_edit = $_POST['id_usuario'] ?? null;
             $esEdicion = !empty($id_usuario_edit);
             
+            // Validaciones de unicidad
             $check = $pdo->prepare("SELECT id_usuario FROM usuario WHERE email = ? AND id_usuario != ?");
             $check->execute([$_POST['email'], $id_usuario_edit ?? 0]);
             if ($check->fetch()) responderError('El email ya está registrado');
@@ -107,7 +108,13 @@ try {
             $check->execute([$_POST['numero_documento'], $id_usuario_edit ?? 0]);
             if ($check->fetch()) responderError('El número de documento ya está registrado');
             
+            // --- INICIO CORRECCIÓN: Lógica de Imagen Robusta ---
             $rutaFoto = null;
+            $fotoParaBorrar = null;
+            $eliminarFotoFlag = isset($_POST['eliminar_foto']) && $_POST['eliminar_foto'] == '1';
+
+            // 1. Procesar nueva subida de archivo (si existe)
+            // Nota: Asegúrate que tu HTML tenga <input type="file" name="foto_usuario">
             if (isset($_FILES['foto_usuario']) && $_FILES['foto_usuario']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = __DIR__ . '/../img/usuarios/';
                 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
@@ -121,9 +128,30 @@ try {
                 $nombreFoto = 'user_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
                 $rutaFinal = $uploadDir . $nombreFoto;
                 
-                if (!move_uploaded_file($_FILES['foto_usuario']['tmp_name'], $rutaFinal)) responderError('No se pudo guardar la imagen');
+                if (!move_uploaded_file($_FILES['foto_usuario']['tmp_name'], $rutaFinal)) {
+                    responderError('No se pudo guardar la imagen en el servidor');
+                }
                 $rutaFoto = '../img/usuarios/' . $nombreFoto;
             }
+
+            // 2. Si estamos editando, preparar limpieza de foto vieja
+            if ($esEdicion) {
+                // Obtener foto actual antes de actualizar
+                $stmtOld = $pdo->prepare("SELECT foto_usuario FROM usuario WHERE id_usuario = ?");
+                $stmtOld->execute([$id_usuario_edit]);
+                $oldFoto = $stmtOld->fetchColumn();
+
+                // Decidir si borramos la vieja:
+                // Caso A: Se subió una nueva ($rutaFoto tiene valor) -> Borramos la vieja
+                // Caso B: El usuario marcó "Eliminar foto" ($eliminarFotoFlag es true) -> Borramos la vieja y ponemos NULL
+                if ($rutaFoto) {
+                    $fotoParaBorrar = $oldFoto;
+                } elseif ($eliminarFotoFlag) {
+                    $fotoParaBorrar = $oldFoto;
+                    $rutaFoto = null; // Forzamos NULL en la BD
+                }
+            }
+            // --- FIN CORRECCIÓN ---
             
             $data = [
                 'id_tipo_id' => intval($_POST['id_tipo_id']),
@@ -144,10 +172,7 @@ try {
             }
             
             if ($esEdicion) {
-                $stmtOld = $pdo->prepare("SELECT foto_usuario FROM usuario WHERE id_usuario = ?");
-                $stmtOld->execute([$id_usuario_edit]);
-                $oldFoto = $stmtOld->fetchColumn();
-                
+                // Construcción dinámica del SQL para incluir la foto si es necesario
                 $sql = "UPDATE usuario SET id_tipo_id = ?, numero_documento = ?, nombres = ?, apellidos = ?, email = ?, celular = ?, id_rol = ?, id_localidad = ?, direccion = ?";
                 $params = [$data['id_tipo_id'], $data['numero_documento'], $data['nombres'], $data['apellidos'], $data['email'], $data['celular'], $data['id_rol'], $data['id_localidad'], $data['direccion']];
                 
@@ -156,17 +181,11 @@ try {
                     $params[] = password_hash($_POST['nueva_contrasena'], PASSWORD_DEFAULT);
                 }
 
-                $eliminarFoto = !empty($_POST['eliminar_foto']);
-                $fotoParaBorrar = null;
-                
-                if ($eliminarFoto) {
+                // Agregar columna de foto al UPDATE si hay nueva foto O si se pidió eliminar
+                if ($rutaFoto !== null || $eliminarFotoFlag) {
                     $sql .= ", foto_usuario = ?";
-                    $params[] = null;
-                    $fotoParaBorrar = $oldFoto;
-                } elseif ($rutaFoto) {
-                    $sql .= ", foto_usuario = ?";
-                    $params[] = $rutaFoto;
-                    $fotoParaBorrar = $oldFoto;
+                    // Si rutaFoto es null (eliminación), guardamos NULL, sino la ruta nueva
+                    $params[] = $rutaFoto; 
                 }
 
                 $sql .= " WHERE id_usuario = ?";
@@ -175,6 +194,7 @@ try {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($params);
 
+                // Borrado físico del archivo antiguo
                 if ($fotoParaBorrar) {
                     $rutaFisica = realpath(__DIR__ . '/' . $fotoParaBorrar);
                     if ($rutaFisica && file_exists($rutaFisica)) unlink($rutaFisica);
@@ -182,6 +202,7 @@ try {
 
                 responder(['success' => true, 'message' => 'Usuario actualizado', 'id' => $id_usuario_edit]);
             } else {
+                // CREACIÓN (INSERT)
                 if (empty($_POST['nueva_contrasena'])) responderError('La contraseña es obligatoria para nuevos usuarios');
                 
                 $sql = "INSERT INTO usuario (id_tipo_id, numero_documento, nombres, apellidos, email, celular, id_rol, id_localidad, direccion, nueva_contrasena";
@@ -827,7 +848,7 @@ try {
         // ============================================================
         // PEDIDOS
         // ============================================================
-        case 'listar_pedidos_admin':
+case 'listar_pedidos_admin':
             $stmt = $pdo->query("SELECT p.*, u.nombres, u.apellidos, ep.nombre as estado FROM pedido p LEFT JOIN usuario u ON p.id_usuario = u.id_usuario LEFT JOIN estado_pedido ep ON p.id_estado_pedido = ep.id_estado_pedido ORDER BY p.fecha DESC");
             $pedidos = $stmt->fetchAll();
 
