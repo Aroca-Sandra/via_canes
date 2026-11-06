@@ -1,47 +1,10 @@
 // ================================================================
-// PANEL ADMINISTRATIVO - MÓDULO INVENTARIO (AJUSTADO A TU BD)
+// PANEL ADMINISTRATIVO - MÓDULO INVENTARIO 
 // ================================================================
 
-const API_ADMIN = '../api/panel-admin_data.php';
 let productosData = [];
 
-async function apiFetch(action, data = null, method = 'POST') {
-    try {
-        const url = `${API_ADMIN}?action=${action}`;
-        const options = { method };
-
-        if (method === 'GET') {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json();
-        } else {
-            const formData = new FormData();
-            formData.append('action', action);
-            if (data instanceof FormData) {
-                for (let [key, value] of data.entries()) if (key !== 'action') formData.append(key, value);
-            } else if (data && typeof data === 'object') {
-                for (let key in data) formData.append(key, data[key]);
-            }
-            options.body = formData;
-            const response = await fetch(url, options);
-            const text = await response.text();
-            try { return JSON.parse(text); } 
-            catch (e) { console.error("Respuesta no JSON:", text); throw new Error(`Error del servidor`); }
-        }
-    } catch (err) {
-        console.error(`❌ Error en apiFetch(${action}):`, err);
-        return { success: false, error: err.message };
-    }
-}
-
-function showToast(message, type = 'success') {
-    const toastEl = document.getElementById('toast');
-    if (!toastEl) { alert(message); return; }
-    toastEl.className = `toast align-items-center text-white bg-${type === 'success' ? 'primary' : 'danger'} border-0`;
-    const toastMsg = document.getElementById('toastMsg') || toastEl.querySelector('.toast-body');
-    if (toastMsg) toastMsg.textContent = message;
-    if (window.bootstrap && bootstrap.Toast) new bootstrap.Toast(toastEl).show();
-}
+// NOTA: Las funciones 'apiFetch' y 'showToast' ahora se toman globalmente desde main.js
 
 async function cargarProductos() {
     try {
@@ -143,7 +106,10 @@ function actualizarDashboard() {
 
 window.verStockMinimo = function() {
     const criticos = productosData.filter(p => p.id_estado_producto == 1 && parseInt(p.stock) <= 5);
-    if (!criticos.length) { showToast('✅ Todo el inventario se encuentra con stock óptimo.'); return; }
+    if (!criticos.length) { 
+        showToast('✅ Todo el inventario se encuentra con stock óptimo.', 'success'); 
+        return; 
+    }
     const mensaje = criticos.map(p => `• ${p.nombre}: ${p.stock} und`).join('\n');
     alert(`⚠️ ALERTA DE STOCK CRÍTICO (≤ 5 und):\n\n${mensaje}`);
 };
@@ -183,13 +149,14 @@ window.guardarProducto = async function() {
     const res = await apiFetch('guardar_producto', formData);
 
     if (res && res.success) {
-        showToast('✅ Producto guardado correctamente');
+        showToast('✅ Producto guardado correctamente', 'success');
         limpiarFormProducto();
         cargarProductos();
     } else {
         showToast('❌ ' + (res ? res.error : 'Error al guardar'), 'danger');
     }
 };
+
 // ==========================================
 // EDITAR PRODUCTO (RESTAURAR ESPECIES)
 // ==========================================
@@ -221,7 +188,7 @@ window.editarProducto = function(id) {
         } else if (idsEspecies.includes('2') || especiesStr.includes('gato')) {
             selectEspecie.value = "2"; // Gato
         } else if (idsEspecies.includes('3') || especiesStr.includes('otra')) {
-            selectEspecie.value = "3"; // ✅ CORREGIDO: Antes era "4" y no existía en el HTML
+            selectEspecie.value = "3"; // Otra especie
         } else {
             selectEspecie.value = ""; // Sin selección
         }
@@ -258,7 +225,7 @@ window.eliminarProducto = async function(id) {
 
     const res = await apiFetch('guardar_producto', formData);
     if (res && res.success) {
-        showToast('✅ Producto inhabilitado correctamente');
+        showToast('✅ Producto inhabilitado correctamente', 'success');
         cargarProductos();
     } else {
         showToast('❌ Error al desactivar producto', 'danger');
@@ -293,7 +260,8 @@ window.quitarProductoImg = function() {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    cargarProductos();
+    // Solo cargamos si estamos en el módulo o si se llama explícitamente desde el router
+    // Nota: El router de main.js ya llama a cargarProductos() al cambiar al módulo
     const buscarInput = document.getElementById('buscarProducto');
     if (buscarInput) buscarInput.addEventListener('keyup', renderProductos);
 });
