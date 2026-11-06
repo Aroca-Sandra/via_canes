@@ -121,6 +121,7 @@ if (empty($rutaRelativa)) return;
 $baseDir = realpath(__DIR__ . '/../');
 $rutaFisica = realpath(__DIR__ . '/' . $rutaRelativa);
 
+
 // ✅ SEGURO:Protección contra Path Traversal.  Validación perimetral. Impide que se alteren o borren archivos fuera del contenedor configurado
 //Solo permite borrar si la ruta resuelta está DENTRO del directorio base permitido.
 if ($rutaFisica && str_starts_with($rutaFisica, $baseDir) && is_file($rutaFisica)) {
@@ -494,33 +495,33 @@ $pedido['pago'] = $stmt3->fetch(PDO::FETCH_ASSOC) ?: null;
 responder(['success' => true, 'data' => $pedido]);
 break;
 /* @action crear_pedido */
-/* @action crear_pedido */
 case 'crear_pedido':
     if (!$id_usuario) responderError('Debes iniciar sesión', 401);
 
-    $direccion      = $_POST['direccion_envio'] ?? '';
-    $notas          = $_POST['notas'] ?? '';
-    $id_metodo_pago = intval($_POST['id_metodo_pago'] ?? 1); // ✅ Captura el método de pago
-
+    $direccion = $_POST['direccion_envio'] ?? '';
+    $notas     = $_POST['notas'] ?? '';
+    $id_metodo_pago = intval($_POST['id_metodo_pago'] ?? 1); 
+    
     $items_json = $_POST['items'] ?? '[]';
+    
     $subtotal    = floatval($_POST['subtotal'] ?? 0);
     $costo_envio = floatval($_POST['costo_envio'] ?? 0);
     $total       = floatval($_POST['total'] ?? 0);
 
-    if (empty($direccion)) responderError('La dirección de envío es obligatoria');
-
+    if (empty($direccion)) responderError('Dirección obligatoria');
+    
     $items = json_decode($items_json, true);
-    if (!is_array($items) || empty($items)) responderError('El carrito está vacío');
+    if (!is_array($items) || empty($items)) responderError('Carrito vacío');
 
     try {
-        // Iniciar transacción para garantizar integridad (Todo o Nada)
         $pdo->beginTransaction();
 
-        // 1. Insertar Cabecera del Pedido
+        // 1. Insertar Cabecera del Pedido (Ahora con todas las columnas)
         $sqlPedido = "INSERT INTO pedido 
-                      (id_usuario, direccion_envio, notas, id_metodo_pago, subtotal, costo_envio, total, fecha, id_estado_pedido)
-                      VALUES (:uid, :dir, :notas, :mp, :sub, :env, :tot, NOW(), 1)"; // Estado 1 = Pendiente
-
+                      (id_usuario, direccion_envio, notas, id_metodo_pago, subtotal, costo_envio, total, fecha, id_estado_pedido) 
+                      VALUES 
+                      (:uid, :dir, :notas, :mp, :sub, :env, :tot, NOW(), 1)";
+        
         $stmt = $pdo->prepare($sqlPedido);
         $stmt->execute([
             ':uid' => $id_usuario,
@@ -534,69 +535,43 @@ case 'crear_pedido':
 
         $id_pedido = $pdo->lastInsertId();
 
-        // 2. ✅ SOLUCIÓN PROBLEMA 1: Insertar registro en tabla PAGOS
-        // Asumimos id_estado_pago = 1 (Pendiente de verificación) o 2 (Pagado) según tu flujo.
-        $sqlPago = "INSERT INTO pagos (id_pedido, id_metodo, id_estado_pago, fecha_pago) 
-                    VALUES (:id_ped, :id_met, 1, NOW())";
-        $stmtPago = $pdo->prepare($sqlPago);
-        $stmtPago->execute([
-            ':id_ped' => $id_pedido,
-            ':id_met' => $id_metodo_pago
-        ]);
-
-        // 3. ✅ SOLUCIÓN PROBLEMA 2: Insertar Detalles y DESCONTAR STOCK
-        $sqlDetalle = "INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio_unitario, subtotal)
+        // 2. Insertar Detalles
+        $sqlDetalle = "INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio_unitario, subtotal) 
                        VALUES (:id_ped, :id_prod, :cant, :precio, :sub)";
+        
         $stmtDet = $pdo->prepare($sqlDetalle);
-
-        // Consulta para restar stock (con protección anti-stock negativo)
-        $sqlUpdateStock = "UPDATE productos SET stock = stock - :cant WHERE id_producto = :id_prod AND stock >= :cant";
-        $stmtStock = $pdo->prepare($sqlUpdateStock);
 
         foreach ($items as $item) {
             $idProd = intval($item['id_producto']);
             $cant   = intval($item['cantidad']);
             $precio = floatval($item['precio_unitario']);
-
-            // Validación extra: Verificar stock disponible antes de procesar
-            $checkProd = $pdo->prepare("SELECT id_producto, stock, nombre FROM productos WHERE id_producto = ?");
+            
+            // Validación extra: Verificar que el producto existe en BD
+            $checkProd = $pdo->prepare("SELECT id_producto FROM productos WHERE id_producto = ?");
             $checkProd->execute([$idProd]);
-            $prodData = $checkProd->fetch(PDO::FETCH_ASSOC);
-
-            if (!$prodData) {
-                throw new Exception("El producto ID $idProd no existe.");
+            
+            if ($checkProd->fetch() && $idProd > 0 && $cant > 0) {
+                $stmtDet->execute([
+                    ':id_ped'  => $id_pedido,
+                    ':id_prod' => $idProd,
+                    ':cant'    => $cant,
+                    ':precio'  => $precio,
+                    ':sub'     => ($precio * $cant)
+                ]);
             }
-            if ($prodData['stock'] < $cant) {
-                throw new Exception("Stock insuficiente para '{$prodData['nombre']}'. Disponible: {$prodData['stock']}");
-            }
-
-            // Insertar el detalle del pedido
-            $stmtDet->execute([
-                ':id_ped'  => $id_pedido,
-                ':id_prod' => $idProd,
-                ':cant'    => $cant,
-                ':precio'  => $precio,
-                ':sub'     => ($precio * $cant)
-            ]);
-
-            // Descontar el stock inmediatamente
-            $stmtStock->execute([
-                ':cant'    => $cant,
-                ':id_prod' => $idProd
-            ]);
         }
 
-        // Si todo salió bien, confirmar la transacción
         $pdo->commit();
-        responder(['success' => true, 'message' => 'Pedido creado exitosamente', 'id_pedido' => $id_pedido], 201);
+        responder(['success' => true, 'id_pedido' => $id_pedido], 201);
 
     } catch (Exception $e) {
-        // Si algo falla, revertir TODOS los cambios (pedido, pago y stock)
         $pdo->rollBack();
         error_log("Error Checkout: " . $e->getMessage());
-        responderError('Error al procesar el pedido: ' . $e->getMessage(), 500);
+        responderError('Error interno al procesar el pedido.', 500);
     }
     break;
+/* @action actualizar_perfil * Actualiza la información personal, credenciales e imagen de avatar del usuario autenticado.
+* Valida de forma estricta la unicidad de llaves únicas (Email, Documento) en el sistema.*/
 case 'actualizar_perfil':
 $campos_requeridos = ['id_tipo_id', 'numero_documento', 'nombres', 'apellidos', 'email', 'celular'];
 foreach ($campos_requeridos as $campo) {
@@ -724,6 +699,7 @@ $stmt = $pdo->query("SELECT id_localidad, nombre_localidad FROM localidad ORDER 
 responder(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
 break;
 
+
 /* @action tipos_id * Provee el nomenclador maestro de los tipos de identificación o documentos oficiales admitidos*/
 case 'tipos_id':
 $stmt = $pdo->query("SELECT id_tipo_id, sigla, nombre FROM tipo_identificacion ORDER BY id_tipo_id");
@@ -744,82 +720,8 @@ session_destroy();
 responder(['success' => true, 'message' => 'Sesión cerrada']);
 break;
 
-/* ════════════════════════════════════════════════════════════════════
-🐾 NUEVA ACCIÓN — detalle_pedido (modal "Ver" del historial de pedidos)
-════════════════════════════════════════════════════════════════════
-* Devuelve el desglose completo de un único pedido:
-*   - Cabecera del pedido (fecha, total, subtotal, costo_envio, dirección, estado).
-*   - Items bajo la clave 'items' (la que busca el JS para pintar la tabla del modal).
-*   - Pago asociado (si existe).
-*
-* Endpoint:
-*   GET ../api/panel-usuario_data.php?action=detalle_pedido&id_pedido=123
-*
-* Restringido por scope: solo se puede ver un pedido cuyo id_usuario
-* coincide con la sesión activa (previene IDOR). */
-case 'detalle_pedido':
-$id_pedido = $_GET['id_pedido']
-?? $_GET['id']
-?? $_POST['id_pedido']
-?? null;
-if (!$id_pedido) responderError('ID de pedido requerido', 400);
-
-// 1) Cabecera del pedido (restringida al scope del usuario)
-$stmt = $pdo->prepare("
-SELECT  p.id_pedido,
-p.fecha            AS fecha_pedido,
-p.total,
-p.subtotal,
-p.costo_envio,
-p.id_metodo_pago,
-p.id_estado_pedido,
-p.direccion_envio,
-p.notas,
-ep.nombre          AS estado
-FROM pedido p
-LEFT JOIN estado_pedido ep ON p.id_estado_pedido = ep.id_estado_pedido
-WHERE p.id_pedido = ? AND p.id_usuario = ?
-");
-$stmt->execute([$id_pedido, $id_usuario]);
-$pedido = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$pedido) responderError('Pedido no encontrado', 404);
-
-// 2) Items bajo la clave 'items' (la que busca el JS para pintar la tabla del modal)
-$stmtDet = $pdo->prepare("
-SELECT  dp.id_producto,
-dp.cantidad,
-dp.precio_unitario,
-dp.subtotal,
-pr.nombre AS nombre,
-pr.imagen_url
-FROM detalle_pedido dp
-LEFT JOIN productos pr ON dp.id_producto = pr.id_producto
-WHERE dp.id_pedido = ?
-");
-$stmtDet->execute([$id_pedido]);
-$pedido['items'] = $stmtDet->fetchAll(PDO::FETCH_ASSOC);
-
-// 3) Información del pago asociado (si existe)
-$stmtPago = $pdo->prepare("
-SELECT  pg.id_pago,
-pg.id_metodo,
-mc.nombre           AS metodo_nombre,
-pg.id_estado_pago,
-ep.nombre            AS estado_pago
-FROM pagos pg
-LEFT JOIN metodos_catalogo mc ON pg.id_metodo = mc.id_metodo
-LEFT JOIN estado_pago    ep ON pg.id_estado_pago = ep.id_estado_pago
-WHERE pg.id_pedido = ?
-LIMIT 1
-");
-$stmtPago->execute([$id_pedido]);
-$pedido['pago'] = $stmtPago->fetch(PDO::FETCH_ASSOC) ?: null;
-
-responder(['success' => true, 'data' => $pedido]);
-break;
-
 default:
+// ✅ SEGURO: Mitigación contra Cross-Site Scripting (XSS).
 responderError('Acción no válida: ' . htmlspecialchars($action), 400);
 }
 
@@ -834,6 +736,4 @@ responderError('Error interno del servidor', 500);
 error_log("App Error in panel-usuario_data.php: " . $e->getMessage());
 responderError($e->getMessage(), 500);
 }
-
 ?>
-
