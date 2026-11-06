@@ -5,7 +5,7 @@
 const API = '../api/panel-admin_data.php';
 
 // Compatibilidad con mod-mascotas.js
-const API_URL = API;u
+const API_URL = API;
 
 // ================================================================
 // FETCH GENÉRICO (usado internamente si se necesita)

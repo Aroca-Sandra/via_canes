@@ -227,13 +227,13 @@
 <div class="col-6"><label class="fw-bold small">Proveedor:</label><select id="prodProveedor" class="form-select form-select-sm"></select></div>
 <!-- CAMPO NUEVO: Selección de Especie / Mascota -->
 <div class="col-6">
-    <label class="fw-bold small">Dirigido a:</label>
-    <select id="prodEspecie" class="form-select form-select-sm" required>
-        <option value="1">🐶 Perro</option>
-        <option value="2">🐱 Gato</option>
-        <option value="1,2">🐶🐱 Perro y Gato</option>
-        <option value="3">🐾 Otra especie</option>
-    </select>
+<label class="fw-bold small">Dirigido a:</label>
+<select id="prodEspecie" class="form-select form-select-sm" required>
+<option value="1">🐶 Perro</option>
+<option value="2">🐱 Gato</option>
+<option value="1,2">🐶🐱 Perro y Gato</option>
+<option value="3">🐾 Otra especie</option>
+</select>
 </div>
 </div>
 <div class="mb-3"><label class="fw-bold small">Descripción:</label><textarea id="prodDesc" class="form-control form-control-sm" rows="2"></textarea></div>
@@ -428,7 +428,6 @@
 </div>
 </div>
 
-
 <!-- MÓDULO CITAS -->
 <div class="mod-section" id="mod-citas">
 <div class="row g-4">
@@ -451,6 +450,7 @@
 </div>
 
 <div class="mod-section" id="mod-carritos"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-cart-shopping me-2"></i>Carritos</h6><div id="listaCarritos"></div></div></div>
+
 <!-- MÓDULO: PEDIDOS — Panel Administrativo -->
 <div class="mod-section" id="mod-ventas"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-receipt me-2"></i>Pedidos</h6><div class="table-responsive"><table class="table table-vc table-hover mb-0"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Método</th><th>Pago</th><th>Acc.</th></tr></thead><tbody id="tablaPedidos"></tbody></table></div></div></div>
 
@@ -651,15 +651,14 @@ class="btn btn-sm btn-info btn-v w-100 text-white" disabled>
 
 </div>
 </div>
-    
-    <div class="mod-section" id="mod-resenas">
-      <div class="row g-4">
-        <div class="col-lg-4"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-star me-2 text-warning"></i>Reseña</h6><form id="formResena"><div class="mb-2"><label class="fw-bold small">Producto:</label><select id="resenaProducto" class="form-select form-select-sm" required></select></div><div class="mb-2"><label class="fw-bold small">Usuario:</label><select id="resenaUsuario" class="form-select form-select-sm" required></select></div><div class="mb-2"><label class="fw-bold small">Estrellas:</label><select id="resenaEstrellas" class="form-select form-select-sm"><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></div><div class="mb-3"><label class="fw-bold small">Comentario:</label><textarea id="resenaComentario" class="form-control form-control-sm" rows="3" required></textarea></div><button type="submit" class="btn btn-warning btn-v w-100 text-dark"><i class="fa fa-save me-1"></i>Guardar</button></form></div></div>
-        <div class="col-lg-8"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-star me-2"></i>Reseñas</h6><div class="table-responsive"><table class="table table-vc table-hover mb-0"><thead><tr><th>ID</th><th>Producto</th><th>Usuario</th><th>Estrellas</th><th>Comentario</th><th>Fecha</th><th>Acc.</th></tr></thead><tbody id="tablaResenas"></tbody></table></div></div></div>
-      </div>
-    </div>
-  </div>
 
+<div class="mod-section" id="mod-resenas">
+<div class="row g-4">
+<div class="col-lg-4"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-star me-2 text-warning"></i>Reseña</h6><form id="formResena"><div class="mb-2"><label class="fw-bold small">Producto:</label><select id="resenaProducto" class="form-select form-select-sm" required></select></div><div class="mb-2"><label class="fw-bold small">Usuario:</label><select id="resenaUsuario" class="form-select form-select-sm" required></select></div><div class="mb-2"><label class="fw-bold small">Estrellas:</label><select id="resenaEstrellas" class="form-select form-select-sm"><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></div><div class="mb-3"><label class="fw-bold small">Comentario:</label><textarea id="resenaComentario" class="form-control form-control-sm" rows="3" required></textarea></div><button type="submit" class="btn btn-warning btn-v w-100 text-dark"><i class="fa fa-save me-1"></i>Guardar</button></form></div></div>
+<div class="col-lg-8"><div class="sketch-card fade-in"><h6 class="fw-bold mb-3"><i class="fa fa-star me-2"></i>Reseñas</h6><div class="table-responsive"><table class="table table-vc table-hover mb-0"><thead><tr><th>ID</th><th>Producto</th><th>Usuario</th><th>Estrellas</th><th>Comentario</th><th>Fecha</th><th>Acc.</th></tr></thead><tbody id="tablaResenas"></tbody></table></div></div></div>
+</div>
+</div>
+</div>
 
 <!-- ==================== MODALES GLOBALES ==================== -->
 <div class="modal fade" id="modalStockBajo" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content" style="border-radius:14px;border:none;"><div class="modal-header text-white" style="background:var(--grad-modal-danger);border-radius:14px 14px 0 0;"><h5 class="modal-title fw-bold"><i class="fa fa-exclamation-triangle me-2"></i>Stock Bajo</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row g-2 mb-4" id="stockResumen"></div><div id="stockLista" style="max-height:360px;overflow-y:auto;"></div></div></div></div></div>
@@ -733,13 +732,14 @@ class="btn btn-sm btn-info btn-v w-100 text-white" disabled>
 <div id="eliminacionPendiente" class="alert alert-warning py-1 px-2 mt-2 small d-none d-flex justify-content-between align-items-center">
 <span><i class="fa fa-exclamation-triangle me-1"></i>Pendiente eliminar</span>
 <button type="button" class="btn btn-sm btn-link text-primary p-0" onclick="cancelarEliminarFoto()">Deshacer</button>
+</div>
+</div>
+</div>
+</div>
+</div> <!-- CIERRA ROW -->
+</form> <!-- CIERRA FORM CORRECTAMENTE -->
+</div> <!-- CIERRA MODAL-BODY CORRECTAMENTE -->
 
-</div>
-</div>
-</div>
-</form>
-
-</div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 <button type="button" class="btn btn-primary btn-v" onclick="guardarUsuario()"><i class="fa fa-save me-1"></i>Guardar</button>
