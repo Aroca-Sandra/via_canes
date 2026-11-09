@@ -1,4 +1,5 @@
 <?php
+// api/panel-usuario_data.php
 /*
 /**
 * API Controladora de Usuarios, Mascotas y Citas.
@@ -352,23 +353,49 @@ break;
 * Verifica permisos de pertenencia mediante rowCount() y elimina el archivo físico asociado.*/
 
 case 'eliminar_mascota':
-if (empty($_POST['id_mascota'])) responderError('ID de mascota no proporcionado', 400);
-
-// Localiza la ruta de la foto asignada a la mascota bajo el scope del usuario activo
-$stmtFoto = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ? AND id_usuario = ?");
-$stmtFoto->execute([$_POST['id_mascota'], $id_usuario]);
-$fotoBorrar = $stmtFoto->fetchColumn();
-
-$stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ? AND id_usuario = ?");
-$stmt->execute([$_POST['id_mascota'], $id_usuario]);
-
-// ✅ SEGURO: Validación de mutación afectiva. Evita falsos positivos si el ID no le pertenece
-if ($stmt->rowCount() === 0) responderError('No se pudo eliminar o no tienes permiso', 403);
-
-// Ejecuta el borrado con protección Path Traversal nativa de la función auxiliar
-borrarArchivoServidor($fotoBorrar);
-responder(['success' => true, 'message' => 'Mascota eliminada']);
-break;
+    if (empty($_POST['id_mascota'])) responderError('ID de mascota requerido');
+    
+    $id_mascota = intval($_POST['id_mascota']);
+    
+    // 1. Verificar si existen citas asociadas
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM citas WHERE id_mascota = ?");
+    $stmtCheck->execute([$id_mascota]);
+    $tieneCitas = $stmtCheck->fetchColumn();
+    
+    if ($tieneCitas > 0) {
+        // ✅ Retorna un mensaje legible para el toast/alert del JS
+        responderError("No se puede eliminar esta mascota porque tiene {$tieneCitas} cita(s) registrada(s). Cancela o elimina las citas primero.");
+    }
+    
+    try {
+        $pdo->beginTransaction();
+        
+        // 2. Obtener foto para borrarla del servidor
+        $stmtFoto = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ?");
+        $stmtFoto->execute([$id_mascota]);
+        $fotoBorrar = $stmtFoto->fetchColumn();
+        
+        // 3. Eliminar la mascota
+        $stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ?");
+        $stmt->execute([$id_mascota]);
+        
+        $pdo->commit();
+        
+        // 4. Borrar archivo físico
+        if ($fotoBorrar) {
+            $rutaFisica = realpath(__DIR__ . '/../' . $fotoBorrar);
+            if ($rutaFisica && file_exists($rutaFisica)) {
+                unlink($rutaFisica);
+            }
+        }
+        
+        responder(['success' => true, 'message' => 'Mascota eliminada correctamente']);
+        
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        responderError('Error al eliminar la mascota: ' . $e->getMessage());
+    }
+    break;
 /* @action citas * Obtiene la relación de control de citas agendadas por el cliente.*/
 
 case 'citas':
@@ -508,15 +535,16 @@ case 'crear_pedido':
     $costo_envio = floatval($_POST['costo_envio'] ?? 0);
     $total       = floatval($_POST['total'] ?? 0);
 
-    if (empty($direccion)) responderError('Dirección obligatoria');
+    if (empty($direccion)) responderError('La dirección de envío es obligatoria');
     
     $items = json_decode($items_json, true);
-    if (!is_array($items) || empty($items)) responderError('Carrito vacío');
+    if (!is_array($items) || empty($items)) responderError('El carrito está vacío', 400);
 
     try {
+        // Iniciamos la transacción para garantizar que todo se guarde o nada se guarde
         $pdo->beginTransaction();
 
-        // 1. Insertar Cabecera del Pedido (Ahora con todas las columnas)
+        // 1. Insertar Cabecera del Pedido
         $sqlPedido = "INSERT INTO pedido 
                       (id_usuario, direccion_envio, notas, id_metodo_pago, subtotal, costo_envio, total, fecha, id_estado_pedido) 
                       VALUES 
@@ -535,22 +563,35 @@ case 'crear_pedido':
 
         $id_pedido = $pdo->lastInsertId();
 
-        // 2. Insertar Detalles
+        // 2. Preparar sentencias para detalles y actualización de stock
         $sqlDetalle = "INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio_unitario, subtotal) 
                        VALUES (:id_ped, :id_prod, :cant, :precio, :sub)";
-        
         $stmtDet = $pdo->prepare($sqlDetalle);
 
+        $sqlUpdateStock = "UPDATE productos SET stock = stock - :cant WHERE id_producto = :id_prod";
+        $stmtStock = $pdo->prepare($sqlUpdateStock);
+
+        // 3. Procesar cada producto del carrito
         foreach ($items as $item) {
             $idProd = intval($item['id_producto']);
             $cant   = intval($item['cantidad']);
             $precio = floatval($item['precio_unitario']);
             
-            // Validación extra: Verificar que el producto existe en BD
-            $checkProd = $pdo->prepare("SELECT id_producto FROM productos WHERE id_producto = ?");
-            $checkProd->execute([$idProd]);
-            
-            if ($checkProd->fetch() && $idProd > 0 && $cant > 0) {
+            if ($idProd > 0 && $cant > 0) {
+                // A. Verificar stock actual y BLOQUEAR la fila para evitar condiciones de carrera
+                $stmtCheck = $pdo->prepare("SELECT stock FROM productos WHERE id_producto = ? FOR UPDATE");
+                $stmtCheck->execute([$idProd]);
+                $producto = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$producto) {
+                    throw new Exception("El producto con ID $idProd no existe o fue eliminado.");
+                }
+                
+                if ($producto['stock'] < $cant) {
+                    throw new Exception("Stock insuficiente para '{$producto['nombre']}' (ID: $idProd). Disponible: {$producto['stock']}, Solicitado: $cant");
+                }
+
+                // B. Insertar el detalle del pedido
                 $stmtDet->execute([
                     ':id_ped'  => $id_pedido,
                     ':id_prod' => $idProd,
@@ -558,16 +599,26 @@ case 'crear_pedido':
                     ':precio'  => $precio,
                     ':sub'     => ($precio * $cant)
                 ]);
+
+                // C. Descontar el stock de la base de datos
+                $stmtStock->execute([
+                    ':cant'    => $cant,
+                    ':id_prod' => $idProd
+                ]);
             }
         }
 
+        // Si todo salió bien, confirmamos los cambios en la base de datos
         $pdo->commit();
-        responder(['success' => true, 'id_pedido' => $id_pedido], 201);
+        responder(['success' => true, 'id_pedido' => $id_pedido, 'message' => 'Pedido creado exitosamente'], 201);
 
     } catch (Exception $e) {
+        // Si algo falla (ej: stock insuficiente), deshacemos TODOS los cambios
         $pdo->rollBack();
         error_log("Error Checkout: " . $e->getMessage());
-        responderError('Error interno al procesar el pedido.', 500);
+        
+        // Enviamos el mensaje específico de error al frontend (ej: "Stock insuficiente...")
+        responderError($e->getMessage(), 400); 
     }
     break;
 /* @action actualizar_perfil * Actualiza la información personal, credenciales e imagen de avatar del usuario autenticado.

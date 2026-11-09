@@ -500,9 +500,10 @@ MAIN LAYOUT ARCHITECTURE
 <!-- CONTENEDOR PRINCIPAL DE LAS DOS COLUMNAS -->
 <div class="row g-4">
 <!-- COLUMNA 1: DATOS BÁSICOS, ESPECIE Y RAZA -->
+<div class="col-md-6">
 <!-- nombre_mascota -->
 <div class="mb-3">
-   <div class="col-md-6">
+   
 <label class="fw-bold mb-2 small text-dark" for="nombreMascota">Nombre de la Mascota</label>
 <input type="text" class="form-control" id="nombreMascota" name="nombre_mascota" required placeholder="Ej: Neron">
 </div>
@@ -522,7 +523,7 @@ MAIN LAYOUT ARCHITECTURE
 </div>
 </div>
 
-<!-- Contenedor Detalle Especie (Oculto por defecto con d-none) -->
+<!-- Contenedor Detalle Especie ( Oculto por defecto con d-none) -->
 <div class="mb-3 d-none" id="contenedorEspecieDetalle">
 <label class="fw-bold mb-2 small text-dark" for="especie_detalle">Especifique la especie:</label>
 <input type="text" id="especie_detalle" name="especie_detalle" class="form-control" placeholder="Ej: Conejo, Ave...">

@@ -2,7 +2,12 @@
 // TIENDA-MOSTRAR.JS - MÓDULO DE PROCESAMIENTO Y RENDERIZADO DE CARDS
 // ================================================================
 
-const IMG_DEFAULT = 'img/default-product.png';
+// ✅ CORRECCIÓN DE RUTAS: Detecta automáticamente si estamos en /html/ o en la raíz
+const path = window.location.pathname;
+const enCarpetaHtml = path.includes('/html/') || path.includes('\\html\\');
+const IMG_PREFIX = enCarpetaHtml ? '../img/' : 'img/';
+const IMG_DEFAULT = IMG_PREFIX + 'default-product.png';
+
 let listaProductosMapeados = [];
 
 /**
@@ -20,7 +25,7 @@ export function procesarYRenderizar(datos) {
         return;
     }
 
-    // ✅ ARREGLO 1: antes estas 2 líneas se ejecutaban DOS veces
+    // Mapeamos y renderizamos en un solo paso limpio
     listaProductosMapeados = datos.map(p => procesarProducto(p));
     grid.innerHTML = listaProductosMapeados.map(p => crearCard(p)).join('');
 }
@@ -36,7 +41,7 @@ export function procesarProducto(p) {
     let precioFinal = precioOriginal;
     let porcentajeVisual = 0;
 
-    if (p.id_promo) {
+    if (p.id_promo || valorDescuento > 0) {
         if (tipoDescuento === 'porcentaje') {
             porcentajeVisual = Math.round(valorDescuento);
             precioFinal = precioOriginal * (1 - (valorDescuento / 100));
@@ -48,18 +53,18 @@ export function procesarProducto(p) {
         }
     }
 
-    // Normalización de Ruta de Imagen
+    // Normalización de Ruta de Imagen (Robusta para cualquier carpeta)
     let imgUrl = String(p.imagen_url || p.foto_url || '').trim();
     if (imgUrl) {
-        imgUrl = imgUrl.replace(/^(\.\.\/)+/, '');
+        imgUrl = imgUrl.replace(/^(\.\.\/)+/, ''); // Limpiamos prefijos viejos
         if (!imgUrl.startsWith('http') && !imgUrl.startsWith('/')) {
-            imgUrl = 'img/' + imgUrl.replace(/^img\//, '');
+            imgUrl = IMG_PREFIX + imgUrl.replace(/^img\//, '');
         }
     } else {
         imgUrl = IMG_DEFAULT;
     }
 
-    // Sanitización de Textos para HTML
+    // Sanitización de Textos para HTML (Prevención de errores por comillas)
     const nombreSeguro = String(p.nombre || 'Producto sin nombre')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -93,12 +98,12 @@ export function crearCard(p) {
         ? `<span class="text-decoration-line-through text-muted small">$${p.precioOriginal.toLocaleString('es-CO')}</span>`
         : '';
 
-    // ✅ Solo los productos EN PROMO llevan el atributo del precio original
+    // Solo los productos EN PROMO llevan el atributo del precio original
     const attrPrecioOriginal = p.precioOriginal > p.precioFinal
         ? `data-precio-original="${p.precioOriginal}"`
         : '';
 
-    // ✅ ARREGLO 3: botón deshabilitado si no hay stock
+    // Botón deshabilitado visualmente si no hay stock
     const agotado = Number(p.stock) <= 0;
 
     return `
@@ -135,45 +140,4 @@ export function crearCard(p) {
             </div>
         </div>
     </div>`;
-}
-
-/**
- * Inicializa los eventos de los botones "Agregar al Carrito".
- * ⚠️ Solo úsala si main.js NO delega clicks en document (si no, es redundante).
- *    Si ambos están activos, el stopPropagation evita el doble agregado.
- */
-export function inicializarEventosCarrito() {
-    const grid = document.getElementById('productGrid');
-    if (!grid) return;
-
-    // ✅ Guard: evita registrar el listener más de una vez
-    if (grid.dataset.carritoInit === 'true') return;
-    grid.dataset.carritoInit = 'true';
-
-    grid.addEventListener('click', (e) => {
-        const btn = e.target.closest('.btn-agregar-carrito');
-        if (!btn) return;
-
-        e.preventDefault();
-        // ✅ ARREGLO 2: evita que main.js (document) agregue el producto 2ª vez
-        e.stopPropagation();
-
-        const id = parseInt(btn.dataset.id);
-        const precio = parseFloat(btn.dataset.precio);
-        if (!id || isNaN(precio)) return;
-
-        if (typeof window.agregarAlCarrito === 'function') {
-            window.agregarAlCarrito({
-                id: id,
-                nombre: btn.dataset.nombre,
-                precio: precio,
-                precioOriginal: parseFloat(btn.dataset.precioOriginal) || null, // ✅ TACHADO
-                imagen: btn.dataset.imagen,
-                stock: parseInt(btn.dataset.stock) || 999,
-                tipo: btn.dataset.tipo || 'producto'
-            });
-        } else {
-            console.error("❌ window.agregarAlCarrito no está disponible. Verifica que main.js cargue antes.");
-        }
-    });
 }

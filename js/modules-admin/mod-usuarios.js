@@ -225,11 +225,12 @@ window.guardarUsuario = async function() {
 };
 
 // 8. ELIMINAR USUARIO
+// 8. ELIMINAR USUARIO EN LA BD
 window.eliminarUsuario = async function(id) {
     if (!confirm('¿Eliminar este usuario permanentemente?')) return;
     
     const formData = new FormData();
-    formData.append('action', 'eliminar_usuario'); // Importante enviar la acción
+    formData.append('action', 'eliminar_usuario');
     formData.append('id_usuario', id);
 
     const res = await apiFetch('eliminar_usuario', formData);
@@ -241,31 +242,101 @@ window.eliminarUsuario = async function(id) {
     }
 };
 
-// FUNCIONES EXTRA PARA LA FOTO
-window.marcarEliminarFoto = function() {
-    document.getElementById('usrEliminarFotoFlag').value = '1';
-    document.getElementById('eliminacionPendiente').classList.remove('d-none');
-    document.getElementById('btnMarcarEliminar').classList.add('d-none');
-    document.getElementById('usrFoto').disabled = true;
-};
+// ================================================================
+// FUNCIONES PARA LA GESTIÓN DE LA FOTO (Sincronizado con tu HTML)
+// ================================================================
 
-window.cancelarEliminarFoto = function() {
-    document.getElementById('usrEliminarFotoFlag').value = '0';
-    document.getElementById('eliminacionPendiente').classList.add('d-none');
-    document.getElementById('btnMarcarEliminar').classList.remove('d-none');
-    document.getElementById('usrFoto').disabled = false;
-};
+// Ejecuta cuando el usuario selecciona un archivo nuevo en el input file
+function manejarCambioFoto(event) {
+    const input = event.target;
+    const imgPreview = document.getElementById('usrFotoPreview');
+    const contEliminar = document.getElementById('contEliminarFoto');
 
-function resetearEstadoFoto() {
-    document.getElementById('usrEliminarFotoFlag').value = '0';
-    document.getElementById('eliminacionPendiente').classList.add('d-none');
-    document.getElementById('btnMarcarEliminar').classList.remove('d-none');
-    document.getElementById('usrFoto').disabled = false;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            if (imgPreview) {
+                imgPreview.src = e.target.result;      // Asigna la nueva imagen base64
+                imgPreview.classList.remove('d-none'); // La muestra en pantalla
+                imgPreview.style.opacity = '1';        // Asegura opacidad completa
+            }
+            if (contEliminar) {
+                contEliminar.classList.remove('d-none'); // Muestra el contenedor del botón borrar
+            }
+            
+            // Si el usuario sube una nueva foto, cancelamos cualquier intento de borrado anterior
+            document.getElementById('usrEliminarFotoFlag').value = '0';
+            document.getElementById('eliminacionPendiente').classList.add('d-none');
+            document.getElementById('btnMarcarEliminar').classList.remove('d-none');
+        };
+
+        reader.readAsDataURL(input.files[0]); // Lee el archivo local
+    }
 }
 
-// INICIALIZACIÓN
+// Acción al presionar "Eliminar foto"
+window.marcarEliminarFoto = function() {
+    // 1. Activamos la bandera que se envía al PHP
+    document.getElementById('usrEliminarFotoFlag').value = '1';
+    
+    // 2. Mostramos el banner amarillo de "Pendiente eliminar" y ocultamos el botón de la basura
+    document.getElementById('eliminacionPendiente').classList.remove('d-none');
+    document.getElementById('btnMarcarEliminar').classList.add('d-none');
+    
+    // 3. Opacamos la foto vieja para dar el efecto visual de "marcada para borrado"
+    const imgPreview = document.getElementById('usrFotoPreview');
+    if (imgPreview) {
+        imgPreview.style.opacity = '0.3'; 
+    }
+};
+
+// Acción al presionar "Deshacer" en el banner amarillo
+window.cancelarEliminarFoto = function() {
+    // 1. Apagamos la bandera para que no se borre en la base de datos
+    document.getElementById('usrEliminarFotoFlag').value = '0';
+    
+    // 2. Ocultamos el banner amarillo y devolvemos el botón de eliminar
+    document.getElementById('eliminacionPendiente').classList.add('d-none');
+    document.getElementById('btnMarcarEliminar').classList.remove('d-none');
+    
+    // 3. Devolvemos la claridad completa a la imagen
+    const imgPreview = document.getElementById('usrFotoPreview');
+    if (imgPreview) {
+        imgPreview.style.opacity = '1';
+    }
+};
+
+// Limpia todo el entorno de la foto al cerrar, abrir o resetear el formulario
+function resetearEstadoFoto() {
+    document.getElementById('usrEliminarFotoFlag').value = '0';
+    
+    const elPendiente = document.getElementById('eliminacionPendiente');
+    const btnMarcar = document.getElementById('btnMarcarEliminar');
+    const inputFoto = document.getElementById('usrFoto');
+    const imgPreview = document.getElementById('usrFotoPreview');
+    
+    if (elPendiente) elPendiente.classList.add('d-none');
+    if (btnMarcar) btnMarcar.classList.remove('d-none');
+    if (imgPreview) {
+        imgPreview.style.opacity = '1';
+        imgPreview.src = '';
+        imgPreview.classList.add('d-none');
+    }
+    if (inputFoto) {
+        inputFoto.value = ''; // Limpia el rastro de archivos en memoria del input file
+    }
+}
+
+// INICIALIZACIÓN DEL MÓDULO
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🚀 Inicializando módulo usuarios...");
     cargarDatosAuxiliaresUsuarios(); 
     cargarUsuarios();
+
+    // Escucha de manera activa cuándo cambia el input file
+    const inputFoto = document.getElementById('usrFoto');
+    if (inputFoto) {
+        inputFoto.addEventListener('change', manejarCambioFoto);
+    }
 });

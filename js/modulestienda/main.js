@@ -3,6 +3,12 @@ import { procesarYRenderizar } from './tienda-mostrar.js';
 // ================================================================
 // MAIN.JS - LÓGICA PRINCIPAL DEL PANEL DE LA TIENDA (VÍA CANES)
 // ================================================================
+
+// ✅ MEJORA CRUCIAL: Detección dinámica de ruta para evitar errores 404 en subcarpetas
+const path = window.location.pathname;
+const enCarpetaHtml = path.includes('/html/') || path.includes('\\html\\');
+const RUTA_API = enCarpetaHtml ? '../api/' : 'api/';
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. LEER FILTROS DE LA URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -42,10 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 stock: parseInt(btn.dataset.stock) || 999
             };
             if (item.id > 0 && item.precio >= 0 && item.nombre !== 'undefined') {
-                agregarAlCarrito(item);
+                window.agregarAlCarrito(item);
             } else {
                 console.error('❌ Datos inválidos:', item);
-                alert('Error: Producto no válido');
+                mostrarToast('Error: Producto no válido', 'danger');
             }
         }
 
@@ -67,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.closest('.btn-eliminar-carrito')) {
             e.preventDefault();
             const btn = e.target.closest('.btn-eliminar-carrito');
-            eliminarDelCarrito(parseInt(btn.dataset.id), btn.dataset.tipo);
+            window.eliminarDelCarrito(parseInt(btn.dataset.id), btn.dataset.tipo);
         }
 
         // Modificar cantidad (+ / -)
@@ -77,27 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const accion = btn.dataset.accion;
             const id = parseInt(btn.dataset.id);
             const tipo = btn.dataset.tipo;
-
-            let carrito = obtenerCarrito();
-            const item = carrito.find(i => parseInt(i.id) === id && i.tipo === tipo);
-
-            if (!item) return;
-
-            if (accion === 'sumar') {
-                if (item.cantidad < item.stock) {
-                    item.cantidad += 1;
-                    guardarCarrito(carrito);
-                } else {
-                    mostrarToast('⚠️ Stock máximo alcanzado', 'warning');
-                }
-            } else if (accion === 'restar') {
-                if (item.cantidad > 1) {
-                    item.cantidad -= 1;
-                    guardarCarrito(carrito);
-                } else {
-                    eliminarDelCarrito(id, tipo);
-                }
-            }
+            window.cambiarCantidadCarrito(id, tipo, accion);
         }
     });
 });
@@ -111,7 +97,8 @@ async function cargarProductos(filtros = {}) {
 
     if (!grid) return;
 
-    let apiUrl = 'api/productos_data.php?vista=tienda';
+    // ✅ Usa la ruta dinámica RUTA_API
+    let apiUrl = `${RUTA_API}productos_data.php?vista=tienda`;
     if (filtros.tipo && filtros.valor) {
         apiUrl += `&tipo=${encodeURIComponent(filtros.tipo)}&valor=${encodeURIComponent(filtros.valor)}`;
         if (sectionTitle) sectionTitle.innerHTML = `Productos: ${filtros.valor} 🐾`;
@@ -150,7 +137,8 @@ async function cargarServicios(filtros = {}) {
     const grid = document.getElementById('servicesGrid');
     if (!grid) return;
 
-    let apiUrl = 'api/productos_data.php?vista=servicios';
+    // ✅ Usa la ruta dinámica RUTA_API
+    let apiUrl = `${RUTA_API}productos_data.php?vista=servicios`;
     if (filtros.tipo === 'categoria' && filtros.valor === 'Servicios') {
         apiUrl += `&tipo=${encodeURIComponent(filtros.tipo)}&valor=${encodeURIComponent(filtros.valor)}`;
     }
@@ -174,11 +162,11 @@ async function cargarServicios(filtros = {}) {
                                 ${s.descripcion ? s.descripcion.substring(0, 80) + '...' : 'Servicio profesional'}
                             </p>
                             <div class="mt-auto">
-                                <button class="btn-agendar-servicio"
+                                <button class="btn-agendar-servicio w-100 btn btn-success btn-sm"
                                     data-id="${s.id_servicio}"
                                     data-nombre="${s.nombre}"
-                                    style="background-color: #25D366; border: none; color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer;">
-                                    <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> <!-- Corregido: faltaba comilla -->
+                                    style="background-color: #25D366; border: none; color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                                    <i class="fa-brands fa-whatsapp me-2" style="font-size: 1.1rem;"></i>
                                     Agenda tu cita
                                 </button>
                             </div>
@@ -207,18 +195,23 @@ async function cargarServicios(filtros = {}) {
 const CLAVE_STORAGE = 'viaCanesCarrito';
 
 // 1. INYECTAR ESTILOS PARA EL EFECTO
-const styleGlobal = document.createElement('style');
-styleGlobal.innerHTML = `
-.card-verde-activo {
-    border: 2px solid #198754 !important;
-    background-color: #f0fff4 !important;
-    transform: scale(1.02);
-    box-shadow: 0 0 15px rgba(25, 135, 84, 0.4) !important;
-    transition: all 0.3s ease;
-    z-index: 10;
+if (!document.getElementById('style-main-effects')) {
+    const styleGlobal = document.createElement('style');
+    styleGlobal.id = 'style-main-effects';
+    styleGlobal.innerHTML = `
+    .card-verde-activo {
+        border: 2px solid #198754 !important;
+        background-color: #f0fff4 !important;
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(25, 135, 84, 0.4) !important;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+    .popIn { animation: popInAnim 0.3s ease-out; }
+    @keyframes popInAnim { 0% { transform: scale(0.5); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    `;
+    document.head.appendChild(styleGlobal);
 }
-`;
-document.head.appendChild(styleGlobal);
 
 // 2. OBTENER CARRITO
 function obtenerCarrito() {
@@ -291,7 +284,7 @@ function aplicarEfectoVerde(idProducto) {
             const htmlOriginal = btn.innerHTML;
             const classOriginal = btn.className;
             btn.innerHTML = '<i class="fa fa-check"></i> Agregado';
-            btn.classList.remove('btn-primary', 'btn-outline-primary');
+            btn.classList.remove('btn-primary', 'btn-outline-primary', 'btn-add');
             btn.classList.add('btn-success');
             btn.disabled = true;
 
@@ -447,13 +440,10 @@ function actualizarContadorGlobal(cantidadForzada = null) {
     badge.textContent = totalItems;
     badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
 
-    // ✨ ANIMACIÓN POPIN AL CAMBIAR
     if (totalItems > 0) {
         badge.classList.remove('popIn');
         void badge.offsetWidth; // Forzar reflow para reiniciar la animación
         badge.classList.add('popIn');
-        
-        // Limpiar la clase después de que termine la animación (300ms)
         setTimeout(() => {
             badge.classList.remove('popIn');
         }, 300);
@@ -470,9 +460,11 @@ function configurarBotonContinuar(totalItems, esPromociones) {
         if (totalItems > 0) {
             btnCheckout.style.pointerEvents = 'auto';
             btnCheckout.style.opacity = '1';
+            btnCheckout.classList.remove('disabled');
         } else {
             btnCheckout.style.pointerEvents = 'none';
             btnCheckout.style.opacity = '0.6';
+            btnCheckout.classList.add('disabled');
         }
     }
 }
@@ -481,16 +473,10 @@ function configurarBotonContinuar(totalItems, esPromociones) {
 window.actualizarVistaCarrito = renderizarCarrito;
 window.renderCart = renderizarCarrito;
 
-// Auto-ejecución inicial al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    renderizarCarrito();
-});
-
 // ==========================================
 // UTILIDADES UI Y ADMINISTRACIÓN
 // ==========================================
 
-// ✨ FUNCIÓN TOAST ACTUALIZADA (CON ANIMACIONES ENTER Y EXIT)
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
@@ -500,31 +486,27 @@ function mostrarToast(mensaje, tipo = 'success') {
     toastMsg.textContent = mensaje;
     toastEl.className = `toast align-items-center text-white border-0 bg-${tipo}`;
 
-    // ✨ ANIMACIÓN DE ENTRADA (slideInRight + toast-enter)
     toastEl.classList.remove('hiding');
     toastEl.classList.add('show');
 
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
 
-    // ✨ ANIMACIÓN DE SALIDA (slideOutRight + toast-exit)
     toastEl.addEventListener('hidden.bs.toast', function handler() {
-        toastEl.classList.add('hiding'); // Activa la animación de salida
+        toastEl.classList.add('hiding');
         setTimeout(() => {
-            toastEl.classList.remove('show', 'hiding'); // Limpia clases al terminar
-        }, 300); // 300ms coincide con la duración de @keyframes toast-exit
-        
-        // Remover el listener para evitar acumulación
+            toastEl.classList.remove('show', 'hiding');
+        }, 300);
         toastEl.removeEventListener('hidden.bs.toast', handler);
     }, { once: true });
 }
 
 function verificarSesionAdmin() {
     try {
-        const usuario = JSON.parse(localStorage.getItem('viaCanesUsuario') || 'null');
+        const usuario = JSON.parse(localStorage.getItem('viaCanesUsuario') || localStorage.getItem('viaCanesUser') || 'null');
         const adminLink = document.getElementById('adminAccessLink');
 
-        if (usuario && usuario.nombre_rol === 'ADMINISTRADOR' && adminLink) {
+        if (usuario && (usuario.nombre_rol === 'ADMINISTRADOR' || usuario.rol === 'ADMIN') && adminLink) {
             adminLink.classList.remove('d-none');
         }
     } catch (error) {
@@ -573,7 +555,8 @@ async function cargarPromocionesTienda() {
     if (!grid || !document.querySelector('.banner-ofertas')) return;
 
     try {
-        const response = await fetch('api/promociones_data.php?accion=listar_activas');
+        // ✅ Usa la ruta dinámica RUTA_API
+        const response = await fetch(`${RUTA_API}promociones_data.php?accion=listar_activas`);
         if (!response.ok) throw new Error('Error en la conexión con la API');
 
         const result = await response.json();
@@ -598,7 +581,7 @@ async function cargarPromocionesTienda() {
 
                 col.innerHTML = `
                 <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative">
-                    <span class="promo-badge">${etiquetaDesc} OFF</span>
+                    <span class="promo-badge badge bg-danger position-absolute top-0 end-0 m-2">${etiquetaDesc} OFF</span>
                     <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" style="height: 180px; object-fit: cover;" onerror="this.src='img/default-product.png'">
                     <div class="card-body d-flex flex-column text-center">
                         <h6 class="card-title fw-bold">${p.nombre}</h6>
@@ -607,11 +590,11 @@ async function cargarPromocionesTienda() {
                         </p>
                         <div class="mt-auto">
                             <div class="mb-2">
-                                <span class="old-price">$${Number(p.precio_venta).toLocaleString('es-CO')}</span>
+                                <span class="old-price text-decoration-line-through text-muted small">$${Number(p.precio_venta).toLocaleString('es-CO')}</span>
                                 <br>
-                                <span class="new-price">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
+                                <span class="new-price fw-bold text-danger">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
                             </div>
-                            <button class="btn btn-add w-100 btn-agregar-carrito"
+                            <button class="btn btn-add w-100 btn-agregar-carrito btn-primary"
                                     data-id="${p.id_producto}"
                                     data-nombre="${p.nombre}"
                                     data-precio="${Math.round(precioFinal)}"
@@ -660,11 +643,7 @@ window.onscroll = function() {
 // EXPORTACIÓN GLOBAL
 // ==========================================
 window.procesarYRenderizar = procesarYRenderizar;
-window.agregarAlCarrito = agregarAlCarrito;
-window.eliminarDelCarrito = eliminarDelCarrito;
-window.obtenerCarrito = obtenerCarrito;
-window.guardarCarrito = guardarCarrito;
-window.renderizarCarrito = renderizarCarrito;
+// Las funciones del carrito ya se exponen arriba con window.agregarAlCarrito, etc.
 
 document.dispatchEvent(new CustomEvent('viaCanesReady'));
 
@@ -683,8 +662,19 @@ document.addEventListener('click', function(event) {
         
         paw.style.left = `${startX}px`;
         paw.style.top = `${startY}px`;
+        paw.style.position = 'absolute';
+        paw.style.color = '#198754';
+        paw.style.fontSize = '24px';
+        paw.style.pointerEvents = 'none';
+        paw.style.zIndex = '9999';
+        paw.style.transition = 'all 0.8s ease-out';
         
         document.body.appendChild(paw);
+        
+        requestAnimationFrame(() => {
+            paw.style.transform = 'translateY(-50px) scale(1.5)';
+            paw.style.opacity = '0';
+        });
         
         setTimeout(() => {
             paw.remove();

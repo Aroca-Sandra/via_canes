@@ -1,4 +1,5 @@
 <?php
+// api/panel-admin_data.php
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -329,23 +330,52 @@ try {
             }
             break;
 
-        case 'eliminar_mascota_admin':
-            if (empty($_POST['id_mascota'])) responderError('ID requerido');
-            
-            $stmtFoto = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ?");
-            $stmtFoto->execute([$_POST['id_mascota']]);
-            $fotoBorrar = $stmtFoto->fetchColumn();
-            
-            $stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ?");
-            $stmt->execute([$_POST['id_mascota']]);
-            
-            if ($fotoBorrar) {
-                $rutaFisica = realpath(__DIR__ . '/' . $fotoBorrar);
-                if ($rutaFisica && file_exists($rutaFisica)) unlink($rutaFisica);
-            }
-            
-            responder(['success' => true, 'message' => 'Mascota eliminada']);
-            break;
+   case 'eliminar_mascota_admin':
+    // Soporte para leer JSON nativo si apiFetch envía payload en lugar de FormData x-www-form-urlencoded
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id_mascota = $_POST['id_mascota'] ?? $input['id_mascota'] ?? null;
+
+    if (empty($id_mascota)) {
+        responderError('ID de mascota requerido');
+        break;
+    }
+
+    // 1. CONTROL DE INTEGRIDAD: Validar si existen citas en la tabla `citas`
+    $stmtCitas = $pdo->prepare("SELECT COUNT(*) FROM citas WHERE id_mascota = ?");
+    $stmtCitas->execute([$id_mascota]);
+    $totalCitas = $stmtCitas->fetchColumn();
+
+    if ($totalCitas > 0) {
+        // Mensaje limpio, empático y orientado a la solución para tu cliente
+        responder(['success' => false, 'error' => "⚠️ No es posible eliminar esta mascota porque tiene $totalCitas cita(s) registrada(s). Por favor, cancela o elimina las citas primero."]);
+        break;
+    }
+
+    // 2. LOCALIZAR RUTA DE LA FOTO
+    $stmtFoto = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ?");
+    $stmtFoto->execute([$id_mascota]);
+    $fotoBorrar = $stmtFoto->fetchColumn();
+
+    // 3. EJECUTAR ELIMINACIÓN DE LA MASCOTA
+    $stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ?");
+    $stmt->execute([$id_mascota]);
+
+    if ($stmt->rowCount() === 0) {
+        responder(['success' => false, 'error' => 'No se encontró la mascota o ya fue eliminada.']);
+        break;
+    }
+
+    // 4. BORRADO FÍSICO DEL ARCHIVO
+    if ($fotoBorrar) {
+        $rutaFisica = realpath(__DIR__ . '/' . $fotoBorrar);
+        if ($rutaFisica && file_exists($rutaFisica)) {
+            unlink($rutaFisica);
+        }
+    }
+
+    responder(['success' => true, 'message' => 'Mascota eliminada correctamente.']);
+    break;
+
 
         // ============================================================
         // CITAS (ADMIN VE TODAS)

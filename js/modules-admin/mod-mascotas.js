@@ -306,16 +306,19 @@ window.eliminarMascota = async function(id, nombre) {
     if (!confirm(`¿Estás seguro de eliminar a "${nombre}"?`)) return;
     try {
         const res = await apiFetch('eliminar_mascota_admin', { id_mascota: id });
-        if (res.success) {
-            showToast(res.message || 'Mascota eliminada');
+        
+        if (res && res.success) {
+            showToast(res.message || 'Mascota eliminada', 'success');
             renderMascotas();
         } else {
+            // Muestra directamente la advertencia controlada desde el PHP sin la palabra "Error"
             showToast(res.error || 'Error al eliminar', 'danger');
         }
     } catch (err) { 
-        showToast('Error de conexión', 'danger'); 
+        showToast('Error de conexión con el servidor', 'danger'); 
     }
 };
+
 
 // --- MINI FORMULARIO (PARA CITAS) ---
 window.toggleMiniFormMascota = function() {
