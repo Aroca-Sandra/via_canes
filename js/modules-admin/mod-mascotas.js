@@ -201,16 +201,46 @@ window.limpiarFormMascota = function() {
     if(razaSelect) razaSelect.innerHTML = '<option value="">Primero seleccione especie</option>';
 };
 
-// --- GUARDAR / ACTUALIZAR ---
-window.guardarMascota = async function() {
-    const idEdit = document.getElementById('masIdEdit').value;
-    const idDueno = document.getElementById('masDueno').value;
-    const nombre = document.getElementById('masNombre').value.trim();
-    const especie = document.getElementById('masEspecie').value;
 
-    if (!idDueno || !nombre || !especie) {
-        return showToast('⚠️ Dueño, Nombre y Especie son obligatorios', 'danger');
-    }
+// --- GUARDAR / ACTUALIZAR ---
+window.guardarMascota = async function(e) {
+if (e) e.preventDefault();
+
+const idEdit        = document.getElementById('masIdEdit').value;
+const idDueno       = document.getElementById('masDueno').value;
+const nombre        = document.getElementById('masNombre').value.trim();
+const especie       = document.getElementById('masEspecie').value;
+const raza          = document.getElementById('masRaza').value;
+const sexo          = document.getElementById('masSexo').value;
+const pesoRaw       = document.getElementById('masPeso').value.trim();
+const edad          = document.getElementById('masEdad').value.trim();
+const color         = document.getElementById('masColor').value.trim();
+const observaciones = document.getElementById('masObservaciones').value.trim();
+
+// 1. Validar TODOS los campos obligatorios
+if (!idDueno || !nombre || !especie || !raza || !sexo || !pesoRaw || !edad || !color || !observaciones) {
+return showToast('⚠️ Todos los campos del formulario son obligatorios', 'danger');
+}
+
+// Validar número válido en peso (acepta coma o punto)
+const peso = pesoRaw.replace(',', '.');
+if (isNaN(peso) || parseFloat(peso) <= 0) {
+return showToast('⚠️ Ingresa un peso válido mayor a 0', 'warning');
+}
+
+// 2. Validar campos dinámicos si están visibles ("Otra especie" / "Otra raza")
+const contEspDet = document.getElementById('contEspecieDetalle');
+const espDetVal  = document.getElementById('masEspecieDetalle').value.trim();
+if (contEspDet && contEspDet.style.display !== 'none' && !espDetVal) {
+return showToast('⚠️ Debes especificar el detalle de la especie', 'danger');
+}
+
+const contRazaDet = document.getElementById('contRazaDetalle');
+const razDetVal   = document.getElementById('masRazaDetalle').value.trim();
+if (contRazaDet && contRazaDet.style.display !== 'none' && !razDetVal) {
+return showToast('⚠️ Debes especificar el detalle de la raza', 'danger');
+}
+
 
     const formData = new FormData();
     // No necesitamos appendear 'action' aquí porque apiFetch lo hace automáticamente si pasamos un objeto/FormData
@@ -304,20 +334,24 @@ window.editarMascota = function(id) {
 // --- ELIMINAR ---
 window.eliminarMascota = async function(id, nombre) {
     if (!confirm(`¿Estás seguro de eliminar a "${nombre}"?`)) return;
+    
     try {
-        const res = await apiFetch('eliminar_mascota_admin', { id_mascota: id });
+        const formData = new FormData();
+        formData.append('id_mascota', id);
+
+        const res = await apiFetch('eliminar_mascota_admin', formData);
         
         if (res && res.success) {
-            showToast(res.message || 'Mascota eliminada', 'success');
+            showToast(res.message || '✅ Mascota eliminada', 'success');
             renderMascotas();
         } else {
-            // Muestra directamente la advertencia controlada desde el PHP sin la palabra "Error"
-            showToast(res.error || 'Error al eliminar', 'danger');
+            showToast(res?.error || '⚠️ No se pudo eliminar', 'danger');
         }
     } catch (err) { 
-        showToast('Error de conexión con el servidor', 'danger'); 
+        showToast('❌ Error de conexión con el servidor', 'danger'); 
     }
 };
+
 
 
 // --- MINI FORMULARIO (PARA CITAS) ---

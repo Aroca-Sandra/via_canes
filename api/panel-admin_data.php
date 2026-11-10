@@ -330,33 +330,38 @@ try {
             }
             break;
 
-   case 'eliminar_mascota_admin':
-    // Soporte para leer JSON nativo si apiFetch envía payload en lugar de FormData x-www-form-urlencoded
+case 'eliminar_mascota_admin':
     $input = json_decode(file_get_contents('php://input'), true);
     $id_mascota = $_POST['id_mascota'] ?? $input['id_mascota'] ?? null;
 
     if (empty($id_mascota)) {
-        responderError('ID de mascota requerido');
+        responder(['success' => false, 'error' => 'ID de mascota requerido']);
         break;
     }
 
-    // 1. CONTROL DE INTEGRIDAD: Validar si existen citas en la tabla `citas`
-    $stmtCitas = $pdo->prepare("SELECT COUNT(*) FROM citas WHERE id_mascota = ?");
-    $stmtCitas->execute([$id_mascota]);
-    $totalCitas = $stmtCitas->fetchColumn();
+    // 1. Verificar citas activas (1 = Pendiente, 2 = Confirmada)
+    $stmtActivas = $pdo->prepare("SELECT COUNT(*) FROM citas WHERE id_mascota = ? AND id_estado_cita IN (1, 2)");
+    $stmtActivas->execute([$id_mascota]);
+    $citasActivas = $stmtActivas->fetchColumn();
 
-    if ($totalCitas > 0) {
-        // Mensaje limpio, empático y orientado a la solución para tu cliente
-        responder(['success' => false, 'error' => "⚠️ No es posible eliminar esta mascota porque tiene $totalCitas cita(s) registrada(s). Por favor, cancela o elimina las citas primero."]);
+    if ($citasActivas > 0) {
+        responder([
+            'success' => false, 
+            'error' => "⚠️ No es posible eliminar esta mascota porque tiene $citasActivas cita(s) pendiente(s) o confirmada(s). Cancela las citas primero."
+        ]);
         break;
     }
 
-    // 2. LOCALIZAR RUTA DE LA FOTO
+    // 2. Eliminar historial de citas canceladas (3) o completadas (4) para liberar la llave foránea
+    $stmtLimpiarCitas = $pdo->prepare("DELETE FROM citas WHERE id_mascota = ?");
+    $stmtLimpiarCitas->execute([$id_mascota]);
+
+    // 3. Obtener ruta de la foto
     $stmtFoto = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ?");
     $stmtFoto->execute([$id_mascota]);
     $fotoBorrar = $stmtFoto->fetchColumn();
 
-    // 3. EJECUTAR ELIMINACIÓN DE LA MASCOTA
+    // 4. Eliminar la mascota
     $stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ?");
     $stmt->execute([$id_mascota]);
 
@@ -365,7 +370,7 @@ try {
         break;
     }
 
-    // 4. BORRADO FÍSICO DEL ARCHIVO
+    // 5. Eliminar archivo físico del servidor
     if ($fotoBorrar) {
         $rutaFisica = realpath(__DIR__ . '/' . $fotoBorrar);
         if ($rutaFisica && file_exists($rutaFisica)) {
@@ -373,8 +378,9 @@ try {
         }
     }
 
-    responder(['success' => true, 'message' => 'Mascota eliminada correctamente.']);
+    responder(['success' => true, 'message' => '✅ Mascota eliminada correctamente']);
     break;
+
 
 
         // ============================================================
@@ -412,12 +418,38 @@ try {
             responder(['success' => true, 'message' => 'Estado actualizado']);
             break;
 
-        case 'eliminar_cita_admin':
-            if (empty($_POST['id_cita'])) responderError('ID requerido');
-            $stmt = $pdo->prepare("DELETE FROM citas WHERE id_cita = ?");
-            $stmt->execute([$_POST['id_cita']]);
-            responder(['success' => true, 'message' => 'Cita eliminada']);
-            break;
+case 'eliminar_cita_admin':
+    // Validar que se reciba el ID (soporta tanto POST como GET/JSON)
+    $id_cita = $_POST['id_cita'] ?? null;
+    
+    if (!$id_cita || !is_numeric($id_cita)) {
+        responderError('ID de cita no válido o no recibido');
+    }
+
+    try {
+        // 1. Verificar que la cita exista antes de intentar borrar
+        $stmtCheck = $pdo->prepare("SELECT id_cita FROM citas WHERE id_cita = ?");
+        $stmtCheck->execute([$id_cita]);
+        
+        if (!$stmtCheck->fetch()) {
+            responderError('La cita que intentas eliminar ya no existe', 404);
+        }
+
+        // 2. Eliminar la cita
+        $stmtDel = $pdo->prepare("DELETE FROM citas WHERE id_cita = ?");
+        $stmtDel->execute([$id_cita]);
+
+        responder(['success' => true, 'message' => 'Cita eliminada correctamente']);
+        
+    } catch (PDOException $e) {
+        // Capturar específicamente errores de Foreign Key
+        if ($e->getCode() == 23000) {
+            responderError('No se puede eliminar: La cita tiene registros dependientes en otras tablas.', 409);
+        }
+        error_log("Error al eliminar cita: " . $e->getMessage());
+        responderError('Error interno al eliminar la cita', 500);
+    }
+    break;
                     // ============================================================
         // MASCOTAS POR CLIENTE (NUEVO)
         // ============================================================

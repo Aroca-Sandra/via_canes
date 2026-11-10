@@ -250,9 +250,35 @@ break;
 /* @action guardar_mascota * Procesa el registro (INSERT) o modificación (UPDATE) de mascotas.
 * Realiza validaciones estrictas y gestiona la carga segura de fotografías en disco.*/
 case 'guardar_mascota':
-if (empty($_POST['nombre_mascota'])) responderError('El nombre de la mascota es obligatorio');
-if (empty($_POST['id_especie'])) responderError('La especie es obligatoria');
+    $id_mascota      = $_POST['id_mascota'] ?? '';
+    $nombre_mascota  = trim($_POST['nombre_mascota'] ?? '');
+    $id_especie      = $_POST['id_especie'] ?? null;
+    $id_raza         = $_POST['id_raza'] ?? null;
+    $id_sexoMascota  = $_POST['id_sexoMascota'] ?? null;
+    $peso_mascota    = trim($_POST['peso_mascota'] ?? '');
+    $edad_mascota    = trim($_POST['edad_mascota'] ?? '');
+    $color_mascota   = trim($_POST['color_mascota'] ?? '');
+    $observaciones   = trim($_POST['observaciones_mascota'] ?? '');
+    $especie_detalle = trim($_POST['especie_detalle'] ?? '');
+    $raza_detalle    = trim($_POST['raza_detalle'] ?? '');
 
+    // 1. Validar todos los campos obligatorios
+    if ( empty($nombre_mascota) || empty($id_especie) || empty($id_raza) || 
+        empty($id_sexoMascota) || $peso_mascota === '' || empty($edad_mascota) || 
+        empty($color_mascota) || empty($observaciones)) {
+        responder(['success' => false, 'error' => '⚠️ Todos los campos son obligatorios, incluyendo Observaciones Médicas.']);
+        break;
+    }
+
+    if ((int)$id_especie === 3 && empty($especie_detalle)) {
+        responder(['success' => false, 'error' => '⚠️ Debes especificar la especie.']);
+        break;
+    }
+
+    if (in_array((int)$id_raza, [26, 27, 28]) && empty($raza_detalle)) {
+        responder(['success' => false, 'error' => '⚠️ Debes escribir el detalle de la raza.']);
+        break;
+    }
 /* @var string|null Almacena la ruta web de la nueva foto subida */
 $rutaFoto = null;
 $id_mascota = $_POST['id_mascota'] ?? null;
@@ -353,47 +379,59 @@ break;
 * Verifica permisos de pertenencia mediante rowCount() y elimina el archivo físico asociado.*/
 
 case 'eliminar_mascota':
-    if (empty($_POST['id_mascota'])) responderError('ID de mascota requerido');
-    
-    $id_mascota = intval($_POST['id_mascota']);
-    
-    // 1. Verificar si existen citas asociadas
-    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM citas WHERE id_mascota = ?");
-    $stmtCheck->execute([$id_mascota]);
-    $tieneCitas = $stmtCheck->fetchColumn();
-    
-    if ($tieneCitas > 0) {
-        // ✅ Retorna un mensaje legible para el toast/alert del JS
-        responderError("No se puede eliminar esta mascota porque tiene {$tieneCitas} cita(s) registrada(s). Cancela o elimina las citas primero.");
+    if (empty($_POST['id_mascota'])) {
+        responder(['success' => false, 'error' => 'ID de mascota requerido']);
+        break;
     }
-    
+
+    $id_mascota = intval($_POST['id_mascota']);
+
+    // 1. Verificar pertenencia de la mascota al usuario autenticado
+    $stmtOwner = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ? AND id_usuario = ?");
+    $stmtOwner->execute([$id_mascota, $id_usuario]);
+    $fotoBorrar = $stmtOwner->fetchColumn();
+
+    if ($fotoBorrar === false) {
+        responder(['success' => false, 'error' => 'No se encontró la mascota o no tienes permiso para eliminarla.']);
+        break;
+    }
+
+    // 2. Verificar citas ACTIVAS (1 = Pendiente, 2 = Confirmada)
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) FROM citas WHERE id_mascota = ? AND id_estado_cita IN (1, 2)");
+    $stmtCheck->execute([$id_mascota]);
+    $citasActivas = $stmtCheck->fetchColumn();
+
+    if ($citasActivas > 0) {
+        responder([
+            'success' => false, 
+            'error' => "⚠️ No es posible eliminar esta mascota porque tiene {$citasActivas} cita(s) pendiente(s) o confirmada(s). Cancela las citas primero."
+        ]);
+        break;
+    }
+
     try {
         $pdo->beginTransaction();
-        
-        // 2. Obtener foto para borrarla del servidor
-        $stmtFoto = $pdo->prepare("SELECT foto_mascota FROM mascota WHERE id_mascota = ?");
-        $stmtFoto->execute([$id_mascota]);
-        $fotoBorrar = $stmtFoto->fetchColumn();
-        
-        // 3. Eliminar la mascota
-        $stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ?");
-        $stmt->execute([$id_mascota]);
-        
+
+        // 3. Limpiar historial de citas canceladas (3) o completadas (4) para liberar la llave foránea
+        $stmtLimpiarCitas = $pdo->prepare("DELETE FROM citas WHERE id_mascota = ?");
+        $stmtLimpiarCitas->execute([$id_mascota]);
+
+        // 4. Eliminar la mascota
+        $stmt = $pdo->prepare("DELETE FROM mascota WHERE id_mascota = ? AND id_usuario = ?");
+        $stmt->execute([$id_mascota, $id_usuario]);
+
         $pdo->commit();
-        
-        // 4. Borrar archivo físico
+
+        // 5. Borrar archivo físico usando tu función auxiliar
         if ($fotoBorrar) {
-            $rutaFisica = realpath(__DIR__ . '/../' . $fotoBorrar);
-            if ($rutaFisica && file_exists($rutaFisica)) {
-                unlink($rutaFisica);
-            }
+            borrarArchivoServidor($fotoBorrar);
         }
-        
+
         responder(['success' => true, 'message' => 'Mascota eliminada correctamente']);
-        
+
     } catch (PDOException $e) {
         $pdo->rollBack();
-        responderError('Error al eliminar la mascota: ' . $e->getMessage());
+        responder(['success' => false, 'error' => 'Error al eliminar la mascota: ' . $e->getMessage()]);
     }
     break;
 /* @action citas * Obtiene la relación de control de citas agendadas por el cliente.*/
