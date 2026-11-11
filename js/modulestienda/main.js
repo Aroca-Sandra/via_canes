@@ -93,11 +93,29 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 async function cargarProductos(filtros = {}) {
     const grid = document.getElementById('productGrid');
+    const seccionProductos = document.querySelector('.productos');
+    const seccionServicios = document.getElementById('servicesGrid')?.closest('section');
     const sectionTitle = document.querySelector('.productos h3');
 
     if (!grid) return;
 
-    // ✅ Usa la ruta dinámica RUTA_API
+    // 1. Si el usuario entró a "Servicios", ocultamos productos y mostramos servicios
+    if (filtros.valor === 'Servicios') {
+        if (seccionProductos) seccionProductos.style.display = 'none';
+        if (seccionServicios) seccionServicios.style.display = 'block';
+        mostrarBannerCategoria(filtros, 0);
+        return; // Detenemos la carga de productos
+    }
+
+    // 2. Para cualquier otra categoría (Perros, Gatos, Otra Especie, Higiene, Salud)
+    if (seccionProductos) seccionProductos.style.display = 'block';
+
+    // Ocultamos la sección de servicios en Higiene, Salud o especies
+    const ocultarServiciosEn = ['Higiene', 'Salud', 'Perros', 'Gatos', 'Otra Especie'];
+    if (seccionServicios) {
+        seccionServicios.style.display = ocultarServiciosEn.includes(filtros.valor) ? 'none' : 'block';
+    }
+
     let apiUrl = `${RUTA_API}productos_data.php?vista=tienda`;
     if (filtros.tipo && filtros.valor) {
         apiUrl += `&tipo=${encodeURIComponent(filtros.tipo)}&valor=${encodeURIComponent(filtros.valor)}`;
@@ -135,9 +153,18 @@ async function cargarProductos(filtros = {}) {
 // ==========================================
 async function cargarServicios(filtros = {}) {
     const grid = document.getElementById('servicesGrid');
+    const seccionServicios = grid?.closest('section');
     if (!grid) return;
 
-    // ✅ Usa la ruta dinámica RUTA_API
+    // Si estamos en categorías de solo productos, no cargamos ni mostramos servicios
+    const categoriasSoloProductos = ['Higiene', 'Salud', 'Perros', 'Gatos', 'Otra Especie'];
+    if (filtros.valor && categoriasSoloProductos.includes(filtros.valor)) {
+        if (seccionServicios) seccionServicios.style.display = 'none';
+        return;
+    }
+
+    if (seccionServicios) seccionServicios.style.display = 'block';
+
     let apiUrl = `${RUTA_API}productos_data.php?vista=servicios`;
     if (filtros.tipo === 'categoria' && filtros.valor === 'Servicios') {
         apiUrl += `&tipo=${encodeURIComponent(filtros.tipo)}&valor=${encodeURIComponent(filtros.valor)}`;

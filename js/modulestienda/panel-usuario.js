@@ -491,7 +491,7 @@ async function guardarMascota(e) {
             cargarMascotas();
             cargarDashboard();
         } else {
-            alert('❌ Error: ' + (json.error || 'Desconocido'));
+            alert('❌ Error: ' + (json.error || '⚠️ No se pudo guardar la mascota'));
         }
     } catch (err) {
         alert('❌ Error: ' + err.message);

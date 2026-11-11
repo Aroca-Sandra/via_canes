@@ -71,9 +71,17 @@ export function procesarProducto(p) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 
+    // ✅ 1. AQUÍ AGREGAMOS Y LIMPIAMOS LA DESCRIPCIÓN
+    const descripcionSegura = String(p.descripcion || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
     return {
         id: Number(p.id_producto || p.id || 0),
         nombreSeguro,
+        descripcionSegura, // ✅ 2. AQUÍ LA ENVIAMOS A LA TARJETA
         precioOriginal,
         precioFinal: Math.round(precioFinal),
         porcentajeVisual,
@@ -114,9 +122,15 @@ export function crearCard(p) {
                 <img src="${p.img}" alt="${p.nombreSeguro}" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;" onerror="this.onerror=null; this.src='${IMG_DEFAULT}';">
             </div>
             <div class="card-body d-flex flex-column p-3 text-center">
-                <h5 class="card-title fw-bold mb-2 text-dark" style="font-size: 1rem; min-height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                <h5 class="card-title fw-bold mb-1 text-dark" style="font-size: 1rem; min-height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                     ${p.nombreSeguro}
                 </h5>
+
+                <!-- ✅ 3. AQUÍ SE DIBUJA LA DESCRIPCIÓN DEBAJO DEL TÍTULO -->
+<p class="text-muted small mb-2 w-100 text-start" style="font-size: 0.82rem; line-height: 1.4;">
+    ${p.descripcionSegura}
+</p>
+
                 <div class="mt-auto pt-2">
                     <div class="d-flex justify-content-center align-items-center gap-2 mb-2 flex-wrap">
                         <span class="fw-bold fs-5 text-primary">$${p.precioFinal.toLocaleString('es-CO')}</span>
