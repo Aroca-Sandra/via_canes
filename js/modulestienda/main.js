@@ -412,19 +412,21 @@ function renderizarCarrito() {
     if (!cartItemsContainer) return;
 
     let total = 0;
-    const esPromociones = window.location.pathname.includes('promociones');
-    const prefijoRuta = esPromociones ? '../' : '';
+    
+    // ✅ DETECCIÓN CORRECTA: Si estamos en /html/ o en la raíz
+    const esHtml = window.location.pathname.includes('/html/');
+    const prefijoRuta = esHtml ? '../' : '';
 
     if (carrito.length === 0) {
         cartItemsContainer.innerHTML = `
         <div class="text-center py-4">
             <i class="fa fa-shopping-basket fa-3x text-muted mb-3"></i>
-            <p class="text-muted">Tu carrito está vacío 🐾</p>
+            <p class="text-muted">Tu carrito está vacío </p>
             <a href="${prefijoRuta}index.html" class="btn btn-sm btn-outline-primary">Ir a la tienda</a>
         </div>`;
         if (cartTotalElement) cartTotalElement.textContent = '$0';
         actualizarContadorGlobal(0);
-        configurarBotonContinuar(0, esPromociones);
+        configurarBotonContinuar(0, esHtml);
         return;
     }
 
@@ -437,12 +439,22 @@ function renderizarCarrito() {
         total += subtotal;
         const tienePromo = precioOriginal && precioOriginal > precioActual;
 
+        // ✅ CORRECCIÓN DE IMAGEN
         let imgSrc = item.imagen || '';
+        
         if (!imgSrc || imgSrc === 'null' || imgSrc === 'undefined') {
             imgSrc = 'img/default-product.png';
-        } else if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/')) {
+        } else {
+            // Limpiar cualquier '../' inicial
             imgSrc = imgSrc.replace(/^(\.\.\/)+/, '');
-            if(!imgSrc.startsWith('img/')) imgSrc = 'img/' + imgSrc;
+            
+            // Si no empieza con http o /, construir ruta correcta
+            if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/')) {
+                // No agregar 'img/' si ya lo tiene
+                if (!imgSrc.startsWith('img/')) {
+                    imgSrc = 'img/' + imgSrc;
+                }
+            }
         }
 
         const srcFinal = prefijoRuta + imgSrc;
@@ -488,7 +500,7 @@ function renderizarCarrito() {
 
     const totalCantidad = carrito.reduce((sum, item) => sum + item.cantidad, 0);
     actualizarContadorGlobal(totalCantidad);
-    configurarBotonContinuar(totalCantidad, esPromociones);
+    configurarBotonContinuar(totalCantidad, esHtml);
 }
 
 // 8. ACTUALIZAR CONTADOR GLOBAL (✨ CON ANIMACIÓN POPIN)
@@ -515,12 +527,13 @@ function actualizarContadorGlobal(cantidadForzada = null) {
     }
 }
 
-// Habilitar/Deshabilitar botón de checkout si existe
-function configurarBotonContinuar(totalItems, esPromociones) {
+// ✅ CORREGIDO: Habilitar/Deshabilitar botón de checkout
+function configurarBotonContinuar(totalItems, esHtml) {
     const btnCheckout = document.getElementById('btn-checkout');
     if (btnCheckout) {
-        const prefijoRuta = esPromociones ? '../' : '';
-        btnCheckout.setAttribute('href', `${prefijoRuta}html/carrito.html`);
+        // ✅ CORRECCIÓN: No duplicar /html/
+        const rutaDestino = esHtml ? 'carrito.html' : 'html/carrito.html';
+        btnCheckout.setAttribute('href', rutaDestino);
 
         if (totalItems > 0) {
             btnCheckout.style.pointerEvents = 'auto';
@@ -615,79 +628,91 @@ function mostrarBannerCategoria(filtros, totalProductos) {
     }
 }
 
-    async function cargarPromocionesTienda() {
-        const grid = document.getElementById('productGrid');
-        if (!grid || !document.querySelector('.banner-ofertas')) return;
+async function cargarPromocionesTienda() {
+    const grid = document.getElementById('productGrid');
+    if (!grid || !document.querySelector('.banner-ofertas')) return;
 
-        try {
-            // ✅ Usa la ruta dinámica RUTA_API
-            const response = await fetch(`${RUTA_API}promociones_data.php?accion=listar_activas`);
-            if (!response.ok) throw new Error('Error en la conexión con la API');
+    try {
+        // ✅ 1. Apunta a productos_data.php?vista=promociones donde sí viene p.descripcion
+        const response = await fetch(`${RUTA_API}productos_data.php?vista=promociones`);
+        if (!response.ok) throw new Error('Error en la conexión con la API');
 
-            const result = await response.json();
-            grid.innerHTML = '';
+        const result = await response.json();
+        grid.innerHTML = '';
 
-            if (result.ok && Array.isArray(result.data) && result.data.length > 0) {
-                result.data.forEach(p => {
-                    let precioFinal = p.precio_venta;
-                    let etiquetaDesc = '';
+        // ✅ 2. Valida tanto result.ok como result.success
+        if ((result.ok || result.success) && Array.isArray(result.data) && result.data.length > 0) {
+            result.data.forEach(p => {
+                // ✅ 3. Lee descuento_valor (nombre enviado por productos_data.php)
+                const valorDesc = Number(p.descuento_valor || p.valor_descuento || 0);
+                const precioVenta = Number(p.precio_venta || 0);
+                let precioFinal = precioVenta;
+                let etiquetaDesc = '';
 
-                    if (p.tipo_descuento === 'porcentaje') {
-                        precioFinal = p.precio_venta * (1 - (p.valor_descuento / 100));
-                        etiquetaDesc = `-${Math.round(p.valor_descuento)}%`;
-                    } else {
-                        precioFinal = p.precio_venta - p.valor_descuento;
-                        etiquetaDesc = `-$${Number(p.valor_descuento).toLocaleString('es-CO')}`;
-                    }
+                if (p.tipo_descuento === 'porcentaje') {
+                    precioFinal = precioVenta * (1 - (valorDesc / 100));
+                    etiquetaDesc = `-${Math.round(valorDesc)}%`;
+                } else {
+                    precioFinal = Math.max(0, precioVenta - valorDesc);
+                    etiquetaDesc = `-$${valorDesc.toLocaleString('es-CO')}`;
+                }
 
-                    const imgSrc = p.imagen_url ? p.imagen_url.replace('../', '') : 'img/default-product.png';
-                    const col = document.createElement('div');
-                    col.className = 'col-6 col-md-4 col-lg-3';
+                // ✅ 4. Normaliza ruta de imagen según si estamos en /html/ o en la raíz
+                const enCarpetaHtml = window.location.pathname.includes('/html/') || window.location.pathname.includes('\\html\\');
+                const imgPrefix = enCarpetaHtml ? '../' : '';
+                let imgSrc = p.imagen_url ? p.imagen_url.replace(/^(\.\.\/)+/, '') : 'img/default-product.png';
+                if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/')) {
+                    imgSrc = imgPrefix + imgSrc;
+                }
 
-                   col.innerHTML = `
-                    <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative"
-                         style="cursor: pointer;"
-                         onclick="if(!event.target.closest('button')) { const d = this.querySelector('.desc-oculta'); if(d) d.style.display = (d.style.display === 'none' ? 'block' : 'none'); }">
-                        <span class="promo-badge badge bg-danger position-absolute top-0 end-0 m-2">${etiquetaDesc} OFF</span>
-                        <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" style="height: 180px; object-fit: cover;" onerror="this.src='img/default-product.png'">
-                        <div class="card-body d-flex flex-column text-center">
-                            <h6 class="card-title fw-bold">${p.nombre}</h6>
-                            
-                            <!-- ✅ Descripción oculta por defecto y completa al hacer clic -->
-                            <p class="text-muted small my-2 w-100 text-start desc-oculta" style="display: none; font-size: 0.82rem; line-height: 1.4;">
-                                ${p.descripcion ? p.descripcion : 'Oferta especial'}
-                            </p>
+                const col = document.createElement('div');
+                col.className = 'col-6 col-md-4 col-lg-3 mb-4';
 
-                            <div class="mt-auto">
-                                <div class="mb-2">
-                                    <span class="old-price text-decoration-line-through text-muted small">$${Number(p.precio_venta).toLocaleString('es-CO')}</span>
-                                    <br>
-                                    <span class="new-price fw-bold text-danger">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
-                                </div>
-                                <button class="btn btn-add w-100 btn-agregar-carrito btn-primary"
-                                        data-id="${p.id_producto}"
-                                        data-nombre="${p.nombre}"
-                                        data-precio="${Math.round(precioFinal)}"
-                                        data-imagen="${imgSrc}"
-                                        data-stock="${p.stock}"
-                                        data-tipo="producto">
-                                    <i class="fa fa-cart-plus me-1"></i> Agregar
-                                </button>
+                col.innerHTML = `
+                <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative"
+                     style="cursor: pointer;"
+                     onclick="if(!event.target.closest('button')) { const d = this.querySelector('.desc-oculta'); if(d) d.style.display = (d.style.display === 'none' ? 'block' : 'none'); }">
+                    <span class="promo-badge badge bg-danger position-absolute top-0 end-0 m-2">${etiquetaDesc} OFF</span>
+                    <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" style="height: 180px; object-fit: contain; background-color: #f8f9fa;" onerror="this.src='${imgPrefix}img/default-product.png'">
+                    <div class="card-body d-flex flex-column text-center">
+                        <h6 class="card-title fw-bold">${p.nombre}</h6>
+                        
+                        <!-- ✅ Descripción oculta por defecto y completa al hacer clic -->
+                        <p class="text-muted small my-2 w-100 text-start desc-oculta" style="display: none; font-size: 0.82rem; line-height: 1.4;">
+                            ${p.descripcion ? p.descripcion : 'Oferta especial'}
+                        </p>
+
+                        <div class="mt-auto">
+                            <div class="mb-2">
+                                <span class="old-price text-decoration-line-through text-muted small">$${precioVenta.toLocaleString('es-CO')}</span>
+                                <br>
+                                <span class="new-price fw-bold text-danger">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
                             </div>
+                            <button class="btn btn-add w-100 btn-agregar-carrito btn-primary"
+                                    data-id="${p.id_producto}"
+                                    data-nombre="${p.nombre}"
+                                    data-precio="${Math.round(precioFinal)}"
+                                    data-imagen="${imgSrc}"
+                                    data-stock="${p.stock}"
+                                    data-tipo="producto">
+                                <i class="fa fa-cart-plus me-1"></i> Agregar
+                            </button>
                         </div>
-                    </div>`;
-                    grid.appendChild(col);
-                });
-            } else {
-                grid.innerHTML = `<div class="col-12 text-center py-5">
-                    <p class="text-muted">No hay promociones activas en este momento 🐾</p>
+                    </div>
                 </div>`;
-            }
-        } catch (error) {
-            console.error('Error cargando promos:', error);
-            grid.innerHTML = `<div class="col-12 text-center text-danger">Error al cargar ofertas.</div>`;
+                grid.appendChild(col);
+            });
+        } else {
+            grid.innerHTML = `<div class="col-12 text-center py-5">
+                <p class="text-muted">No hay promociones activas en este momento 🐾</p>
+            </div>`;
         }
+    } catch (error) {
+        console.error('Error cargando promos:', error);
+        grid.innerHTML = `<div class="col-12 text-center text-danger">Error al cargar ofertas.</div>`;
     }
+}
+
 
 // ==========================================
 // 6. EVENTOS AUXILIARES
