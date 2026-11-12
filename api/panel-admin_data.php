@@ -724,57 +724,178 @@ case 'eliminar_cita_admin':
             }
             break;
 
-        // ============================================================
-        // SERVICIOS
-        // ============================================================
-        case 'listar_servicios':
-            $stmt = $pdo->query("SELECT s.*, cs.nombre as categoria, es.nombre as estado FROM servicios s LEFT JOIN categoria_servicio cs ON s.id_categoria_servicio = cs.id_categoria_servicio LEFT JOIN estado_servicio es ON s.id_estado_servicio = es.id_estado_servicio ORDER BY s.id_servicio DESC");
-            responder(['success' => true, 'data' => $stmt->fetchAll()]);
-            break;
+// ============================================================
+// SERVICIOS
+// ============================================================
+// ============================================================
+// SERVICIOS
+// ============================================================
+case 'listar_servicios':
+    $stmt = $pdo->query("
+        SELECT 
+            s.*, 
+            cs.nombre AS categoria, 
+            es.nombre AS estado 
+        FROM servicios s 
+        LEFT JOIN categoria_servicio cs ON s.id_categoria_servicio = cs.id_categoria_servicio 
+        LEFT JOIN estado_servicio es ON s.id_estado_servicio = es.id_estado_servicio 
+        ORDER BY s.id_servicio DESC
+    ");
+    responder(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+    break;
 
-        case 'guardar_servicio':
-            $requeridos = ['nombre', 'precio'];
-            foreach ($requeridos as $campo) {
-                if (empty($_POST[$campo])) responderError("El campo '$campo' es obligatorio");
+case 'guardar_servicio':
+    $requeridos = ['nombre', 'precio'];
+    foreach ($requeridos as $campo) {
+        if (empty($_POST[$campo])) responderError("El campo '$campo' es obligatorio");
+    }
+
+    $id_servicio = !empty($_POST['id_servicio']) ? (int)$_POST['id_servicio'] : null;
+    $esEdicion = !empty($id_servicio);
+    $rutaImagen = null;
+
+    if (isset($_FILES['imagen_servicio']) && $_FILES['imagen_servicio']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../img/servicios/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+        $ext = strtolower(pathinfo($_FILES['imagen_servicio']['name'], PATHINFO_EXTENSION));
+        $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        if (!in_array($ext, $permitidos)) responderError('Formato de imagen no permitido');
+
+        $nombreImg = 'serv_' . uniqid() . '_' . rand(1000, 9999) . '.' . $ext;
+        $rutaFinal = $uploadDir . $nombreImg;
+
+        if (!move_uploaded_file($_FILES['imagen_servicio']['tmp_name'], $rutaFinal)) {
+            responderError('No se pudo guardar la imagen');
+        }
+        $rutaImagen = '../img/servicios/' . $nombreImg;
+    }
+
+    $duracion = !empty($_POST['duracion']) ? $_POST['duracion'] : null;
+    $id_categoria_servicio = !empty($_POST['id_categoria_servicio']) ? intval($_POST['id_categoria_servicio']) : null;
+    $id_estado_servicio = !empty($_POST['id_estado_servicio']) ? intval($_POST['id_estado_servicio']) : 1;
+    $eliminarFoto = !empty($_POST['eliminar_foto']) && $_POST['eliminar_foto'] == '1';
+
+    try {
+        $pdo->beginTransaction();
+
+        if ($esEdicion) {
+            $stmtOld = $pdo->prepare("SELECT imagen_url FROM servicios WHERE id_servicio = ?");
+            $stmtOld->execute([$id_servicio]);
+            $oldFoto = $stmtOld->fetchColumn();
+
+            $sql = "UPDATE servicios SET 
+                        nombre = ?, 
+                        descripcion = ?, 
+                        precio = ?, 
+                        duracion = ?, 
+                        id_estado_servicio = ?, 
+                        id_categoria_servicio = ?";
+
+            $params = [
+                trim($_POST['nombre']), 
+                trim($_POST['descripcion'] ?? ''), 
+                (float)$_POST['precio'], 
+                $duracion,                      
+                $id_estado_servicio,            
+                $id_categoria_servicio         
+            ];
+
+            $fotoParaBorrar = null;
+            if ($rutaImagen) {
+                $sql .= ", imagen_url = ?";
+                $params[] = $rutaImagen;
+                $fotoParaBorrar = $oldFoto;
+            } elseif ($eliminarFoto) {
+                $sql .= ", imagen_url = NULL";
+                $fotoParaBorrar = $oldFoto;
             }
 
-            $id_servicio = !empty($_POST['id_servicio']) ? $_POST['id_servicio'] : null;
-            $esEdicion = !empty($id_servicio);
+            $sql .= " WHERE id_servicio = ?";
+            $params[] = $id_servicio;
             
-            $duracion = !empty($_POST['duracion']) ? $_POST['duracion'] : null;
-            $id_categoria_servicio = !empty($_POST['id_categoria_servicio']) ? intval($_POST['id_categoria_servicio']) : null;
-            $id_estado_servicio = !empty($_POST['id_estado_servicio']) ? intval($_POST['id_estado_servicio']) : 1;
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $pdo->commit();
 
-            if ($esEdicion) {
-                $sql = "UPDATE servicios SET nombre = ?, descripcion = ?, precio = ?, duracion = ?, id_estado_servicio = ?, id_categoria_servicio = ?";
-                $params = [
-                    trim($_POST['nombre']), 
-                    trim($_POST['descripcion'] ?? ''), 
-                    $_POST['precio'], 
-                    $duracion,                      
-                    $id_estado_servicio,            
-                    $id_categoria_servicio         
-                ];
-                $sql .= " WHERE id_servicio = ?";
-                $params[] = $id_servicio;
-                
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($params);
-                responder(['success' => true, 'message' => 'Servicio actualizado']);
-            } else {
-                $sql = "INSERT INTO servicios (nombre, descripcion, precio, duracion, id_estado_servicio, id_categoria_servicio) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    trim($_POST['nombre']), 
-                    trim($_POST['descripcion'] ?? ''), 
-                    $_POST['precio'], 
-                    $duracion,                      
-                    $id_estado_servicio,            
-                    $id_categoria_servicio         
-                ]);
-                responder(['success' => true, 'message' => 'Servicio creado', 'id' => $pdo->lastInsertId()]);
+            if ($fotoParaBorrar) {
+                $rutaFisica = realpath(__DIR__ . '/' . $fotoParaBorrar);
+                if ($rutaFisica && file_exists($rutaFisica) && strpos($rutaFisica, 'servicio-default') === false) {
+                    unlink($rutaFisica);
+                }
             }
-            break;
+
+            responder(['success' => true, 'message' => 'Servicio actualizado']);
+
+        } else {
+            $sql = "INSERT INTO servicios (
+                        nombre, 
+                        descripcion, 
+                        precio, 
+                        duracion, 
+                        imagen_url,
+                        id_estado_servicio, 
+                        id_categoria_servicio
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                trim($_POST['nombre']), 
+                trim($_POST['descripcion'] ?? ''), 
+                (float)$_POST['precio'], 
+                $duracion,
+                $rutaImagen,                      
+                $id_estado_servicio,            
+                $id_categoria_servicio         
+            ]);
+
+            $nuevo_id = (int)$pdo->lastInsertId();
+            $pdo->commit();
+
+            responder(['success' => true, 'message' => 'Servicio creado', 'id' => $nuevo_id]);
+        }
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        error_log("Error detallado al guardar servicio: " . $e->getMessage());
+        responderError("Error de base de datos: " . $e->getMessage());
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        responderError($e->getMessage());
+    }
+    break;
+
+case 'eliminar_servicio':
+    if (empty($_POST['id_servicio'])) responderError('ID de servicio requerido');
+    $id_servicio = (int)$_POST['id_servicio'];
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmtFoto = $pdo->prepare("SELECT imagen_url FROM servicios WHERE id_servicio = ?");
+        $stmtFoto->execute([$id_servicio]);
+        $fotoBorrar = $stmtFoto->fetchColumn();
+
+        $stmt = $pdo->prepare("DELETE FROM servicios WHERE id_servicio = ?");
+        $stmt->execute([$id_servicio]);
+
+        $pdo->commit();
+
+        if ($fotoBorrar) {
+            $rutaFisica = realpath(__DIR__ . '/' . $fotoBorrar);
+            if ($rutaFisica && file_exists($rutaFisica) && strpos($rutaFisica, 'servicio-default') === false) {
+                unlink($rutaFisica);
+            }
+        }
+
+        responder(['success' => true, 'message' => 'Servicio eliminado correctamente']);
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        error_log("Error al eliminar servicio: " . $e->getMessage());
+        responderError("No se pudo eliminar el servicio. Es posible que esté asociado a citas o ventas.");
+    }
+    break;
+
 
         // ============================================================
         // PROVEEDORES

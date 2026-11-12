@@ -348,7 +348,7 @@
 
 .img-wrapper {
     width: 100%;
-    height: 220px;
+    height: 260px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -459,9 +459,11 @@
     box-shadow: var(--shadow-lg);
 }
 
+/* ✅ Imagen más grande (de 260px a 350px) */
 .service-card img {
     width: 100%;
-    height: 260px;
+    height: 350px;
+    object-position: center top;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
@@ -481,9 +483,10 @@
     color: var(--primary);
     margin-bottom: 10px;
 }
-
-.service-info p {
-    color: var(--text-light);
+/* ✅ Ocultar la descripción dentro de la tarjeta */
+.service-info p,
+.service-card .card-text {
+    display: none;
 }
 
 /* ==========================================================================

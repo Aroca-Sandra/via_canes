@@ -195,14 +195,16 @@ function obtenerVistaTienda(PDO $pdo, string $tipo, string $valor, int $limite, 
 // ==========================================
 function obtenerServiciosTienda(PDO $pdo): void {
     try {
+        // ✅ CORRECCIÓN: Se agregó 's.imagen_url' a la selección de columnas
         $stmt = $pdo->query("
-            SELECT s.id_servicio, s.nombre, s.descripcion, s.precio, s.duracion,
+            SELECT s.id_servicio, s.nombre, s.descripcion, s.precio, s.duracion, s.imagen_url,
                    cs.nombre AS categoria
             FROM servicios s
             LEFT JOIN categoria_servicio cs ON s.id_categoria_servicio = cs.id_categoria_servicio
             WHERE s.id_estado_servicio = 1
             ORDER BY s.nombre ASC
         ");
+        
         enviarRespuestaExito([
             'paginacion' => null,
             'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)

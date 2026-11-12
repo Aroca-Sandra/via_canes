@@ -148,8 +148,12 @@ async function cargarProductos(filtros = {}) {
     }
 }
 
+
 // ==========================================
-// 2. CARGA DE SERVICIOS
+// 2. CARGA DE SERVICIOS (RUTAS BLINDADAS)
+// ==========================================
+// ==========================================
+// 2. CARGA DE SERVICIOS (RUTAS BLINDADAS)
 // ==========================================
 async function cargarServicios(filtros = {}) {
     const grid = document.getElementById('servicesGrid');
@@ -165,6 +169,11 @@ async function cargarServicios(filtros = {}) {
 
     if (seccionServicios) seccionServicios.style.display = 'block';
 
+    // ✅ Detectar ruta correcta para imágenes según si estamos en /html/ o en la raíz
+    const enCarpetaHtml = window.location.pathname.includes('/html/') || window.location.pathname.includes('\\html\\');
+    const imgPrefix = enCarpetaHtml ? '../img/' : 'img/';
+    const imgDefault = imgPrefix + 'default-product.png';
+
     let apiUrl = `${RUTA_API}productos_data.php?vista=servicios`;
     if (filtros.tipo === 'categoria' && filtros.valor === 'Servicios') {
         apiUrl += `&tipo=${encodeURIComponent(filtros.tipo)}&valor=${encodeURIComponent(filtros.valor)}`;
@@ -175,32 +184,62 @@ async function cargarServicios(filtros = {}) {
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
         const result = await response.json();
+        
+        // 🔍 LOG DE DIAGNÓSTICO: Para ver qué devuelve exactamente el servidor
+        console.log("🔍 Datos crudos de servicios:", result.data);
 
         if ((result.ok || result.success) && Array.isArray(result.data) && result.data.length > 0) {
-            grid.innerHTML = result.data.map(s => `
+            grid.innerHTML = result.data.map(s => {
+                
+                // ✅ NORMALIZACIÓN DE RUTA INFALIBLE (Idéntica a tienda-mostrar.js)
+                let src = String(s.imagen_url || '').trim();
+                if (src) {
+                    // 1. Quitamos CUALQUIER '../' inicial que haya guardado el PHP
+                    src = src.replace(/^(\.\.\/)+/, '');
+                    
+                    // 2. Construimos la ruta correcta según la ubicación actual
+                    if (!src.startsWith('http') && !src.startsWith('/')) {
+                        // Si empieza con 'img/', lo quitamos para que imgPrefix lo maneje limpio
+                        if (src.startsWith('img/')) {
+                            src = src.substring(4);
+                        }
+                        src = imgPrefix + src;
+                    }
+                } else {
+                    src = imgDefault;
+                }
+
+                console.log(`🖼️ Servicio: ${s.nombre} | URL Final:`, src);
+
+                const imagenHtml = `
+                    <div class="mb-3" style="height: 180px; overflow: hidden; border-radius: 12px; background: #f8f9fa;">
+                        <img src="${src}" alt="${s.nombre}" 
+                             style="width: 100%; height: 100%; object-fit: cover;" 
+                             onerror="console.error('❌ Error cargando imagen:', this.src); this.src='${imgDefault}'">
+                    </div>
+                `;
+
+                return `
                 <div class="col-6 col-md-4 col-lg-3">
-                    <div class="card h-100 shadow-sm border-0 service-card">
-                        <div class="card-body d-flex flex-column text-center">
-                            <div class="mb-3 text-primary">
-                                <i class="fa fa-paw fa-3x"></i>
-                            </div>
-                            <h6 class="card-title fw-bold">${s.nombre}</h6>
-                            <p class="card-text text-muted small flex-grow-1">
-                                ${s.descripcion ? s.descripcion.substring(0, 80) + '...' : 'Servicio profesional'}
+                    <div class="card h-100 shadow-sm border-0 service-card overflow-hidden">
+                        ${imagenHtml}
+                        <div class="card-body d-flex flex-column text-center p-3">
+                            <h6 class="card-title fw-bold mb-2">${s.nombre}</h6>
+                            <p class="card-text text-muted small flex-grow-1 mb-3" style="font-size: 0.8rem; line-height: 1.4;">
+                                ${s.descripcion ? s.descripcion.substring(0, 90) + (s.descripcion.length > 90 ? '...' : '') : 'Servicio profesional especializado'}
                             </p>
                             <div class="mt-auto">
-                                <button class="btn-agendar-servicio w-100 btn btn-success btn-sm"
+                                <button class="btn-agendar-servicio w-100 btn btn-success btn-sm py-2"
                                     data-id="${s.id_servicio}"
                                     data-nombre="${s.nombre}"
-                                    style="background-color: #25D366; border: none; color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                                    <i class="fa-brands fa-whatsapp me-2" style="font-size: 1.1rem;"></i>
-                                    Agenda tu cita
+                                    style="background-color: #25D366; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                                    <i class="fa-brands fa-whatsapp me-2"></i>Agenda tu cita
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         } else {
             grid.innerHTML = `<div class="col-12 text-center py-5">
                 <p class="text-muted"><i class="fa fa-calendar-times fa-2x mb-2"></i><br>No hay servicios disponibles.</p>
@@ -214,7 +253,6 @@ async function cargarServicios(filtros = {}) {
         </div>`;
     }
 }
-
 // ================================================================
 // LÓGICA DEL CARRITO - MAIN.JS
 // ================================================================
@@ -577,74 +615,79 @@ function mostrarBannerCategoria(filtros, totalProductos) {
     }
 }
 
-async function cargarPromocionesTienda() {
-    const grid = document.getElementById('productGrid');
-    if (!grid || !document.querySelector('.banner-ofertas')) return;
+    async function cargarPromocionesTienda() {
+        const grid = document.getElementById('productGrid');
+        if (!grid || !document.querySelector('.banner-ofertas')) return;
 
-    try {
-        // ✅ Usa la ruta dinámica RUTA_API
-        const response = await fetch(`${RUTA_API}promociones_data.php?accion=listar_activas`);
-        if (!response.ok) throw new Error('Error en la conexión con la API');
+        try {
+            // ✅ Usa la ruta dinámica RUTA_API
+            const response = await fetch(`${RUTA_API}promociones_data.php?accion=listar_activas`);
+            if (!response.ok) throw new Error('Error en la conexión con la API');
 
-        const result = await response.json();
-        grid.innerHTML = '';
+            const result = await response.json();
+            grid.innerHTML = '';
 
-        if (result.ok && Array.isArray(result.data) && result.data.length > 0) {
-            result.data.forEach(p => {
-                let precioFinal = p.precio_venta;
-                let etiquetaDesc = '';
+            if (result.ok && Array.isArray(result.data) && result.data.length > 0) {
+                result.data.forEach(p => {
+                    let precioFinal = p.precio_venta;
+                    let etiquetaDesc = '';
 
-                if (p.tipo_descuento === 'porcentaje') {
-                    precioFinal = p.precio_venta * (1 - (p.valor_descuento / 100));
-                    etiquetaDesc = `-${Math.round(p.valor_descuento)}%`;
-                } else {
-                    precioFinal = p.precio_venta - p.valor_descuento;
-                    etiquetaDesc = `-$${Number(p.valor_descuento).toLocaleString('es-CO')}`;
-                }
+                    if (p.tipo_descuento === 'porcentaje') {
+                        precioFinal = p.precio_venta * (1 - (p.valor_descuento / 100));
+                        etiquetaDesc = `-${Math.round(p.valor_descuento)}%`;
+                    } else {
+                        precioFinal = p.precio_venta - p.valor_descuento;
+                        etiquetaDesc = `-$${Number(p.valor_descuento).toLocaleString('es-CO')}`;
+                    }
 
-                const imgSrc = p.imagen_url ? p.imagen_url.replace('../', '') : 'img/default-product.png';
-                const col = document.createElement('div');
-                col.className = 'col-6 col-md-4 col-lg-3';
+                    const imgSrc = p.imagen_url ? p.imagen_url.replace('../', '') : 'img/default-product.png';
+                    const col = document.createElement('div');
+                    col.className = 'col-6 col-md-4 col-lg-3';
 
-                col.innerHTML = `
-                <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative">
-                    <span class="promo-badge badge bg-danger position-absolute top-0 end-0 m-2">${etiquetaDesc} OFF</span>
-                    <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" style="height: 180px; object-fit: cover;" onerror="this.src='img/default-product.png'">
-                    <div class="card-body d-flex flex-column text-center">
-                        <h6 class="card-title fw-bold">${p.nombre}</h6>
-                        <p class="card-text text-muted small flex-grow-1 my-2">
-                            ${p.descripcion ? p.descripcion.substring(0, 60) + '...' : 'Oferta especial'}
-                        </p>
-                        <div class="mt-auto">
-                            <div class="mb-2">
-                                <span class="old-price text-decoration-line-through text-muted small">$${Number(p.precio_venta).toLocaleString('es-CO')}</span>
-                                <br>
-                                <span class="new-price fw-bold text-danger">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
+                   col.innerHTML = `
+                    <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative"
+                         style="cursor: pointer;"
+                         onclick="if(!event.target.closest('button')) { const d = this.querySelector('.desc-oculta'); if(d) d.style.display = (d.style.display === 'none' ? 'block' : 'none'); }">
+                        <span class="promo-badge badge bg-danger position-absolute top-0 end-0 m-2">${etiquetaDesc} OFF</span>
+                        <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" style="height: 180px; object-fit: cover;" onerror="this.src='img/default-product.png'">
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title fw-bold">${p.nombre}</h6>
+                            
+                            <!-- ✅ Descripción oculta por defecto y completa al hacer clic -->
+                            <p class="text-muted small my-2 w-100 text-start desc-oculta" style="display: none; font-size: 0.82rem; line-height: 1.4;">
+                                ${p.descripcion ? p.descripcion : 'Oferta especial'}
+                            </p>
+
+                            <div class="mt-auto">
+                                <div class="mb-2">
+                                    <span class="old-price text-decoration-line-through text-muted small">$${Number(p.precio_venta).toLocaleString('es-CO')}</span>
+                                    <br>
+                                    <span class="new-price fw-bold text-danger">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
+                                </div>
+                                <button class="btn btn-add w-100 btn-agregar-carrito btn-primary"
+                                        data-id="${p.id_producto}"
+                                        data-nombre="${p.nombre}"
+                                        data-precio="${Math.round(precioFinal)}"
+                                        data-imagen="${imgSrc}"
+                                        data-stock="${p.stock}"
+                                        data-tipo="producto">
+                                    <i class="fa fa-cart-plus me-1"></i> Agregar
+                                </button>
                             </div>
-                            <button class="btn btn-add w-100 btn-agregar-carrito btn-primary"
-                                    data-id="${p.id_producto}"
-                                    data-nombre="${p.nombre}"
-                                    data-precio="${Math.round(precioFinal)}"
-                                    data-imagen="${imgSrc}"
-                                    data-stock="${p.stock}"
-                                    data-tipo="producto">
-                                <i class="fa fa-cart-plus me-1"></i> Agregar
-                            </button>
                         </div>
-                    </div>
+                    </div>`;
+                    grid.appendChild(col);
+                });
+            } else {
+                grid.innerHTML = `<div class="col-12 text-center py-5">
+                    <p class="text-muted">No hay promociones activas en este momento 🐾</p>
                 </div>`;
-                grid.appendChild(col);
-            });
-        } else {
-            grid.innerHTML = `<div class="col-12 text-center py-5">
-                <p class="text-muted">No hay promociones activas en este momento 🐾</p>
-            </div>`;
+            }
+        } catch (error) {
+            console.error('Error cargando promos:', error);
+            grid.innerHTML = `<div class="col-12 text-center text-danger">Error al cargar ofertas.</div>`;
         }
-    } catch (error) {
-        console.error('Error cargando promos:', error);
-        grid.innerHTML = `<div class="col-12 text-center text-danger">Error al cargar ofertas.</div>`;
     }
-}
 
 // ==========================================
 // 6. EVENTOS AUXILIARES
