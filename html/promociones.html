@@ -97,10 +97,10 @@
 <div class="img-circle"><img src="../img/servicios-p.png" alt="Servicios" class="cat-img"></div>
 <span>Servicios</span>
 </a>
-<a href="../index.html?tipo=categoria&valor=Citas" class="cat-item">
+<!-- <a href="../index.html?tipo=categoria&valor=Citas" class="cat-item">
 <div class="img-circle"><img src="../img/calendario.png" alt="Citas" class="cat-img"></div>
 <span>Citas</span>
-</a>
+</a> -->
 <a href="promociones.html" class="cat-item">
 <div class="img-circle"><img src="../img/ofertas.png" alt="Promociones" class="cat-img"></div>
 <span>Promociones</span>
@@ -111,28 +111,45 @@
 <!-- ============================================= -->
 <!-- BANNER DE PROMOCIONES                          -->
 <!-- ============================================= -->
+<!-- ============================================= -->
+<!-- BANNER DE PROMOCIONES                          -->
+<!-- ============================================= -->
 <section class="hero banner-ofertas">
-<div class="banner-overlay"></div>
-<div class="hero-content">
-<div class="hero-text">
-<h1>🔥 Promociones & Ofertas Especiales</h1>
-<p>Aprovecha los mejores descuentos en productos y servicios para el cuidado de tu mascota.</p>
-<div class="banner-stats">
-<div class="stat-item">
-<i class="fa fa-percent"></i>
-<span>Hasta -20% OFF</span>
-</div>
-<div class="stat-item">
-<i class="fa fa-tag"></i>
-<span>Precios Exclusivos</span>
-</div>
-<div class="stat-item">
-<i class="fa fa-truck"></i>
-<span>Envío rápido</span>
-</div>
-</div>
-</div>
-</div>
+  <div class="banner-overlay"></div>
+
+  <!-- ✅ Botón blanco en la esquina superior derecha (igual que en Mundo Canino) -->
+  <a href="../index.html" class="btn-volver-top text-decoration-none">
+    <i class="fa fa-store"></i>
+    <span>Volver a la Tienda</span>
+  </a>
+
+  <!-- ✅ Botón amarillo centrado en la parte inferior -->
+  <a href="#productGrid" class="btn-main btn-ofertas-bottom text-decoration-none">
+    <i class="fa fa-percent"></i>
+    <span>Ofertas del Mes</span>
+  </a>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>🔥 Promociones & Ofertas Especiales</h1>
+      <p>Aprovecha los mejores descuentos en productos y servicios para el cuidado de tu mascota.</p>
+      
+      <div class="banner-stats">
+        <div class="stat-item">
+          <i class="fa fa-percent"></i>
+          <span>Hasta -20% OFF</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa fa-tag"></i>
+          <span>Precios Exclusivos</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa fa-truck"></i>
+          <span>Envío rápido</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================= -->
@@ -140,18 +157,11 @@
 <!-- ============================================= -->
 <main class="container mt-5 mb-5">
 
-<!-- Botón volver -->
-<div class="mb-4">
-<a href="../index.html" class="btn btn-outline-secondary rounded-pill fw-bold px-4">
-<i class="fa fa-arrow-left me-2"></i> Volver a la Tienda
-</a>
-</div>
-
 <!-- SECCIÓN DE PRODUCTOS EN DESCUENTO (DINÁMICA) -->
 <section class="mb-5">
 <div class="d-flex justify-content-between align-items-center mb-4">
 <h3 class="fw-bold m-0">🏷️ Promociones Destacadas</h3>
-<span class="badge bg-danger rounded-pill px-3 py-2">Tiempo Limitado</span>
+<span class="badge bg-danger rounded-pill px-3 py-2 fw-bold shadow-sm">-${p.porcentajeVisual}% OFF</span>
 </div>
 
 <!-- Contenedor dinámico de cards de producto -->
@@ -306,7 +316,8 @@ style="color: var(--accent); text-decoration: none;">Ver en el mapa</a>
 <script src="../js/modulestienda/main.js" defer type="module"></script>
 <script src="../js/modulestienda/tienda-productos.js" defer></script>
 <script src="../js/modulestienda/carrito.js" defer type="module"></script>
-<script src="../js/modulestienda/tienda-promociones.js" type="module"></script>
+
+<!-- <script src="../js/modulestienda/tienda-promociones.js" type="module"></script>// -->
 </body>
 </html>
 

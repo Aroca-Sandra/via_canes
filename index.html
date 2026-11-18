@@ -102,63 +102,79 @@
 
 <!-- SECCIÓN HERO - Banner promocional principal -->
 <section class="hero">
-<div class="banner-overlay"></div>
+  <div class="banner-overlay"></div>
 
-<!-- Botón posicionado arriba a la derecha -->
-<a href="html/promociones.html" class="btn-main text-decoration-none">
-<i class="fa fa-percent"></i> Ofertas del Mes
-</a>
+  <!-- Botón promocional centrado arriba -->
+  <a href="html/promociones.html" class="btn-main text-decoration-none">
+    <i class="fa fa-percent"></i>
+    <span>Ofertas del Mes</span>
+  </a>
 
-<div class="hero-content">
-<!-- Bloque de textos (Izquierda) -->
-<div class="hero-text">
-<h1>Lo mejor para tu mejor amigo</h1>
-<p>Productos premium y servicios especializados para mascotas.</p>
+  <div class="hero-content container">
+    <!-- Bloque de textos (Izquierda) -->
+    <div class="hero-text">
+      <h1>Lo mejor para tu mejor amigo</h1>
+      <p>Productos premium y servicios especializados para mascotas.</p>
 
-<!-- Estadísticas / Iconos en fila inferior -->
-<div class="banner-stats">
-<div class="stat-item">
-<i class="fa fa-box"></i>
-<span id="bannerProductCountHero">0 productos</span>
-</div>
-<div class="stat-item">
-<i class="fa fa-tag"></i>
-<span>Mejores precios</span>
-</div>
-<div class="stat-item">
-<i class="fa fa-truck"></i>
-<span>Envío rápido</span>
-</div>
-</div>
-</div>
-</div>
+      <!-- Estadísticas / Iconos en fila inferior -->
+      <div class="banner-stats">
+        <div class="stat-item">
+          <i class="fa fa-box"></i>
+          <span id="bannerProductCountHero">0 productos</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa fa-tag"></i>
+          <span>Mejores precios</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa fa-truck"></i>
+          <span>Envío rápido</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- BANNER DINÁMICO - Oculto por defecto (Se activa mediante JS) -->
+<!-- BANNER DINÁMICO - Oculto por defecto (Se activa mediante JS al elegir categoría) -->
 <section class="category-banner" id="categoryBanner" style="display: none;">
-<div class="banner-overlay"></div>
-<div class="banner-content container">
-<div class="banner-text">
-<span class="banner-badge" id="bannerBadge">Categoría</span>
-<h2 class="banner-title" id="bannerTitle">Título de categoría</h2>
-<p class="banner-description" id="bannerDescription">Descripción de la categoría</p>
-<div class="banner-stats">
-<div class="stat-item">
-<i class="fa fa-box"></i>
-<span id="bannerProductCount">0 productos</span>
-</div>
-<div class="stat-item">
-<i class="fa fa-tag"></i>
-<span>Mejores precios</span>
-</div>
-<div class="stat-item">
-<i class="fa fa-truck"></i>
-<span>Envío rápido</span>
-</div>
-</div>
-</div>
-</div>
+  <div class="banner-overlay"></div>
+
+  <!-- Botón 1: Ofertas del Mes (Centrado arriba) -->
+  <a href="html/promociones.html" class="btn-main btn-banner-center text-decoration-none">
+    <i class="fa fa-percent"></i>
+    <span>Ofertas del Mes</span>
+  </a>
+
+  <!-- Botón 2: Volver a la Tienda (Arriba a la derecha) -->
+  <a href="index.html" class="btn-main btn-banner-right text-decoration-none">
+    <i class="fa fa-store"></i>
+    <span>Volver a la Tienda</span>
+  </a>
+
+  <div class="banner-content container">
+    <div class="banner-text">
+      <span class="banner-badge" id="bannerBadge">Categoría</span>
+      <h2 class="banner-title" id="bannerTitle">Título de categoría</h2>
+      <p class="banner-description" id="bannerDescription">Descripción de la categoría</p>
+
+      <div class="banner-stats">
+        <div class="stat-item">
+          <i class="fa fa-box"></i>
+          <span id="bannerProductCount">0 productos</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa fa-tag"></i>
+          <span>Mejores precios</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa fa-truck"></i>
+          <span>Envío rápido</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
 
 <!-- CONTENIDO PRINCIPAL (MAIN) - Grid de Productos y Servicios -->
 <main class="container mt-4" id="storeSection">

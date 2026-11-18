@@ -4,37 +4,46 @@ import { procesarYRenderizar } from './tienda-mostrar.js';
 // MAIN.JS - LÓGICA PRINCIPAL DEL PANEL DE LA TIENDA (VÍA CANES)
 // ================================================================
 
-// ✅ MEJORA CRUCIAL: Detección dinámica de ruta para evitar errores 404 en subcarpetas
 const path = window.location.pathname;
 const enCarpetaHtml = path.includes('/html/') || path.includes('\\html\\');
 const RUTA_API = enCarpetaHtml ? '../api/' : 'api/';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. LEER FILTROS DE LA URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const filtros = {
-        tipo: urlParams.get('tipo'),
-        valor: urlParams.get('valor')
-    };
+    // ✅ 1. DETECCIÓN INMEDIATA DE LA PÁGINA
+    const currentPath = window.location.pathname;
+    const esPaginaPromociones = currentPath.includes('promociones.html');
 
-    // 2. INICIALIZAR CARGAS
-    cargarProductos(filtros);
-
-    // Solo cargar servicios si no hay filtro de especie
-    if (filtros.tipo !== 'especie') {
-        cargarServicios(filtros);
+    if (esPaginaPromociones) {
+        console.log('🚀 Modo Promociones activado');
+        // Detener cualquier otra carga
+        if (typeof cargarPromocionesTienda === 'function') {
+            cargarPromocionesTienda();
+        }
+        // Ocultar forzadamente otras secciones por seguridad
+        const seccionProductos = document.querySelector('.productos');
+        if (seccionProductos) seccionProductos.style.display = 'none';
+        const seccionServicios = document.getElementById('servicesGrid')?.closest('section');
+        if (seccionServicios) seccionServicios.style.display = 'none';
     } else {
-        const servicesParent = document.getElementById('servicesGrid')?.parentElement;
-        if (servicesParent) servicesParent.style.display = 'none';
+        // ✅ 2. Lógica normal para index.html y otras vistas
+        const urlParams = new URLSearchParams(window.location.search);
+        const filtros = { tipo: urlParams.get('tipo'), valor: urlParams.get('valor') };
+        
+        cargarProductos(filtros);
+        if (filtros.tipo !== 'especie' && filtros.tipo !== 'categoria') {
+            cargarServicios(filtros);
+        } else {
+            const servicesParent = document.getElementById('servicesGrid')?.parentElement;
+            if (servicesParent) servicesParent.style.display = 'none';
+        }
     }
 
+    // 3. CARGAS GLOBALES (Siempre se ejecutan)
     renderizarCarrito();
     verificarSesionAdmin();
-    cargarPromocionesTienda();
 
-    // 3. DELEGACIÓN ÚNICA DE EVENTOS (CLICK)
+    // 4. DELEGACIÓN DE EVENTOS (Click en botones)
     document.addEventListener('click', (e) => {
-        // Agregar al carrito
         if (e.target.closest('.btn-agregar-carrito')) {
             e.preventDefault();
             const btn = e.target.closest('.btn-agregar-carrito');
@@ -42,7 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: parseInt(btn.dataset.id),
                 nombre: btn.dataset.nombre,
                 precio: parseFloat(btn.dataset.precio),
-                precioOriginal: parseFloat(btn.dataset.precioOriginal) || null,
+                // ✅ Esto asegura que el precio original viaje al carrito
+                precioOriginal: parseFloat(btn.dataset.precioOriginal) || parseFloat(btn.dataset.precio) || null,
                 imagen: btn.dataset.imagen,
                 tipo: btn.dataset.tipo || 'producto',
                 stock: parseInt(btn.dataset.stock) || 999
@@ -55,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Agendar por WhatsApp
         if (e.target.closest('.btn-agendar-servicio')) {
             e.preventDefault();
             const btn = e.target.closest('.btn-agendar-servicio');
@@ -69,14 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 800);
         }
 
-        // Eliminar del carrito
         if (e.target.closest('.btn-eliminar-carrito')) {
             e.preventDefault();
             const btn = e.target.closest('.btn-eliminar-carrito');
             window.eliminarDelCarrito(parseInt(btn.dataset.id), btn.dataset.tipo);
         }
 
-        // Modificar cantidad (+ / -)
         if (e.target.closest('.btn-cantidad')) {
             e.preventDefault();
             const btn = e.target.closest('.btn-cantidad');
@@ -99,18 +106,15 @@ async function cargarProductos(filtros = {}) {
 
     if (!grid) return;
 
-    // 1. Si el usuario entró a "Servicios", ocultamos productos y mostramos servicios
     if (filtros.valor === 'Servicios') {
         if (seccionProductos) seccionProductos.style.display = 'none';
         if (seccionServicios) seccionServicios.style.display = 'block';
         mostrarBannerCategoria(filtros, 0);
-        return; // Detenemos la carga de productos
+        return;
     }
 
-    // 2. Para cualquier otra categoría (Perros, Gatos, Otra Especie, Higiene, Salud)
     if (seccionProductos) seccionProductos.style.display = 'block';
 
-    // Ocultamos la sección de servicios en Higiene, Salud o especies
     const ocultarServiciosEn = ['Higiene', 'Salud', 'Perros', 'Gatos', 'Otra Especie'];
     if (seccionServicios) {
         seccionServicios.style.display = ocultarServiciosEn.includes(filtros.valor) ? 'none' : 'block';
@@ -148,19 +152,14 @@ async function cargarProductos(filtros = {}) {
     }
 }
 
-
 // ==========================================
-// 2. CARGA DE SERVICIOS (RUTAS BLINDADAS)
-// ==========================================
-// ==========================================
-// 2. CARGA DE SERVICIOS (RUTAS BLINDADAS)
+// 2. CARGA DE SERVICIOS
 // ==========================================
 async function cargarServicios(filtros = {}) {
     const grid = document.getElementById('servicesGrid');
     const seccionServicios = grid?.closest('section');
     if (!grid) return;
 
-    // Si estamos en categorías de solo productos, no cargamos ni mostramos servicios
     const categoriasSoloProductos = ['Higiene', 'Salud', 'Perros', 'Gatos', 'Otra Especie'];
     if (filtros.valor && categoriasSoloProductos.includes(filtros.valor)) {
         if (seccionServicios) seccionServicios.style.display = 'none';
@@ -169,8 +168,6 @@ async function cargarServicios(filtros = {}) {
 
     if (seccionServicios) seccionServicios.style.display = 'block';
 
-    // ✅ Detectar ruta correcta para imágenes según si estamos en /html/ o en la raíz
-    const enCarpetaHtml = window.location.pathname.includes('/html/') || window.location.pathname.includes('\\html\\');
     const imgPrefix = enCarpetaHtml ? '../img/' : 'img/';
     const imgDefault = imgPrefix + 'default-product.png';
 
@@ -182,47 +179,27 @@ async function cargarServicios(filtros = {}) {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-
         const result = await response.json();
-        
-        // 🔍 LOG DE DIAGNÓSTICO: Para ver qué devuelve exactamente el servidor
-        console.log("🔍 Datos crudos de servicios:", result.data);
 
         if ((result.ok || result.success) && Array.isArray(result.data) && result.data.length > 0) {
             grid.innerHTML = result.data.map(s => {
-                
-                // ✅ NORMALIZACIÓN DE RUTA INFALIBLE (Idéntica a tienda-mostrar.js)
                 let src = String(s.imagen_url || '').trim();
                 if (src) {
-                    // 1. Quitamos CUALQUIER '../' inicial que haya guardado el PHP
                     src = src.replace(/^(\.\.\/)+/, '');
-                    
-                    // 2. Construimos la ruta correcta según la ubicación actual
                     if (!src.startsWith('http') && !src.startsWith('/')) {
-                        // Si empieza con 'img/', lo quitamos para que imgPrefix lo maneje limpio
-                        if (src.startsWith('img/')) {
-                            src = src.substring(4);
-                        }
+                        if (src.startsWith('img/')) src = src.substring(4);
                         src = imgPrefix + src;
                     }
                 } else {
                     src = imgDefault;
                 }
 
-                console.log(`🖼️ Servicio: ${s.nombre} | URL Final:`, src);
-
-                const imagenHtml = `
-                    <div class="mb-3" style="height: 180px; overflow: hidden; border-radius: 12px; background: #f8f9fa;">
-                        <img src="${src}" alt="${s.nombre}" 
-                             style="width: 100%; height: 100%; object-fit: cover;" 
-                             onerror="console.error('❌ Error cargando imagen:', this.src); this.src='${imgDefault}'">
-                    </div>
-                `;
-
                 return `
                 <div class="col-6 col-md-4 col-lg-3">
                     <div class="card h-100 shadow-sm border-0 service-card overflow-hidden">
-                        ${imagenHtml}
+                        <div class="mb-3" style="height: 180px; overflow: hidden; border-radius: 12px; background: #f8f9fa;">
+                            <img src="${src}" alt="${s.nombre}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='${imgDefault}'">
+                        </div>
                         <div class="card-body d-flex flex-column text-center p-3">
                             <h6 class="card-title fw-bold mb-2">${s.nombre}</h6>
                             <p class="card-text text-muted small flex-grow-1 mb-3" style="font-size: 0.8rem; line-height: 1.4;">
@@ -230,8 +207,7 @@ async function cargarServicios(filtros = {}) {
                             </p>
                             <div class="mt-auto">
                                 <button class="btn-agendar-servicio w-100 btn btn-success btn-sm py-2"
-                                    data-id="${s.id_servicio}"
-                                    data-nombre="${s.nombre}"
+                                    data-id="${s.id_servicio}" data-nombre="${s.nombre}"
                                     style="background-color: #25D366; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer;">
                                     <i class="fa-brands fa-whatsapp me-2"></i>Agenda tu cita
                                 </button>
@@ -253,53 +229,35 @@ async function cargarServicios(filtros = {}) {
         </div>`;
     }
 }
-// ================================================================
-// LÓGICA DEL CARRITO - MAIN.JS
-// ================================================================
 
+// ==========================================
+// LÓGICA DEL CARRITO
+// ==========================================
 const CLAVE_STORAGE = 'viaCanesCarrito';
 
-// 1. INYECTAR ESTILOS PARA EL EFECTO
 if (!document.getElementById('style-main-effects')) {
     const styleGlobal = document.createElement('style');
     styleGlobal.id = 'style-main-effects';
     styleGlobal.innerHTML = `
-    .card-verde-activo {
-        border: 2px solid #198754 !important;
-        background-color: #f0fff4 !important;
-        transform: scale(1.02);
-        box-shadow: 0 0 15px rgba(25, 135, 84, 0.4) !important;
-        transition: all 0.3s ease;
-        z-index: 10;
-    }
+    .card-verde-activo { border: 2px solid #198754 !important; background-color: #f0fff4 !important; transform: scale(1.02); box-shadow: 0 0 15px rgba(25, 135, 84, 0.4) !important; transition: all 0.3s ease; z-index: 10; }
     .popIn { animation: popInAnim 0.3s ease-out; }
-    @keyframes popInAnim { 0% { transform: scale(0.5); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
-    `;
+    @keyframes popInAnim { 0% { transform: scale(0.5); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }`;
     document.head.appendChild(styleGlobal);
 }
 
-// 2. OBTENER CARRITO
 function obtenerCarrito() {
-    try {
-        return JSON.parse(localStorage.getItem(CLAVE_STORAGE)) || [];
-    } catch (error) {
-        console.error('Error al leer carrito:', error);
-        return [];
-    }
+    try { return JSON.parse(localStorage.getItem(CLAVE_STORAGE)) || []; } 
+    catch (error) { return []; }
 }
 
-// 3. GUARDAR CARRITO
 function guardarCarrito(carrito) {
     try {
         localStorage.setItem(CLAVE_STORAGE, JSON.stringify(carrito));
         renderizarCarrito();
         actualizarContadorGlobal();
-    } catch (error) {
-        console.error('Error al guardar carrito:', error);
-    }
+    } catch (error) { console.error('Error al guardar carrito:', error); }
 }
 
-// 4. AGREGAR AL CARRITO
 window.agregarAlCarrito = function(item) {
     const id = parseInt(item.id);
     const tipo = item.tipo || 'producto';
@@ -309,10 +267,7 @@ window.agregarAlCarrito = function(item) {
     const imagen = item.imagen || 'img/default-product.png';
     const stock = parseInt(item.stock) || 999;
 
-    if (!id || precio < 0) {
-        mostrarToast('⚠️ Error al procesar el producto', 'warning');
-        return;
-    }
+    if (!id || precio < 0) { mostrarToast('⚠️ Error al procesar el producto', 'warning'); return; }
 
     let carrito = obtenerCarrito();
     const existeIndex = carrito.findIndex(i => parseInt(i.id) === id && i.tipo === tipo);
@@ -328,102 +283,70 @@ window.agregarAlCarrito = function(item) {
         }
     } else {
         const productoConPromo = { id, tipo, nombre, precio, cantidad: 1, imagen, stock };
-        if (precioOriginal && precioOriginal > precio) {
-            productoConPromo.precioOriginal = precioOriginal;
-        }
+        if (precioOriginal && precioOriginal > precio) productoConPromo.precioOriginal = precioOriginal;
         carrito.push(productoConPromo);
     }
 
     guardarCarrito(carrito);
     mostrarToast(mensajeExito, 'success');
-    aplicarEfectoVerde(id);
-};
-
-// FUNCIÓN AUXILIAR PARA BUSCAR Y PINTAR LA TARJETA
-function aplicarEfectoVerde(idProducto) {
-    const botones = document.querySelectorAll(`button[data-id="${idProducto}"], .btn-agregar-carrito[data-id="${idProducto}"]`);
+    
+    // Efecto visual
+    const botones = document.querySelectorAll(`button[data-id="${id}"], .btn-agregar-carrito[data-id="${id}"]`);
     botones.forEach(btn => {
-        const card = btn.closest('.card') || btn.closest('.col-12') || btn.closest('.product-item');
+        const card = btn.closest('.card') || btn.closest('.col-12');
         if (card) {
             card.classList.add('card-verde-activo');
             const htmlOriginal = btn.innerHTML;
-            const classOriginal = btn.className;
             btn.innerHTML = '<i class="fa fa-check"></i> Agregado';
-            btn.classList.remove('btn-primary', 'btn-outline-primary', 'btn-add');
             btn.classList.add('btn-success');
             btn.disabled = true;
-
             setTimeout(() => {
                 card.classList.remove('card-verde-activo');
                 btn.innerHTML = htmlOriginal;
-                btn.className = classOriginal;
+                btn.classList.remove('btn-success');
                 btn.disabled = false;
             }, 1500);
         }
     });
-}
+};
 
-// 5. ELIMINAR PRODUCTO
 window.eliminarDelCarrito = function(id, tipo) {
     let carrito = obtenerCarrito();
-    const idNumerico = parseInt(id);
-    const nuevoCarrito = carrito.filter(i => !(parseInt(i.id) === idNumerico && i.tipo === tipo));
-
+    const nuevoCarrito = carrito.filter(i => !(parseInt(i.id) === id && i.tipo === tipo));
     if (nuevoCarrito.length !== carrito.length) {
         guardarCarrito(nuevoCarrito);
         mostrarToast('🗑️ Producto eliminado', 'info');
     }
 };
 
-// 6. CAMBIAR CANTIDAD (+ / -)
 window.cambiarCantidadCarrito = function(id, tipo, accion) {
     let carrito = obtenerCarrito();
-    const idNumerico = parseInt(id);
-    const index = carrito.findIndex(i => parseInt(i.id) === idNumerico && i.tipo === tipo);
-
+    const index = carrito.findIndex(i => parseInt(i.id) === id && i.tipo === tipo);
     if (index === -1) return;
     const item = carrito[index];
 
     if (accion === 'sumar') {
-        if (item.cantidad < item.stock) {
-            item.cantidad++;
-        } else {
-            mostrarToast('⚠️ Límite de stock', 'warning');
-        }
+        if (item.cantidad < item.stock) item.cantidad++;
+        else mostrarToast('⚠️ Límite de stock', 'warning');
     } else if (accion === 'restar') {
-        if (item.cantidad > 1) {
-            item.cantidad--;
-        } else {
-            if(confirm("¿Quitar este producto del carrito?")) {
-                window.eliminarDelCarrito(id, tipo);
-                return;
-            }
-        }
+        if (item.cantidad > 1) item.cantidad--;
+        else { if(confirm("¿Quitar este producto del carrito?")) { window.eliminarDelCarrito(id, tipo); return; } }
     }
     guardarCarrito(carrito);
 };
 
-// 7. RENDERIZAR CARRITO VISUAL
 function renderizarCarrito() {
     const carrito = obtenerCarrito();
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotalElement = document.getElementById('cart-total');
-
     if (!cartItemsContainer) return;
 
     let total = 0;
-    
-    // ✅ DETECCIÓN CORRECTA: Si estamos en /html/ o en la raíz
     const esHtml = window.location.pathname.includes('/html/');
     const prefijoRuta = esHtml ? '../' : '';
 
     if (carrito.length === 0) {
-        cartItemsContainer.innerHTML = `
-        <div class="text-center py-4">
-            <i class="fa fa-shopping-basket fa-3x text-muted mb-3"></i>
-            <p class="text-muted">Tu carrito está vacío </p>
-            <a href="${prefijoRuta}index.html" class="btn btn-sm btn-outline-primary">Ir a la tienda</a>
-        </div>`;
+        cartItemsContainer.innerHTML = `<div class="text-center py-4"><i class="fa fa-shopping-basket fa-3x text-muted mb-3"></i><p class="text-muted">Tu carrito está vacío </p><a href="${prefijoRuta}index.html" class="btn btn-sm btn-outline-primary">Ir a la tienda</a></div>`;
         if (cartTotalElement) cartTotalElement.textContent = '$0';
         actualizarContadorGlobal(0);
         configurarBotonContinuar(0, esHtml);
@@ -439,21 +362,13 @@ function renderizarCarrito() {
         total += subtotal;
         const tienePromo = precioOriginal && precioOriginal > precioActual;
 
-        // ✅ CORRECCIÓN DE IMAGEN
         let imgSrc = item.imagen || '';
-        
         if (!imgSrc || imgSrc === 'null' || imgSrc === 'undefined') {
             imgSrc = 'img/default-product.png';
         } else {
-            // Limpiar cualquier '../' inicial
             imgSrc = imgSrc.replace(/^(\.\.\/)+/, '');
-            
-            // Si no empieza con http o /, construir ruta correcta
             if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/')) {
-                // No agregar 'img/' si ya lo tiene
-                if (!imgSrc.startsWith('img/')) {
-                    imgSrc = 'img/' + imgSrc;
-                }
+                if (!imgSrc.startsWith('img/')) imgSrc = 'img/' + imgSrc;
             }
         }
 
@@ -474,67 +389,48 @@ function renderizarCarrito() {
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-secondary btn-sm btn-cantidad" data-id="${item.id}" data-tipo="${item.tipo}" data-accion="restar" style="padding: 0.25rem 0.5rem;">
-                                <i class="fa fa-minus" style="font-size: 0.6rem;"></i>
-                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-cantidad" data-id="${item.id}" data-tipo="${item.tipo}" data-accion="restar" style="padding: 0.25rem 0.5rem;"><i class="fa fa-minus" style="font-size: 0.6rem;"></i></button>
                             <input type="number" class="form-control form-control-sm btn-cantidad-input" data-id="${item.id}" data-tipo="${item.tipo}" value="${cantidadSegura}" min="1" max="${stock}" style="width: 50px; text-align: center; font-weight: bold; padding: 0.25rem; border-left: 0; border-right: 0;">
-                            <button type="button" class="btn btn-outline-secondary btn-sm btn-cantidad" data-id="${item.id}" data-tipo="${item.tipo}" data-accion="sumar" style="padding: 0.25rem 0.5rem;">
-                                <i class="fa fa-plus" style="font-size: 0.6rem;"></i>
-                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm btn-cantidad" data-id="${item.id}" data-tipo="${item.tipo}" data-accion="sumar" style="padding: 0.25rem 0.5rem;"><i class="fa fa-plus" style="font-size: 0.6rem;"></i></button>
                         </div>
                     </div>
                 </div>
                 <div class="col-3 text-end">
                     <p class="mb-2 fw-bold text-dark" style="font-size: 1.1rem;">$${subtotal.toLocaleString('es-CO')}</p>
-                    <button class="btn btn-eliminar-carrito btn-link text-danger p-0" data-id="${item.id}" data-tipo="${item.tipo}" title="Eliminar producto" style="font-size: 1.4rem;">
-                        <i class="fa fa-trash"></i>
-                    </button>
+                    <button class="btn btn-eliminar-carrito btn-link text-danger p-0" data-id="${item.id}" data-tipo="${item.tipo}" title="Eliminar producto" style="font-size: 1.4rem;"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
         </div>`;
     }).join('');
 
-    if (cartTotalElement) {
-        cartTotalElement.textContent = `$${total.toLocaleString('es-CO')}`;
-    }
-
-    const totalCantidad = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-    actualizarContadorGlobal(totalCantidad);
-    configurarBotonContinuar(totalCantidad, esHtml);
+    if (cartTotalElement) cartTotalElement.textContent = `$${total.toLocaleString('es-CO')}`;
+    actualizarContadorGlobal(carrito.reduce((sum, item) => sum + item.cantidad, 0));
+    configurarBotonContinuar(carrito.reduce((sum, item) => sum + item.cantidad, 0), esHtml);
 }
 
-// 8. ACTUALIZAR CONTADOR GLOBAL (✨ CON ANIMACIÓN POPIN)
 function actualizarContadorGlobal(cantidadForzada = null) {
     const badge = document.getElementById('contador-carrito');
     if (!badge) return;
-
     let totalItems = cantidadForzada;
     if (totalItems === null) {
         const carrito = obtenerCarrito();
         totalItems = carrito.reduce((sum, item) => sum + (parseInt(item.cantidad) || 0), 0);
     }
-
     badge.textContent = totalItems;
     badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-
     if (totalItems > 0) {
         badge.classList.remove('popIn');
-        void badge.offsetWidth; // Forzar reflow para reiniciar la animación
+        void badge.offsetWidth;
         badge.classList.add('popIn');
-        setTimeout(() => {
-            badge.classList.remove('popIn');
-        }, 300);
+        setTimeout(() => { badge.classList.remove('popIn'); }, 300);
     }
 }
 
-// ✅ CORREGIDO: Habilitar/Deshabilitar botón de checkout
 function configurarBotonContinuar(totalItems, esHtml) {
     const btnCheckout = document.getElementById('btn-checkout');
     if (btnCheckout) {
-        // ✅ CORRECCIÓN: No duplicar /html/
         const rutaDestino = esHtml ? 'carrito.html' : 'html/carrito.html';
         btnCheckout.setAttribute('href', rutaDestino);
-
         if (totalItems > 0) {
             btnCheckout.style.pointerEvents = 'auto';
             btnCheckout.style.opacity = '1';
@@ -547,34 +443,22 @@ function configurarBotonContinuar(totalItems, esHtml) {
     }
 }
 
-// Exponer funciones globalmente
 window.actualizarVistaCarrito = renderizarCarrito;
 window.renderCart = renderizarCarrito;
-
-// ==========================================
-// UTILIDADES UI Y ADMINISTRACIÓN
-// ==========================================
 
 function mostrarToast(mensaje, tipo = 'success') {
     const toastEl = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
-
     if (!toastEl || !toastMsg) return;
-
     toastMsg.textContent = mensaje;
     toastEl.className = `toast align-items-center text-white border-0 bg-${tipo}`;
-
     toastEl.classList.remove('hiding');
     toastEl.classList.add('show');
-
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
-
     toastEl.addEventListener('hidden.bs.toast', function handler() {
         toastEl.classList.add('hiding');
-        setTimeout(() => {
-            toastEl.classList.remove('show', 'hiding');
-        }, 300);
+        setTimeout(() => { toastEl.classList.remove('show', 'hiding'); }, 300);
         toastEl.removeEventListener('hidden.bs.toast', handler);
     }, { once: true });
 }
@@ -583,23 +467,16 @@ function verificarSesionAdmin() {
     try {
         const usuario = JSON.parse(localStorage.getItem('viaCanesUsuario') || localStorage.getItem('viaCanesUser') || 'null');
         const adminLink = document.getElementById('adminAccessLink');
-
         if (usuario && (usuario.nombre_rol === 'ADMINISTRADOR' || usuario.rol === 'ADMIN') && adminLink) {
             adminLink.classList.remove('d-none');
         }
-    } catch (error) {
-        console.error('Error al verificar sesión:', error);
-    }
+    } catch (error) { console.error('Error al verificar sesión:', error); }
 }
 
-// ==========================================
-// 5. BANNER DINÁMICO & PROMOCIONES
-// ==========================================
 function mostrarBannerCategoria(filtros, totalProductos) {
     const banner = document.getElementById('categoryBanner');
     const hero = document.querySelector('.hero');
     if (!banner) return;
-
     const categoriasConfig = {
         'Perros': { class: 'banner-perros', badge: '🐕 Mundo Canino', title: 'Todo para tu Perro', description: 'Encuentra los mejores productos, alimentos premium y accesorios para mantener feliz y saludable a tu mejor amigo.' },
         'Gatos': { class: 'banner-gatos', badge: '🐱 Universo Felino', title: 'El Mundo de los Gatos', description: 'Productos selectos para consentir a tu felino. Arena, alimentos, juguetes y todo lo que tu michi necesita.' },
@@ -609,7 +486,6 @@ function mostrarBannerCategoria(filtros, totalProductos) {
         'Servicios': { class: 'banner-servicios', badge: '🛎️ Servicios Premium', title: 'Nuestros Servicios', description: 'Baño, estética, paseos, guardería y más. Servicios profesionales.' },
         'Citas': { class: 'banner-citas', badge: '📅 Agenda Fácil', title: 'Agenda tu Cita', description: 'Reserva los servicios para tu mascota de manera rápida y sencilla.' }
     };
-
     if (filtros.tipo && filtros.valor && categoriasConfig[filtros.valor]) {
         const config = categoriasConfig[filtros.valor];
         banner.className = 'category-banner ' + config.class;
@@ -617,10 +493,8 @@ function mostrarBannerCategoria(filtros, totalProductos) {
         document.getElementById('bannerTitle').textContent = config.title;
         document.getElementById('bannerDescription').textContent = config.description;
         document.getElementById('bannerProductCount').textContent = `${totalProductos} productos`;
-
         banner.style.display = 'flex';
         banner.classList.add('active');
-
         if (hero) hero.style.display = 'none';
     } else {
         banner.style.display = 'none';
@@ -628,101 +502,40 @@ function mostrarBannerCategoria(filtros, totalProductos) {
     }
 }
 
+// ==========================================
+// 5. PROMOCIONES (CORREGIDO)
+// ==========================================
+// ==========================================
+// 5. PROMOCIONES (USA LA MISMA CARD QUE LOS PRODUCTOS NORMALES)
+// ==========================================
 async function cargarPromocionesTienda() {
     const grid = document.getElementById('productGrid');
-    if (!grid || !document.querySelector('.banner-ofertas')) return;
+    if (!grid) return;
 
     try {
-        // ✅ 1. Apunta a productos_data.php?vista=promociones donde sí viene p.descripcion
         const response = await fetch(`${RUTA_API}productos_data.php?vista=promociones`);
         if (!response.ok) throw new Error('Error en la conexión con la API');
 
         const result = await response.json();
-        grid.innerHTML = '';
 
-        // ✅ 2. Valida tanto result.ok como result.success
         if ((result.ok || result.success) && Array.isArray(result.data) && result.data.length > 0) {
-            result.data.forEach(p => {
-                // ✅ 3. Lee descuento_valor (nombre enviado por productos_data.php)
-                const valorDesc = Number(p.descuento_valor || p.valor_descuento || 0);
-                const precioVenta = Number(p.precio_venta || 0);
-                let precioFinal = precioVenta;
-                let etiquetaDesc = '';
-
-                if (p.tipo_descuento === 'porcentaje') {
-                    precioFinal = precioVenta * (1 - (valorDesc / 100));
-                    etiquetaDesc = `-${Math.round(valorDesc)}%`;
-                } else {
-                    precioFinal = Math.max(0, precioVenta - valorDesc);
-                    etiquetaDesc = `-$${valorDesc.toLocaleString('es-CO')}`;
-                }
-
-                // ✅ 4. Normaliza ruta de imagen según si estamos en /html/ o en la raíz
-                const enCarpetaHtml = window.location.pathname.includes('/html/') || window.location.pathname.includes('\\html\\');
-                const imgPrefix = enCarpetaHtml ? '../' : '';
-                let imgSrc = p.imagen_url ? p.imagen_url.replace(/^(\.\.\/)+/, '') : 'img/default-product.png';
-                if (!imgSrc.startsWith('http') && !imgSrc.startsWith('/')) {
-                    imgSrc = imgPrefix + imgSrc;
-                }
-
-                const col = document.createElement('div');
-                col.className = 'col-6 col-md-4 col-lg-3 mb-4';
-
-                col.innerHTML = `
-                <div class="card h-100 shadow-sm border-0 product-card promo-card position-relative"
-                     style="cursor: pointer;"
-                     onclick="if(!event.target.closest('button')) { const d = this.querySelector('.desc-oculta'); if(d) d.style.display = (d.style.display === 'none' ? 'block' : 'none'); }">
-                    <span class="promo-badge badge bg-danger position-absolute top-0 end-0 m-2">${etiquetaDesc} OFF</span>
-                    <img src="${imgSrc}" class="card-img-top" alt="${p.nombre}" style="height: 180px; object-fit: contain; background-color: #f8f9fa;" onerror="this.src='${imgPrefix}img/default-product.png'">
-                    <div class="card-body d-flex flex-column text-center">
-                        <h6 class="card-title fw-bold">${p.nombre}</h6>
-                        
-                        <!-- ✅ Descripción oculta por defecto y completa al hacer clic -->
-                        <p class="text-muted small my-2 w-100 text-start desc-oculta" style="display: none; font-size: 0.82rem; line-height: 1.4;">
-                            ${p.descripcion ? p.descripcion : 'Oferta especial'}
-                        </p>
-
-                        <div class="mt-auto">
-                            <div class="mb-2">
-                                <span class="old-price text-decoration-line-through text-muted small">$${precioVenta.toLocaleString('es-CO')}</span>
-                                <br>
-                                <span class="new-price fw-bold text-danger">$${Math.round(precioFinal).toLocaleString('es-CO')}</span>
-                            </div>
-                            <button class="btn btn-add w-100 btn-agregar-carrito btn-primary"
-                                    data-id="${p.id_producto}"
-                                    data-nombre="${p.nombre}"
-                                    data-precio="${Math.round(precioFinal)}"
-                                    data-imagen="${imgSrc}"
-                                    data-stock="${p.stock}"
-                                    data-tipo="producto">
-                                <i class="fa fa-cart-plus me-1"></i> Agregar
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-                grid.appendChild(col);
-            });
+            // ✅ AQUÍ ESTÁ LA MAGIA: Usa la misma función que las tarjetas normales
+            // Esto garantiza que promociones.html se vea EXACTAMENTE igual que index.html
+            procesarYRenderizar(result.data);
         } else {
             grid.innerHTML = `<div class="col-12 text-center py-5">
-                <p class="text-muted">No hay promociones activas en este momento 🐾</p>
+                <p class="text-muted"><i class="fa fa-tag fa-2x mb-2"></i><br>No hay promociones activas en este momento 🐾</p>
             </div>`;
         }
     } catch (error) {
         console.error('Error cargando promos:', error);
-        grid.innerHTML = `<div class="col-12 text-center text-danger">Error al cargar ofertas.</div>`;
+        grid.innerHTML = `<div class="col-12 text-center py-5 text-danger">
+            <i class="fa fa-exclamation-triangle fa-2x mb-2"></i><br>
+            <strong>Error al cargar las ofertas.</strong><br>
+            <small class="text-muted">${error.message}</small>
+        </div>`;
     }
 }
-
-
-// ==========================================
-// 6. EVENTOS AUXILIARES
-// ==========================================
-function irWhatsApp(origen) {
-    const numero = "573016540576";
-    const mensaje = encodeURIComponent(`Hola Vía Canes! Necesito ayuda (Origen: ${origen})`);
-    window.open(`https://wa.me/${numero}?text=${mensaje}`, '_blank');
-}
-
 window.onscroll = function() {
     const waBtn = document.getElementById("waBtn");
     if (waBtn) {
@@ -734,45 +547,5 @@ window.onscroll = function() {
     }
 };
 
-// ==========================================
-// EXPORTACIÓN GLOBAL
-// ==========================================
 window.procesarYRenderizar = procesarYRenderizar;
-// Las funciones del carrito ya se exponen arriba con window.agregarAlCarrito, etc.
-
 document.dispatchEvent(new CustomEvent('viaCanesReady'));
-
-/**
- * ✨ EFECTO MÁGICO: Huellita al agregar al carrito
- */
-document.addEventListener('click', function(event) {
-    const addButton = event.target.closest('.btn-add');
-    if (addButton) {
-        const rect = addButton.getBoundingClientRect();
-        const paw = document.createElement('i');
-        paw.className = 'fas fa-paw magic-paw';
-        
-        const startX = rect.left + (rect.width / 2) - 12;
-        const startY = rect.top + window.scrollY;
-        
-        paw.style.left = `${startX}px`;
-        paw.style.top = `${startY}px`;
-        paw.style.position = 'absolute';
-        paw.style.color = '#198754';
-        paw.style.fontSize = '24px';
-        paw.style.pointerEvents = 'none';
-        paw.style.zIndex = '9999';
-        paw.style.transition = 'all 0.8s ease-out';
-        
-        document.body.appendChild(paw);
-        
-        requestAnimationFrame(() => {
-            paw.style.transform = 'translateY(-50px) scale(1.5)';
-            paw.style.opacity = '0';
-        });
-        
-        setTimeout(() => {
-            paw.remove();
-        }, 800);
-    }
-});

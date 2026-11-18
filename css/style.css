@@ -1,5 +1,5 @@
 /* ==========================================================================
-   🐾 STYLE.CSS v2.0 - VERSIÓN FINAL OPTIMIZADA
+   🐾 STYLE.CSS v1 - VERSIÓN FINAL OPTIMIZADA Y UNIFICADA
    Petshop Premium - Banners, Productos, Servicios, Carrito y Componentes
    Paleta: Verde Azulado / Cian / Dorado / Coral
    ========================================================================== */
@@ -220,51 +220,93 @@
     box-shadow: 0 4px 12px rgba(255, 208, 0, 0.4);
 }
 
-/* Botón destacado del banner - CORREGIDO */
+/* --- BOTONES DE BANNER (UNIFICADOS Y SIN DUPLICADOS) --- */
+
+/* Estilo base compartido para botones de banner */
 .hero .btn-main,
-.category-banner .btn-main {
+.category-banner .btn-main,
+.btn-volver-top,
+.btn-ofertas-bottom {
     position: absolute;
-    top: 10px;
-    right: 200px;
-    z-index: 12;
+    z-index: 15;
+    width: auto !important;
+    min-width: unset !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem; /* ✅ Corregido: era 1.9rem (ilegible) */
-    font-weight: 800;
-    border-radius: var(--radius-sm);
-    background: rgba(255, 208, 0, 0.85);
+    border-radius: 50rem;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: var(--banner-title-color);
-    font-family: var(--banner-font-family);
     text-decoration: none;
     white-space: nowrap;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
     transition: all 0.25s ease;
 }
 
+/* Botón "Ofertas del Mes" -> GRANDE EN EL CENTRO ABAJO */
+.hero .btn-main,
+.category-banner .btn-banner-center,
+.btn-ofertas-bottom {
+    top: auto;
+    bottom: 18px;
+    left: 56%;
+    right: auto;
+    transform: translateX(-50%);
+    padding: 0.95rem 2.2rem;
+    font-size: 1.2rem;
+    font-weight: 800;
+    gap: 0.55rem;
+    background: rgba(255, 208, 0, 0.96);
+    border: 3px solid var(--white);
+    color: var(--text-dark);
+}
+
 .hero .btn-main i,
-.category-banner .btn-main i {
-    color: var(--banner-title-color);
-    font-size: 1rem;
-    transition: color 0.25s ease;
+.category-banner .btn-banner-center i,
+.btn-ofertas-bottom i {
+     font-size: 1.25rem;
 }
 
 .hero .btn-main:hover,
-.category-banner .btn-main:hover {
+.category-banner .btn-banner-center:hover,
+.btn-ofertas-bottom:hover {
     background: var(--primary-dark);
-    color: var(--white); /* ✅ Corregido: era #ffffff directo */
-    border-color: rgba(255, 255, 255, 0.6);
-    transform: scale(1.02);
+    color: var(--white);
+    border-color: var(--accent);
+    transform: translateX(-50%) translateY(-3px) scale(1.03);
 }
 
-.hero .btn-main:hover i,
-.category-banner .btn-main:hover i {
+/* Botón "Volver a la Tienda" -> PEQUEÑO ARRIBA A LA DERECHA */
+.category-banner .btn-banner-right,
+.banner-ofertas .btn-promo-back,
+.btn-volver-top {
+    top: 16px;
+    bottom: auto;
+    right: 24px;
+    left: auto;
+    transform: none;
+    padding: 0.4rem 0.95rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--primary);
+    color: var(--primary-dark);
+}
+
+.category-banner .btn-banner-right i,
+.banner-ofertas .btn-promo-back i,
+.btn-volver-top i {
+    font-size: 0.85rem;
+}
+
+.category-banner .btn-banner-right:hover,
+.banner-ofertas .btn-promo-back:hover,
+.btn-volver-top:hover {
+    background: var(--primary);
     color: var(--white);
+    border-color: var(--accent);
+    transform: translateY(-2px);
 }
 
 /* Accesibilidad: focus visible */
@@ -283,6 +325,27 @@
 .banner-citas     { background-image: url('../img/banners/banner-citas.png'); }
 .banner-otros     { background-image: url('../img/banners/banner-otros_animales.png'); }
 .banner-ofertas   { background-image: url('../img/banners/banner-ofertas.jpg'); }
+
+/* Contenedor específico Promociones */
+.hero.banner-ofertas {
+    position: relative;
+    min-height: 290px;
+    padding: 30px 5% !important;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero.banner-ofertas .banner-overlay {
+    pointer-events: none;
+}
+
+.hero.banner-ofertas .hero-content {
+    width: 100%;
+    padding-top: 0 !important;
+    position: relative;
+    z-index: 5;
+}
 
 /* ==========================================================================
    3. TÍTULOS DE SECCIÓN
@@ -459,7 +522,6 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* ✅ Imagen más grande (de 260px a 350px) */
 .service-card img {
     width: 100%;
     height: 350px;
@@ -483,7 +545,7 @@
     color: var(--primary);
     margin-bottom: 10px;
 }
-/* ✅ Ocultar la descripción dentro de la tarjeta */
+
 .service-info p,
 .service-card .card-text {
     display: none;
@@ -589,7 +651,6 @@
     color: var(--primary);
 }
 
-/* Tarjeta Resumen Independiente */
 .card.shadow-sm {
     border: none;
     background-color: var(--white);
@@ -668,26 +729,47 @@
     transform: translateY(-1px);
 }
 
-/* Opciones de Pago */
-.payment-option input[type="radio"] {
+/* Opciones de Pago (UNIFICADO) */
+.payment-option input[type="radio"],
+.payment-option input {
     display: none;
 }
 
 .payment-option label {
-    display: block;
-    padding: 1rem;
-    border: 2px solid #dee2e6;
-    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 0.5rem;
     text-align: center;
+    background: #fafafa;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.payment-option input[type="radio"]:checked + label {
-    border-color: #0D8FBF;
-    background: rgba(13, 143, 191, 0.05);
-    color: #0D8FBF;
-    font-weight: bold;
+.payment-option label:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.payment-option input[type="radio"]:checked + label,
+.payment-option input:checked + label {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    color: var(--primary);
+}
+
+.payment-option input:focus-visible + label {
+    outline: 3px solid rgba(8, 145, 178, 0.35);
+    outline-offset: 2px;
 }
 
 /* ==========================================================================
@@ -750,7 +832,6 @@ figure {
     font-weight: 600;
 }
 
-/* Botón seguir comprando */
 .btn-seguir-comprando {
     display: inline-flex;
     align-items: center;
@@ -874,7 +955,7 @@ figure {
 }
 
 /* ==========================================================================
-   9. FOOTER (SIN !important)
+   9. FOOTER
    ========================================================================== */
 .main-footer {
     background: var(--primary-dark);
@@ -963,7 +1044,7 @@ figure {
 }
 
 /* ==========================================================================
-   10. BOTONES FLOTANTES (WhatsApp + Paw)
+   10. BOTONES FLOTANTES
    ========================================================================== */
 .floating-buttons {
     position: fixed;
@@ -1387,7 +1468,295 @@ figure {
 }
 
 /* ==========================================================================
-   15. KEYFRAMES CENTRALIZADOS
+   15. CHECKOUT ESPECÍFICO (UNIFICADO)
+   ========================================================================== */
+
+/* Barra de progreso */
+.paso-circulo {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.paso-circulo i { font-size: 12px; }
+
+.paso-completado {
+    background: #d1fae5;
+    color: #059669;
+    border: 2px solid #059669;
+}
+
+.paso-activo {
+    background: var(--primary);
+    color: #fff;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 0 5px rgba(8, 145, 178, 0.15);
+}
+
+.paso-pendiente {
+    background: #f3f4f6;
+    color: #9ca3af;
+    border: 2px solid #d1d5db;
+}
+
+.paso-finalizado {
+    background: #059669;
+    color: #fff;
+    border: 2px solid #059669;
+    box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.15);
+}
+
+.paso-texto {
+    font-size: 15px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.paso-texto-activo {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.paso-texto-finalizado {
+    color: #198754;
+    font-weight: 700;
+}
+
+.paso-separador {
+    color: #ced4da;
+    font-size: 12px;
+}
+
+/* Resumen Sticky */
+.sticky-summary {
+    position: sticky;
+    top: 90px;
+}
+
+/* Items de Checkout */
+.checkout-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e9ecef;
+}
+
+.checkout-item:last-child { border-bottom: 0; }
+
+.checkout-item img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.checkout-item .ci-nombre {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #212529;
+    line-height: 1.2;
+}
+
+.checkout-item .ci-cantidad {
+    font-size: 0.75rem;
+    color: #adb5bd;
+}
+
+.checkout-item .ci-precio {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+/* Pantalla de Confirmación */
+.confirmacion-header {
+    background: linear-gradient(135deg, #1d618a, #113d58);
+    position: relative;
+    overflow: hidden;
+    animation: aparecerSuave 0.5s ease both;
+}
+
+.confirmacion-icono {
+    position: relative;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2ecc71, #198754);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(25, 135, 84, 0.45);
+    animation: iconoPop 0.55s cubic-bezier(0.68, -0.55, 0.27, 1.55) both;
+}
+
+.confirmacion-icono i {
+    animation: checkPop 0.35s ease-out 0.45s both;
+}
+
+.confirmacion-icono::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(46, 204, 113, 0.55);
+    animation: ripple 1s ease-out 0.6s both;
+}
+
+#pantalla-confirmacion .card {
+    animation: aparecerSuave 0.45s ease-out both;
+}
+
+/* QR */
+#img-qr-real,
+#canvas-qr-dinamico {
+    width: 280px;
+    height: 280px;
+    max-width: 80vw;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+#qr-estatico-box .bg-white {
+    padding: 20px;
+}
+
+#contenedor-pago-final {
+    padding: 2rem 1.5rem;
+}
+
+/* Botón WhatsApp Pago */
+.btn-wa-pago {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 12px 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+    transition: all 0.3s ease;
+}
+
+.btn-wa-pago:hover {
+    background: linear-gradient(135deg, #1ebe5d, #0f7a6c);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+}
+
+#btnConfirmarPedido:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#btn-wa-confirmacion {
+    background: #25d366;
+    color: #fff;
+}
+
+#btn-wa-confirmacion:hover {
+    background: #1fb857;
+    color: #fff;
+}
+
+/* ==========================================================================
+   16. BOTONES STORE ADICIONALES
+   ========================================================================== */
+.btn-store-primary {
+    background-color: var(--primary);
+    color: var(--white);
+    border: 2px solid var(--primary);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-store-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--accent);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(8, 145, 178, 0.35);
+}
+
+.btn-store-primary:hover i {
+    color: var(--accent);
+    transition: color 0.25s ease;
+}
+
+.btn-hero-promo {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+    background-color: var(--secondary);
+    color: var(--white);
+    border: 2px solid var(--accent);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-hero-promo:hover {
+    background-color: var(--primary);
+    border-color: var(--white);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4);
+}
+
+.btn-hero-promo i {
+    color: var(--accent);
+    transition: transform 0.25s ease;
+}
+
+.btn-hero-promo:hover i {
+    transform: rotate(-12deg) scale(1.1);
+}
+
+.btn-store-back {
+    background-color: var(--white);
+    color: var(--primary-dark);
+    border: 2px solid var(--primary);
+    box-shadow: 0 3px 10px rgba(8, 145, 178, 0.12);
+    transition: all 0.25s ease;
+}
+
+.btn-store-back .icon-arrow {
+    transition: transform 0.25s ease;
+}
+
+.btn-store-back:hover {
+    background-color: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(8, 145, 178, 0.25);
+}
+
+.btn-store-back:hover .icon-arrow {
+    transform: translateX(-4px);
+}
+
+.hidden {
+    display: none;
+}
+
+/* ==========================================================================
+   17. KEYFRAMES CENTRALIZADOS (SIN DUPLICADOS)
    ========================================================================== */
 @keyframes bannerSlideIn {
     from { opacity: 0; transform: translateY(-20px); }
@@ -1431,6 +1800,68 @@ figure {
     50% { transform: scale(1.08); }
 }
 
+@keyframes pawFloatUp {
+    0% { opacity: 0; transform: translateY(0) scale(0.5) rotate(0deg); }
+    20% { opacity: 1; transform: translateY(-10px) scale(1.2) rotate(-10deg); }
+    100% { opacity: 0; transform: translateY(-60px) scale(0.8) rotate(15deg); }
+}
+
+@keyframes toast-enter {
+    0% { transform: translateX(100%) scale(0.7); opacity: 0; }
+    50% { transform: translateX(-10px) scale(1.05); }
+    70% { transform: translateX(5px) scale(0.95); }
+    100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes toast-exit {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+    20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+@keyframes shake-soft {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes iconoPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes checkPop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes aparecerSuave {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes error-pulse {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: rgba(220, 53, 69, 0.1); }
+}
+
 /* Animaciones premium */
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
@@ -1438,7 +1869,6 @@ figure {
 @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 @keyframes zoomInRotate { from { opacity: 0; transform: scale(0.5) rotate(-10deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); } 20%, 40%, 60%, 80% { transform: translateX(8px); } }
 @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
 @keyframes jelly { 0% { transform: scale(1, 1); } 30% { transform: scale(1.25, 0.75); } 40% { transform: scale(0.75, 1.25); } 50% { transform: scale(1.15, 0.85); } 65% { transform: scale(0.95, 1.05); } 75% { transform: scale(1.05, 0.95); } 100% { transform: scale(1, 1); } }
 @keyframes pawPrint { 0% { opacity: 0; transform: scale(0.3) rotate(-20deg); } 50% { opacity: 1; transform: scale(1) rotate(0deg); } 100% { opacity: 0; transform: scale(1.2) rotate(10deg); } }
@@ -1450,12 +1880,10 @@ figure {
 @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-@keyframes ripple { 0% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.5); } 100% { box-shadow: 0 0 0 20px rgba(8, 145, 178, 0); } }
-@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.6), 0 0 0 0 rgba(8, 145, 178, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(8, 145, 178, 0), 0 0 0 20px rgba(8, 145, 178, 0); } 100% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.6), 0 0 0 0 rgba(8, 145, 178, 0.4); } }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.6); } 50% { box-shadow: 0 0 0 10px rgba(8, 145, 178, 0); } 100% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.6); } }
 @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 @keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
-@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
 @keyframes dotsBounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
 @keyframes pawSpinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes skeletonPulse { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
@@ -1464,7 +1892,7 @@ figure {
 @keyframes neonGlow { 0%, 100% { text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 20px var(--primary); } 50% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent); } }
 
 /* ==========================================================================
-   16. CLASES UTILITARIAS DE ANIMACIÓN
+   18. CLASES UTILITARIAS DE ANIMACIÓN
    ========================================================================== */
 .animate-fade-up { animation: fadeInUp 0.6s ease-out both; }
 .animate-fade-down { animation: fadeInDown 0.6s ease-out both; }
@@ -1500,7 +1928,7 @@ figure {
     animation: gradientShift 6s ease infinite;
 }
 
-.btn-ripple { animation: ripple 1.5s infinite; }
+.btn-ripple { animation: pulseRing 1.5s infinite; }
 .pulse-ring { animation: pulseRing 2s infinite; }
 
 .btn-magnetic {
@@ -1559,7 +1987,6 @@ figure {
 .glitch-hover:hover { animation: glitch 0.3s ease infinite; }
 .neon-text { animation: neonGlow 2s ease-in-out infinite; }
 
-/* Delays escalonados */
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
@@ -1575,8 +2002,62 @@ figure {
     animation: fadeIn 0.5s ease-in-out;
 }
 
+/* Huellita mágica */
+.magic-paw {
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--primary);
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    animation: pawFloatUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    filter: drop-shadow(0 4px 6px rgba(8, 145, 178, 0.3));
+}
+
+.magic-paw.gold {
+    color: var(--accent);
+    filter: drop-shadow(0 4px 6px rgba(255, 208, 0, 0.4));
+}
+
+/* Toasts */
+.toast {
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+    animation: toast-enter 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.hiding {
+    animation: toast-exit 0.3s ease-in forwards;
+}
+
+/* Contador carrito */
+#contador-carrito {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+#contador-carrito.popIn {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Inputs con error */
+.input-error {
+    border: 2px solid #dc3545;
+    animation: shake-soft 0.4s ease-in-out;
+}
+
+.error-highlight {
+    animation: error-pulse 0.5s ease-in-out;
+}
+
 /* ==========================================================================
-   17. RESPONSIVE
+   19. RESPONSIVE
    ========================================================================== */
 @media (max-width: 1200px) {
     .main-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1613,8 +2094,12 @@ figure {
         width: 0;
         height: 0;
     }
+}
 
-    .sticky-summary { position: sticky; top: 100px; }
+@media (max-width: 991.98px) {
+    .sticky-summary { position: static; }
+    .paso-circulo { width: 32px; height: 32px; font-size: 0.85rem; }
+    .paso-texto { font-size: 0.8rem; }
 }
 
 @media (max-width: 900px) {
@@ -1655,14 +2140,22 @@ figure {
         padding: 0.4rem 0.8rem;
     }
 
+    /* Botones banner en móvil */
     .hero .btn-main,
-    .category-banner .btn-main {
-        position: relative;
-        top: auto;
-        right: auto;
-        width: auto;
+    .category-banner .btn-banner-center,
+    .btn-ofertas-bottom {
+        bottom: 12px;
+        padding: 0.5rem 1.2rem;
         font-size: 0.88rem;
-        padding: 0.5rem 1.1rem;
+    }
+
+    .category-banner .btn-banner-right,
+    .banner-ofertas .btn-promo-back,
+    .btn-volver-top {
+        top: 12px;
+        right: 12px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.75rem;
     }
 
     .banner-overlay {
@@ -1714,6 +2207,13 @@ figure {
         right: 10px;
         font-size: 0.75rem;
         padding: 6px 12px;
+    }
+
+    .btn-hero-promo {
+        top: 16px;
+        right: 16px;
+        padding: 6px 14px;
+        font-size: 0.85rem;
     }
 }
 
@@ -1769,7 +2269,7 @@ figure {
 }
 
 /* ==========================================================================
-   18. ACCESIBILIDAD
+   20. ACCESIBILIDAD
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -1780,445 +2280,4 @@ figure {
         transition-duration: 0.01ms;
         scroll-behavior: auto;
     }
-}
-/* ==========================================================================
-   ANIMACIÓN MÁGICA: HUELLITA AL AGREGAR AL CARRITO
-   ========================================================================== */
-.magic-paw {
-    position: absolute;
-    font-size: 1.5rem;
-    color: var(--primary); /* Usa el cian de tu marca */
-    pointer-events: none; /* Evita que la huella bloquee nuevos clics */
-    z-index: 9999;
-    opacity: 0;
-    animation: pawFloatUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    filter: drop-shadow(0 4px 6px rgba(8, 145, 178, 0.3)); /* Sombra suave */
-}
-
-/* Variación dorada para un efecto más "mágico" (opcional, cambia 'color' arriba si prefieres esta) */
-.magic-paw.gold {
-    color: var(--accent);
-    filter: drop-shadow(0 4px 6px rgba(255, 208, 0, 0.4));
-}
-
-@keyframes pawFloatUp {
-    0% {
-        opacity: 0;
-        transform: translateY(0) scale(0.5) rotate(0deg);
-    }
-    20% {
-        opacity: 1;
-        transform: translateY(-10px) scale(1.2) rotate(-10deg);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-60px) scale(0.8) rotate(15deg);
-    }
-}
-/* =============================================
-   ANIMACIONES DE NOTIFICACIONES (TOAST)
-   ============================================= */
-
-/* 1. SLIDE IN RIGHT + TOAST ENTER (Entrada de notificación) */
-.toast {
-    transform: translateX(100%);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Efecto elástico */
-}
-
-.toast.show {
-    transform: translateX(0);
-    opacity: 1;
-    animation: toast-enter 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes toast-enter {
-    0% {
-        transform: translateX(100%) scale(0.7);
-        opacity: 0;
-    }
-    50% {
-        transform: translateX(-10px) scale(1.05);
-    }
-    70% {
-        transform: translateX(5px) scale(0.95);
-    }
-    100% {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-}
-
-/* 2. SLIDE OUT RIGHT + TOAST EXIT (Salida de notificación) */
-.toast.hiding {
-    animation: toast-exit 0.3s ease-in forwards;
-}
-
-@keyframes toast-exit {
-    0% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-}
-
-/* =============================================
-   ANIMACIÓN DE ERROR (SHAKE)
-   ============================================= */
-
-/* 3. SHAKE - Sacudida horizontal para errores */
-.shake {
-    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-@keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    10%, 30%, 50%, 70%, 90% {
-        transform: translateX(-8px);
-    }
-    20%, 40%, 60%, 80% {
-        transform: translateX(8px);
-    }
-}
-
-/* Versión más suave para inputs */
-.shake-soft {
-    animation: shake-soft 0.4s ease-in-out both;
-}
-
-@keyframes shake-soft {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* =============================================
-   ANIMACIÓN DE CONTADOR (POP IN)
-   ============================================= */
-
-/* 4. POP IN - Efecto rápido para el contador del carrito */
-#contador-carrito {
-    display: inline-block;
-    transition: transform 0.2s ease;
-}
-
-#contador-carrito.popIn {
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popIn {
-    0% {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.3);
-    }
-    70% {
-        transform: scale(0.9);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* =============================================
-   CLASES UTILITARIAS ADICIONALES
-   ============================================= */
-
-/* Borde rojo animado para inputs con error */
-.input-error {
-    border: 2px solid #dc3545 !important;
-    animation: shake-soft 0.4s ease-in-out;
-}
-
-/* Fondo rojo pulsante para errores */
-.error-highlight {
-    animation: error-pulse 0.5s ease-in-out;
-}
-
-@keyframes error-pulse {
-    0%, 100% { background-color: transparent; }
-    50% { background-color: rgba(220, 53, 69, 0.1); }
-}
-/* ==================== BARRA DE PROGRESO ==================== */
-    .paso-circulo {
-        width: 30px; height: 30px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border-radius: 50%;
-        font-size: 13px; font-weight: 700;
-        transition: all .3s ease;
-    }
-    .paso-circulo i { font-size: 12px; }
-    .paso-completado { background-color: #198754; color: #fff; border: 2px solid #198754; }
-    .paso-activo {
-        background-color: var(--primary, #0d6efd); color: #fff;
-        box-shadow: 0 0 0 4px rgba(13, 110, 253, .18);
-    }
-    .paso-pendiente { background-color: #fff; color: #adb5bd; border: 2px dashed #adb5bd; }
-    .paso-texto { font-size: 15px; font-weight: 500; color: #6c757d; }
-    .paso-texto-activo { color: var(--primary, #0d6efd); font-weight: 700; }
-    .paso-texto-finalizado { color: #198754; font-weight: 700; }
-    .paso-separador { color: #ced4da; font-size: 12px; }
-
-    /* Estado final: pedido confirmado */
-    .paso-finalizado {
-        background-color: #198754 !important; color: #fff !important;
-        border: 2px solid #198754 !important; box-shadow: none !important;
-    }
-
-    /* ==================== MÉTODOS DE PAGO ==================== */
-    .payment-option input { display: none; }
-    .payment-option label {
-        display: block; text-align: center;
-        padding: 18px 10px;
-        border: 2px solid #e9ecef; border-radius: 14px;
-        cursor: pointer; background: #fff;
-        font-weight: 600; color: #6c757d; font-size: .9rem;
-        transition: all .25s ease;
-        height: 100%;
-    }
-    .payment-option label:hover {
-        border-color: #cde6f7;
-        transform: translateY(-2px);
-    }
-    .payment-option input:checked + label {
-        border-color: var(--primary, #0d6efd);
-        background: #f0f7ff;
-        color: var(--primary, #0d6efd);
-        box-shadow: 0 4px 14px rgba(13, 110, 253, .12);
-    }
-
-    /* ==================== RESUMEN STICKY ==================== */
-    .sticky-summary { position: sticky; top: 100px; }
-    @media (max-width: 991.98px) { .sticky-summary { position: static; } }
-    .checkout-item {
-        display: flex; align-items: center; gap: 10px;
-        padding: 8px 0;
-        border-bottom: 1px dashed #e9ecef;
-    }
-    .checkout-item:last-child { border-bottom: 0; }
-    .checkout-item img {
-        width: 44px; height: 44px; object-fit: cover;
-        border-radius: 10px; flex-shrink: 0;
-    }
-    .checkout-item .ci-nombre {
-        font-size: .85rem; font-weight: 600; color: #212529;
-        line-height: 1.2;
-    }
-    .checkout-item .ci-cantidad { font-size: .75rem; color: #adb5bd; }
-    .checkout-item .ci-precio {
-        font-size: .85rem; font-weight: 700; margin-left: auto; white-space: nowrap;
-    }
-
-    /* ==================== PANTALLA DE CONFIRMACIÓN ==================== */
-    .confirmacion-header { background: linear-gradient(135deg, #1d618a, #113d58); }
-
-    .confirmacion-icono {
-        position: relative;
-        width: 92px; height: 92px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #2ecc71, #198754);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 2.4rem; color: #fff;
-        box-shadow: 0 12px 30px rgba(25, 135, 84, .45);
-        animation: iconoPop .55s cubic-bezier(.68, -.55, .27, 1.55) both;
-    }
-    .confirmacion-icono i { animation: checkPop .35s ease-out .45s both; }
-    .confirmacion-icono::after {
-        content: '';
-        position: absolute; inset: -6px;
-        border-radius: 50%;
-        border: 2px solid rgba(46, 204, 113, .55);
-        animation: ripple 1s ease-out .6s both;
-    }
-    @keyframes iconoPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    @keyframes checkPop  { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    @keyframes ripple    { from { transform: scale(.85); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
-
-    #pantalla-confirmacion .card { animation: aparecerSuave .45s ease-out both; }
-    @keyframes aparecerSuave { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-    /* ==========================================
-   PAGO POR WHATSAPP (CHECKOUT)
-   ========================================== */
-.btn-wa-pago {
-    background: linear-gradient(135deg, #25d366, #128c7e);
-    color: #ffffff;
-    border: none;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 12px 20px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
-    transition: all 0.3s ease;
-}
-.btn-wa-pago:hover {
-    background: linear-gradient(135deg, #1ebe5d, #0f7a6c);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
-}
-#btnConfirmarPedido:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-/* ═══════════════════════════════════════════════════════
-   checkout.css — Vía Canes
-   Estilos exclusivos de checkout.html (progreso, pago,
-   resumen sticky y confirmación animada)
-   ═══════════════════════════════════════════════════════ */
-
-/* ── Barra de progreso (Carrito → Checkout → Confirmación) ── */
-.paso-circulo {
-    width: 38px; height: 38px; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: .95rem; flex-shrink: 0;
-    transition: all .3s ease;
-}
-.paso-completado  { background: #d1fae5; color: #059669; border: 2px solid #059669; }
-.paso-activo      {
-    background: var(--primary, #7c4a21); color: #fff;
-    border: 2px solid var(--primary, #7c4a21);
-    box-shadow: 0 0 0 5px rgba(124, 74, 33, .15);
-}
-.paso-pendiente   { background: #f3f4f6; color: #9ca3af; border: 2px solid #d1d5db; }
-.paso-finalizado  {
-    background: #059669; color: #fff; border: 2px solid #059669;
-    box-shadow: 0 0 0 5px rgba(5, 150, 105, .15);
-}
-
-.paso-texto            { color: #6b7280; font-weight: 500; font-size: .9rem; }
-.paso-texto-activo     { color: var(--primary, #7c4a21); font-weight: 700; }
-.paso-texto-finalizado { color: #059669; font-weight: 700; }
-.paso-separador        { color: #d1d5db; font-size: .8rem; }
-
-/* ── Tarjetas de método de pago (radios estilizados) ── */
-.payment-option input { display: none; }
-.payment-option label {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: .25rem; width: 100%; height: 100%;
-    padding: 1rem .5rem; text-align: center;
-    background: #fafafa; border: 2px solid #e5e7eb; border-radius: 14px;
-    font-weight: 600; font-size: .9rem; cursor: pointer;
-    transition: all .2s ease;
-}
-.payment-option label:hover {
-    border-color: var(--primary, #7c4a21);
-    transform: translateY(-2px);
-}
-.payment-option input:checked + label {
-    background: #fff; border-color: var(--primary, #7c4a21);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
-    color: var(--primary, #7c4a21);
-}
-/* Accesibilidad: si el usuario navega con Tab, se ve el foco */
-.payment-option input:focus-visible + label {
-    outline: 3px solid rgba(124, 74, 33, .35);
-    outline-offset: 2px;
-}
-
-/* ── Resumen pegajoso (columna derecha) ── */
-.sticky-summary { position: sticky; top: 90px; }
-
-/* ── Pantalla de confirmación ── */
-.confirmacion-header {
-    background: linear-gradient(135deg, var(--primary, #7c4a21) 0%, var(--primary-dark, #4e2e15) 100%);
-    position: relative; overflow: hidden;
-    animation: aparecerSuave .5s ease both;
-}
-.confirmacion-icono {
-    width: 84px; height: 84px; background: #fff; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.4rem; color: #059669; position: relative;
-    animation: iconoPop .6s cubic-bezier(.68, -0.55, .27, 1.55) .15s both;
-}
-/* Anillo que late alrededor del check */
-.confirmacion-icono::after {
-    content: ''; position: absolute; inset: 0; border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, .6);
-    animation: ripple 1.8s ease-out .6s infinite;
-}
-.confirmacion-icono i { animation: checkPop .4s ease .45s both; }
-
-/* ── Botón WhatsApp (lo crea el JS en la confirmación) ── */
-#btn-wa-confirmacion { background: #25d366; color: #fff; }
-#btn-wa-confirmacion:hover { background: #1fb857; color: #fff; }
-
-/* ── Animaciones ── */
-@keyframes iconoPop {
-    0%   { transform: scale(0); opacity: 0; }
-    70%  { transform: scale(1.15); }
-    100% { transform: scale(1); opacity: 1; }
-}
-@keyframes checkPop {
-    0%   { transform: scale(0); }
-    100% { transform: scale(1); }
-}
-@keyframes ripple {
-    0%   { transform: scale(1);   opacity: .8; }
-    100% { transform: scale(1.8); opacity: 0; }
-}
-@keyframes aparecerSuave {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Móvil: el resumen deja de ser sticky, progreso más compacto ── */
-@media (max-width: 991.98px) {
-    .sticky-summary { position: static; }
-    .paso-circulo   { width: 32px; height: 32px; font-size: .85rem; }
-    .paso-texto     { font-size: .8rem; }
-}
-/* Stepper */
-        .paso-circulo { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
-        .paso-completado { background-color: #e2f0fd; color: #0d6efd; }
-        .paso-activo { background-color: var(--primary); color: white; }
-        .paso-pendiente { background-color: #e0e0e0; color: #6c757d; }
-        .paso-texto { font-size: 14px; font-weight: 500; color: #495057; }
-        .paso-texto-activo { color: var(--primary); font-weight: 700; }
-
-        /* Opciones de Pago */
-        .payment-option input[type="radio"] { display: none; }
-        .payment-option label {
-            display: block; padding: 15px; border: 2px solid #dee2e6; border-radius: 12px;
-            cursor: pointer; text-align: center; transition: all 0.2s ease; background: #fff; height: 100%;
-        }
-        .payment-option input[type="radio"]:checked + label {
-            border-color: var(--primary); background-color: #f0fdfa; color: var(--primary-dark);
-            box-shadow: 0 4px 12px rgba(15,118,110,0.1);
-        }
-
-        .btn-primary { background-color: var(--primary); border: none; }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .hidden { display: none !important; }
-        /* ═══════════════════════════════════════════════
-   QR MÁS GRANDE Y NÍTIDO
-   ═══════════════════════════════════════════════ */
-#img-qr-real, 
-#canvas-qr-dinamico {
-    width: 280px !important;
-    height: 280px !important;
-    max-width: 80vw !important; /* Evita que se salga en celulares pequeños */
-    image-rendering: -webkit-optimize-contrast; /* Mejora la nitidez en Safari/Chrome */
-}
-
-/* Aumentar un poco el marco blanco que rodea al QR para que se vea más elegante */
-#qr-estatico-box .bg-white {
-    padding: 20px !important;
-}
-
-/* Asegurar que el contenedor del QR tenga espacio suficiente */
-#contenedor-pago-final {
-    padding: 2rem 1.5rem !important;
 }
