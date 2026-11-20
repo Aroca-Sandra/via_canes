@@ -20,9 +20,47 @@
 <img src="../img/logo.png" alt="Logo" class="logo-img">
 <span class="logo-text">Vía Canes</span>
 </a>
-<div class="search-container">
-<i class="fa fa-search search-icon"></i>
-<input type="text" class="custom-search-input" placeholder="¿Qué necesita tu mascota hoy?">
+<!-- Barra de búsqueda de productos -->
+<!-- BARRA DE BÚSQUEDA CON AUTOCOMPLETADO -->
+<div class="search-container position-relative" role="search">
+    <label for="buscadorProductos" class="visually-hidden">Buscar productos, categorías o servicios</label>
+    
+    <i class="fa fa-search search-icon" aria-hidden="true"></i>
+    
+    <input 
+        type="search" 
+        id="buscadorProductos" 
+        class="custom-search-input" 
+        placeholder="¿Qué necesita tu mascota hoy?" 
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Buscar productos, categorías o servicios"
+        aria-autocomplete="list"
+        aria-controls="sugerenciasBusqueda"
+        aria-expanded="false"
+        aria-activedescendant=""
+    >
+    
+    <!-- Botón limpiar (oculto por defecto) -->
+    <button 
+        id="btnLimpiarBusqueda" 
+        class="btn-clear-search" 
+        type="button"
+        aria-label="Limpiar búsqueda"
+        style="display:none;"
+    >
+        <i class="fa fa-times"></i>
+    </button>
+
+    <!-- Dropdown de sugerencias -->
+    <div 
+        id="sugerenciasBusqueda" 
+        class="dropdown-sugerencias" 
+        role="listbox" 
+        aria-label="Sugerencias de búsqueda"
+        style="display:none;"
+    ></div>
 </div>
 <div class="utility-icons">
 <div class="dropdown">

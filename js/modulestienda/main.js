@@ -1,4 +1,5 @@
 import { procesarYRenderizar } from './tienda-mostrar.js';
+import { SearchAutocomplete } from './buscador.js';
 
 // ================================================================
 // MAIN.JS - LÓGICA PRINCIPAL DEL PANEL DE LA TIENDA (VÍA CANES)
@@ -9,6 +10,16 @@ const enCarpetaHtml = path.includes('/html/') || path.includes('\\html\\');
 const RUTA_API = enCarpetaHtml ? '../api/' : 'api/';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ✅ AGREGAR ESTAS 3 LÍNEAS para inicializar el buscador
+    new SearchAutocomplete({
+        inputId: 'buscadorProductos',
+        dropdownId: 'sugerenciasBusqueda',
+        clearId: 'btnLimpiarBusqueda',
+        debounce: 300,
+        maxResults: 8,
+        minChars: 2,
+        rutaApi: RUTA_API
+    });
     // ✅ 1. DETECCIÓN INMEDIATA DE LA PÁGINA
     const currentPath = window.location.pathname;
     const esPaginaPromociones = currentPath.includes('promociones.html');
@@ -24,15 +35,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (seccionProductos) seccionProductos.style.display = 'none';
         const seccionServicios = document.getElementById('servicesGrid')?.closest('section');
         if (seccionServicios) seccionServicios.style.display = 'none';
-    } else {
+        } else {
         // ✅ 2. Lógica normal para index.html y otras vistas
         const urlParams = new URLSearchParams(window.location.search);
         const filtros = { tipo: urlParams.get('tipo'), valor: urlParams.get('valor') };
         
-        cargarProductos(filtros);
-        if (filtros.tipo !== 'especie' && filtros.tipo !== 'categoria') {
-            cargarServicios(filtros);
-        } else {
+        // CASO A: ¿Estamos específicamente en la página de Servicios?
+        if (filtros.valor === 'Servicios') {
+            console.log('🛎️ Modo Exclusivo de Servicios activado');
+            
+            // Ocultar productos y mostrar banner
+            const secProd = document.querySelector('.productos');
+            if (secProd) secProd.style.display = 'none';
+            
+            mostrarBannerCategoria(filtros, 0);
+            
+            // Cargar SOLO servicios
+            cargarServicios(filtros); 
+        } 
+        // CASO B: ¿Es el Index principal (sin filtros)?
+        else if (!filtros.tipo && !filtros.valor) {
+            cargarProductos(filtros);
+            cargarServicios(filtros); // En el index sí mostramos ambos
+        } 
+        // CASO C: Otras categorías (Perros, Gatos, Higiene...)
+        else {
+            cargarProductos(filtros);
+            // Ocultar servicios en categorías de productos
             const servicesParent = document.getElementById('servicesGrid')?.parentElement;
             if (servicesParent) servicesParent.style.display = 'none';
         }
@@ -290,6 +319,25 @@ window.agregarAlCarrito = function(item) {
     guardarCarrito(carrito);
     mostrarToast(mensajeExito, 'success');
     
+
+        const btn = document.querySelector(`button[data-id="${id}"][data-tipo="${tipo}"]`);
+    if (btn) {
+        const rect = btn.getBoundingClientRect();
+        const paw = document.createElement('div');
+        paw.className = 'magic-paw';
+        paw.innerHTML = '<i class="fa-solid fa-paw"></i>';
+        
+        // Posicionar la patita justo en el centro del botón (usando fixed para que no importe el scroll)
+        paw.style.left = (rect.left + rect.width / 2 - 12) + 'px';
+        paw.style.top = rect.top + 'px';
+        
+        document.body.appendChild(paw);
+        
+        // Eliminar el elemento del DOM después de que termine la animación (800ms)
+        setTimeout(() => {
+            paw.remove();
+        }, 800);
+    }
     // Efecto visual
     const botones = document.querySelectorAll(`button[data-id="${id}"], .btn-agregar-carrito[data-id="${id}"]`);
     botones.forEach(btn => {

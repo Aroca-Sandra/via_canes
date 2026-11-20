@@ -4,7 +4,6 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Manejar preflight OPTIONS request (CORS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -17,12 +16,11 @@ try {
         throw new Exception("Variable de conexión \$pdo no definida en db.php");
     }
 
-    // Detectar si la petición viene por 'action' (desde el JS) o 'vista'
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
     $vista  = $_GET['vista'] ?? 'admin';
 
     // =========================================================
-    // 1. LISTAR SERVICIOS (Para el JS: apiFetch('listar_servicios'))
+    // 1. LISTAR SERVICIOS (Para el JS Admin: apiFetch('listar_servicios'))
     // =========================================================
     if ($action === 'listar_servicios') {
         $stmt = $pdo->query("
@@ -35,14 +33,14 @@ try {
             ORDER BY s.id_servicio DESC
         ");
         echo json_encode([
-            'success' => true, // ✅ CAMBIO CLAVE: de 'ok' a 'success'
+            'success' => true,
             'data'    => $stmt->fetchAll(PDO::FETCH_ASSOC)
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
     // =========================================================
-    // 2. LISTAR CATEGORÍAS DE SERVICIO (Para el JS)
+    // 2. LISTAR CATEGORÍAS DE SERVICIO
     // =========================================================
     if ($action === 'listar_categorias_servicio') {
         $stmt = $pdo->query("SELECT id_categoria_servicio, nombre FROM categoria_servicio ORDER BY id_categoria_servicio ASC");
@@ -54,7 +52,7 @@ try {
     }
 
      // =========================================================
-    // 3. VISTA TIENDA (Si se llama directamente con ?vista=tienda)
+    // 3. VISTA TIENDA (Productos generales)
     // =========================================================
     if ($vista === 'tienda' || $action === 'tienda_servicios') {
         $stmt = $pdo->query("
@@ -66,7 +64,6 @@ try {
                 s.imagen_url,
                 s.id_categoria_servicio,
                 c.nombre AS categoria
-                /* ✅ ELIMINADO: s.precio ya no se envía a la tienda */
             FROM servicios s
             INNER JOIN categoria_servicio c 
                 ON c.id_categoria_servicio = s.id_categoria_servicio
@@ -74,6 +71,35 @@ try {
             ORDER BY s.id_servicio ASC
         ");
         echo json_encode([
+            'success' => true,
+            'data'    => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // ✅ NUEVO BLOQUE: VISTA SERVICIOS (Para el Buscador y Main.js)
+    // =========================================================
+    if ($vista === 'servicios') {
+        $stmt = $pdo->query("
+            SELECT 
+                s.id_servicio,
+                s.nombre,
+                s.descripcion,
+                s.precio,
+                s.duracion,
+                s.imagen_url,
+                s.id_estado_servicio,
+                c.nombre AS categoria,
+                'servicio' AS tipo
+            FROM servicios s
+            INNER JOIN categoria_servicio c 
+                ON c.id_categoria_servicio = s.id_categoria_servicio
+            WHERE s.id_estado_servicio = 1
+            ORDER BY s.id_servicio ASC
+        ");
+        
+        echo json_encode([
+            'ok'      => true,   // ✅ Acepta ambos formatos para compatibilidad
             'success' => true,
             'data'    => $stmt->fetchAll(PDO::FETCH_ASSOC)
         ], JSON_UNESCAPED_UNICODE);
@@ -103,12 +129,13 @@ try {
         }
         exit;
     }
+
     // =========================================================
-    // 5. CAMBIAR ESTADO DEL SERVICIO (ACTIVAR / INACTIVAR RÁPIDO)
+    // 5. CAMBIAR ESTADO DEL SERVICIO
     // =========================================================
     if ($action === 'cambiar_estado_servicio') {
         $id_servicio = $_POST['id_servicio'] ?? null;
-        $nuevo_estado = $_POST['id_estado_servicio'] ?? 1; // 1 = activo, 2 = inactivo
+        $nuevo_estado = $_POST['id_estado_servicio'] ?? 1;
         
         if (!$id_servicio) throw new Exception("ID de servicio no proporcionado");
         
@@ -119,6 +146,7 @@ try {
         echo json_encode(['success' => true, 'message' => $mensaje]);
         exit;
     }
+
     // =========================================================
     // 6. ELIMINAR SERVICIO
     // =========================================================
@@ -137,7 +165,7 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
-        'success' => false, // ✅ CAMBIO CLAVE: de 'ok' a 'success'
+        'success' => false,
         'error'   => $e->getMessage()
     ]);
 }

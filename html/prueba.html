@@ -3,384 +3,1001 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Finaliza tu pedido de forma segura en Vía Canes.">
-    <title>Finalizar Pedido | Vía Canes</title>
-
-    <!-- LIBRERÍAS EXTERNAS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Librería QR (Solo necesaria si usas Bre-B dinámico, opcional para Nequi/Daviplata estático) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-
+    <title>Via Canes - Tu Tienda de Mascotas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2596be',
+                        'primary-dark': '#16607d',
+                        secondary: '#ff8c00',
+                        'secondary-dark': '#e67e00',
+                        accent: '#ffd000',
+                        bg: '#f4f7fb',
+                        text: '#1e293b',
+                        'text-light': '#64748b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
-            --primary: #0f766e;
-            --primary-dark: #134e4a;
+            --primary: #2596be;
+            --primary-dark: #16607d;
+            --secondary: #ff8c00;
+            --secondary-dark: #e67e00;
+            --accent: #ffd000;
+            --bg: #f4f7fb;
+            --white: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
         }
-        body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; }
-        
-        /* Header */
-        .navbar-top { background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo-text { font-size: 20px; font-weight: 700; color: var(--primary); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #c1c9d4; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Stepper */
-        .paso-circulo { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
-        .paso-completado { background-color: #e2f0fd; color: #0d6efd; }
-        .paso-activo { background-color: var(--primary); color: white; }
-        .paso-pendiente { background-color: #e0e0e0; color: #6c757d; }
-        .paso-texto { font-size: 14px; font-weight: 500; color: #495057; }
-        .paso-texto-activo { color: var(--primary); font-weight: 700; }
-
-        /* Opciones de Pago */
-        .payment-option input[type="radio"] { display: none; }
-        .payment-option label {
-            display: block; padding: 15px; border: 2px solid #dee2e6; border-radius: 12px;
-            cursor: pointer; text-align: center; transition: all 0.2s ease; background: #fff; height: 100%;
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #16607d 0%, #2596be 40%, #4fb8d9 100%);
+            position: relative;
+            overflow: hidden;
         }
-        .payment-option input[type="radio"]:checked + label {
-            border-color: var(--primary); background-color: #f0fdfa; color: var(--primary-dark);
-            box-shadow: 0 4px 12px rgba(15,118,110,0.1);
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,208,0,0.08) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
-        .btn-primary { background-color: var(--primary); border: none; }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .hidden { display: none !important; }
+        /* Promo Banner */
+        .promo-banner {
+            background: linear-gradient(135deg, #16607d 0%, #1a7a9e 50%, #2596be 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,208,0,0.1);
+            border-radius: 50%;
+        }
+        .promo-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -60px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,140,0,0.08);
+            border-radius: 50%;
+        }
+
+        /* Product card */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(37,150,190,0.15);
+        }
+
+        /* Service card */
+        .service-card {
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 48px rgba(37,150,190,0.15);
+        }
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .service-card:hover .service-arrow {
+            transform: translateX(4px);
+            opacity: 1;
+        }
+        .service-icon {
+            transition: transform 0.4s ease;
+        }
+        .service-arrow {
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        /* Add to cart button */
+        .btn-cart {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-cart::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+        .btn-cart:hover::before { width: 300px; height: 300px; }
+        .btn-cart:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(37,150,190,0.4);
+        }
+
+        /* Nav link */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+            border-radius: 1px;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: var(--secondary); }
+
+        /* Category card */
+        .cat-card {
+            transition: all 0.3s ease;
+        }
+        .cat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+        }
+        .cat-card:hover .cat-emoji {
+            transform: scale(1.2);
+        }
+        .cat-emoji {
+            transition: transform 0.3s ease;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            background: var(--primary-dark);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(22,96,125,0.4);
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Footer link */
+        .footer-link {
+            transition: color 0.2s ease, padding-left 0.2s ease;
+        }
+        .footer-link:hover { color: var(--secondary); padding-left: 4px; }
+
+        /* Mobile menu */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.open { transform: translateX(0); }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+        .float-el { animation: float 3.5s ease-in-out infinite; }
+        .float-el:nth-child(2) { animation-delay: 0.6s; }
+        .float-el:nth-child(3) { animation-delay: 1.2s; }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .discount-badge {
+            background: linear-gradient(90deg, #ff8c00, #ffd000, #ff8c00);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+
+        /* Promo countdown */
+        .countdown-box {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body id="top">
+<body class="bg-bg min-h-screen">
 
-<!-- HEADER -->
-<header class="sticky-top">
-    <div class="navbar-top">
-        <a href="#" class="text-decoration-none d-flex align-items-center">
-            <i class="fa fa-paw fa-lg me-2 text-primary"></i>
-            <span class="logo-text">Vía Canes</span>
-        </a>
-        <div class="utility-icons">
-            <span class="small text-muted"><i class="fa fa-user me-1"></i> Mi Cuenta</span>
+    <!-- Top Bar -->
+    <div class="bg-primary-dark text-white text-xs py-2">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1">
+                    <i data-lucide="phone" class="w-3 h-3"></i>
+                    +58 412-1234567
+                </span>
+                <span class="hidden sm:flex items-center gap-1">
+                    <i data-lucide="mail" class="w-3 h-3"></i>
+                    info@viacanes.com
+                </span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="hidden sm:inline">Envío gratis en compras +$150.000</span>
+                <span class="flex items-center gap-1">
+                    <i data-lucide="truck" class="w-3 h-3"></i>
+                    <span class="text-accent font-semibold">ENVÍO</span>
+                </span>
+            </div>
         </div>
     </div>
-</header>
 
-<main class="container mt-4 mb-5">
+    <!-- Header -->
+    <header class="bg-white sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2 flex-shrink-0">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-md shadow-primary/20">
+                        <span class="text-white text-xl">🐾</span>
+                    </div>
+                    <div class="leading-tight">
+                        <span class="text-xl font-extrabold text-primary-dark tracking-tight block">Via Canes</span>
+                        <span class="text-[10px] text-text-light font-medium tracking-widest uppercase">Pet Store</span>
+                    </div>
+                </a>
 
-    <!-- STEPPER -->
-    <nav class="mb-5">
-        <ol class="list-unstyled d-flex justify-content-center align-items-center m-0 p-0 flex-wrap" style="gap: 12px;">
-            <li class="d-flex align-items-center">
-                <span class="paso-circulo paso-completado"><i class="fa fa-check"></i></span>
-                <span class="paso-texto ms-2">Carrito</span>
-            </li>
-            <li class="text-muted"><i class="fa fa-chevron-right small"></i></li>
-            <li class="d-flex align-items-center">
-                <span class="paso-circulo paso-activo" id="paso-2">2</span>
-                <span class="paso-texto paso-texto-activo ms-2">Checkout</span>
-            </li>
-            <li class="text-muted"><i class="fa fa-chevron-right small"></i></li>
-            <li class="d-flex align-items-center">
-                <span class="paso-circulo paso-pendiente" id="paso-3">3</span>
-                <span class="paso-texto text-muted ms-2" id="texto-paso-3">Confirmación</span>
-            </li>
-        </ol>
-    </nav>
-
-    <!-- VISTA 1: CHECKOUT -->
-    <div id="vista-checkout">
-        <div class="row g-4">
-            <!-- Formulario -->
-            <div class="col-lg-7">
-                <div class="card shadow-sm p-4 border-0 rounded-4 bg-white">
-                    <h3 class="fw-bold mb-3"><i class="fa fa-truck me-2 text-primary"></i>Envío y Pago</h3>
-                    <form id="formCheckout" novalidate>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small">Dirección de Envío *</label>
-                            <input type="text" class="form-control rounded-3" id="checkDireccion" required placeholder="Cra 1 # 2-3, Barrio">
-                            <div class="invalid-feedback">Ingresa una dirección válida.</div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label fw-bold small">Notas (Opcional)</label>
-                            <textarea class="form-control rounded-3" id="checkNotas" rows="2" placeholder="Ej: Dejar en portería..."></textarea>
-                        </div>
-
-                        <h5 class="fw-bold mb-3 mt-4"><i class="fa fa-wallet me-2 text-primary"></i>Método de Pago</h5>
-                        <div class="row g-3 mb-4">
-                            <!-- Bre-B -->
-                            <div class="col-12 payment-option">
-                                <input type="radio" name="metodoPago" id="payBreB" value="5" required checked>
-                                <label for="payBreB" class="text-start d-flex align-items-center">
-                                    <i class="fa fa-qrcode fa-2x me-3 text-info"></i>
-                                    <div><span class="d-block fw-bold text-primary">Bre-B (Cualquier Banco)</span><small>Pago inmediato interoperable</small></div>
-                                </label>
-                            </div>
-                            <!-- Nequi -->
-                            <div class="col-6 payment-option">
-                                <input type="radio" name="metodoPago" id="payNequi" value="1">
-                                <label for="payNequi"><i class="fa fa-mobile-screen-button fa-2x d-block mb-2 text-primary"></i>Nequi</label>
-                            </div>
-                            <!-- Daviplata -->
-                            <div class="col-6 payment-option">
-                                <input type="radio" name="metodoPago" id="payDaviplata" value="2">
-                                <label for="payDaviplata"><i class="fa fa-piggy-bank fa-2x d-block mb-2 text-danger"></i>Daviplata</label>
-                            </div>
-                            <!-- Efectivo -->
-                            <div class="col-6 payment-option">
-                                <input type="radio" name="metodoPago" id="payEfectivo" value="3">
-                                <label for="payEfectivo"><i class="fa fa-money-bill-wave fa-2x d-block mb-2 text-success"></i>Efectivo</label>
-                            </div>
-                            <!-- Tarjeta -->
-                            <div class="col-6 payment-option">
-                                <input type="radio" name="metodoPago" id="payTarjeta" value="4">
-                                <label for="payTarjeta"><i class="fa fa-credit-card fa-2x d-block mb-2 text-secondary"></i>Tarjeta</label>
-                            </div>
-                        </div>
-
-                        <div id="panel-pago-whatsapp" class="d-none mb-4 p-3 rounded-3 bg-light border border-info border-dashed">
-                            <p class="small mb-0 text-info"><i class="fa fa-info-circle me-1"></i> Al confirmar, te redirigiremos a WhatsApp para enviar tu comprobante.</p>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow">
-                            <i class="fa fa-lock me-2"></i>Confirmar y Pagar
+                <!-- Search -->
+                <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                    <div class="relative w-full">
+                        <input type="text" placeholder="Buscar productos, marcas, servicios..." 
+                            class="w-full pl-4 pr-12 py-2.5 bg-bg border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                        <button class="absolute right-1 top-1 bottom-1 px-3 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors">
+                            <i data-lucide="search" class="w-4 h-4"></i>
                         </button>
-                    </form>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <button class="md:hidden p-2 rounded-lg hover:bg-bg transition-colors">
+                        <i data-lucide="search" class="w-5 h-5 text-text"></i>
+                    </button>
+                    <button class="p-2 rounded-lg hover:bg-bg transition-colors relative group">
+                        <i data-lucide="heart" class="w-5 h-5 text-text group-hover:text-secondary transition-colors"></i>
+                        <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
+                    </button>
+                    <button class="p-2 rounded-lg hover:bg-bg transition-colors relative group">
+                        <i data-lucide="user" class="w-5 h-5 text-text group-hover:text-primary transition-colors"></i>
+                    </button>
+                    <button class="p-2 rounded-lg hover:bg-bg transition-colors relative group">
+                        <i data-lucide="shopping-cart" class="w-5 h-5 text-text group-hover:text-primary transition-colors"></i>
+                        <span id="cartCount" class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-secondary text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Resumen -->
-            <div class="col-lg-5">
-                <div class="card shadow-sm p-4 border-0 rounded-4 bg-white sticky-top" style="top: 100px;">
-                    <h5 class="fw-bold mb-3"><i class="fa fa-box me-2"></i>Resumen</h5>
-                    <div id="checkout-items"><div class="text-muted small">Cargando...</div></div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2"><span class="text-muted">Subtotal:</span><span id="subtotal-productos" class="fw-bold">$0</span></div>
-                    <div class="d-flex justify-content-between mb-2"><span class="text-muted">Envío:</span><span class="text-success fw-bold">Gratis</span></div>
-                    <div class="d-flex justify-content-between mt-3 pt-2 border-top">
-                        <span class="fw-bold fs-5">Total:</span>
-                        <span class="fw-extrabold fs-5 text-primary" id="checkout-total">$0</span>
+            <!-- Navigation -->
+            <nav class="hidden lg:flex items-center gap-1 pb-3 -mt-1">
+                <a href="index.html" class="nav-link px-4 py-1.5 text-sm font-semibold text-primary-dark bg-primary/5 rounded-lg">Perros</a>
+                <a href="gatos.html" class="nav-link px-4 py-1.5 text-sm font-medium text-text-light">Gatos</a>
+                <a href="otros-animales.html" class="nav-link px-4 py-1.5 text-sm font-medium text-text-light">Otros Animales</a>
+                <div class="flex-1"></div>
+                <a href="higiene.html" class="nav-link px-3 py-1.5 text-sm font-medium text-text-light flex items-center gap-1">
+                    <span>🧴</span> Higiene
+                </a>
+                <a href="salud.html" class="nav-link px-3 py-1.5 text-sm font-medium text-text-light flex items-center gap-1">
+                    <span>❤️</span> Salud
+                </a>
+                <a href="#" class="nav-link px-3 py-1.5 text-sm font-medium text-secondary flex items-center gap-1">
+                    <i data-lucide="percent" class="w-3.5 h-3.5"></i> Ofertas
+                </a>
+                <a href="#" class="nav-link px-3 py-1.5 text-sm font-medium text-text-light flex items-center gap-1">
+                    <i data-lucide="newspaper" class="w-3.5 h-3.5"></i> Novedades
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/40 z-50 hidden" onclick="closeMobileMenu()"></div>
+    <div id="mobileMenu" class="mobile-menu fixed top-0 left-0 h-full w-72 bg-white z-50 shadow-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+            <span class="text-lg font-bold text-primary-dark">Menú</span>
+            <button onclick="closeMobileMenu()" class="p-2 rounded-lg hover:bg-bg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="space-y-1">
+            <a href="index.html" class="flex items-center gap-3 px-3 py-2.5 bg-primary/5 text-primary-dark rounded-lg text-sm font-semibold">🐕 Perros</a>
+            <a href="gatos.html" class="flex items-center gap-3 px-3 py-2.5 text-text-light hover:bg-bg rounded-lg text-sm">🐱 Gatos</a>
+            <a href="otros-animales.html" class="flex items-center gap-3 px-3 py-2.5 text-text-light hover:bg-bg rounded-lg text-sm">🌿 Otros Animales</a>
+            <hr class="my-3">
+            <a href="higiene.html" class="flex items-center gap-3 px-3 py-2.5 text-text-light hover:bg-bg rounded-lg text-sm">🧴 Higiene</a>
+            <a href="salud.html" class="flex items-center gap-3 px-3 py-2.5 text-text-light hover:bg-bg rounded-lg text-sm">❤️ Salud</a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-secondary hover:bg-bg rounded-lg text-sm font-medium">🏷️ Ofertas</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-banner relative">
+        <div class="max-w-7xl mx-auto px-4 py-14 lg:py-20 flex flex-col lg:flex-row items-center gap-10">
+            <div class="flex-1 text-white z-10">
+                <div class="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-medium mb-5">
+                    <span class="w-2 h-2 bg-accent rounded-full pulse-soft"></span>
+                    Bienvenido a Via Canes
+                </div>
+                <h1 class="text-4xl lg:text-6xl font-black leading-[1.1] mb-5 tracking-tight">
+                    Todo para tu<br>
+                    <span class="text-accent">mejor amigo</span>
+                </h1>
+                <p class="text-white/70 text-base lg:text-lg max-w-lg mb-8 leading-relaxed">
+                    Alimentos premium, accesorios, servicios de belleza y salud. Las mejores marcas al mejor precio para tu mascota.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#productos" class="inline-flex items-center gap-2 bg-secondary hover:bg-secondary-dark text-white px-7 py-3.5 rounded-xl font-bold text-sm transition-all hover:shadow-lg hover:shadow-secondary/30">
+                        Comprar ahora
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#servicios" class="inline-flex items-center gap-2 bg-white/12 hover:bg-white/20 backdrop-blur-sm text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition-all border border-white/15">
+                        <i data-lucide="scissors" class="w-4 h-4"></i>
+                        Nuestros servicios
+                    </a>
+                </div>
+                <!-- Quick stats -->
+                <div class="flex gap-10 mt-10">
+                    <div>
+                        <div class="text-3xl font-black">2.000+</div>
+                        <div class="text-white/50 text-xs font-medium">Productos</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black">50+</div>
+                        <div class="text-white/50 text-xs font-medium">Marcas</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black">5.000+</div>
+                        <div class="text-white/50 text-xs font-medium">Clientes felices</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 relative max-w-md lg:max-w-lg">
+                <div class="absolute inset-0 bg-accent/5 rounded-full blur-3xl"></div>
+                <img src="https://picsum.photos/seed/happygoldenretriever/600/500.jpg" alt="Perro feliz" 
+                    class="relative rounded-3xl shadow-2xl w-full object-cover h-72 lg:h-[420px] float-el">
+                <!-- Floating badges -->
+                <div class="absolute top-4 -left-4 bg-white rounded-2xl shadow-lg p-3 flex items-center gap-2.5 float-el">
+                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-green-600"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-text">100% Original</div>
+                        <div class="text-[10px] text-text-light">Productos garantizados</div>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 -right-4 bg-white rounded-2xl shadow-lg p-3 flex items-center gap-2.5 float-el">
+                    <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i data-lucide="truck" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-text">Envío Rápido</div>
+                        <div class="text-[10px] text-text-light">24-48 horas</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!-- Decorative paws -->
+        <div class="absolute top-8 right-16 text-white/5 text-8xl hidden lg:block">🐾</div>
+        <div class="absolute bottom-4 left-1/4 text-white/5 text-6xl hidden lg:block rotate-12">🐾</div>
+    </section>
 
-    <!-- VISTA 2: CONFIRMACIÓN (DISEÑO MEJORADO) -->
-    <div id="pantalla-confirmacion" class="hidden">
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
-                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-                    <!-- Cabecera con Degradado -->
-                    <div class="p-4 text-center text-white" style="background: linear-gradient(135deg, #0f766e 0%, #0891b2 100%);">
-                        <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex p-3 mb-3">
-                            <i class="fa fa-check fa-2x"></i>
-                        </div>
-                        <h3 class="fw-bold">¡Pedido Registrado!</h3>
-                        <p class="mb-0 opacity-75">Falta un último paso para completar tu compra 🐾</p>
+    <!-- Category Quick Access -->
+    <section class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-6 gap-4">
+                <a href="index.html" class="cat-card bg-primary/5 border-2 border-primary/20 rounded-2xl p-4 text-center group">
+                    <div class="cat-emoji text-4xl mb-2">🐕</div>
+                    <div class="text-xs font-bold text-primary-dark">Perros</div>
+                </a>
+                <a href="gatos.html" class="cat-card bg-white border-2 border-gray-100 rounded-2xl p-4 text-center group hover:border-purple-200">
+                    <div class="cat-emoji text-4xl mb-2">🐱</div>
+                    <div class="text-xs font-semibold text-text-light group-hover:text-purple-700">Gatos</div>
+                </a>
+                <a href="otros-animales.html" class="cat-card bg-white border-2 border-gray-100 rounded-2xl p-4 text-center group hover:border-emerald-200">
+                    <div class="cat-emoji text-4xl mb-2">🌿</div>
+                    <div class="text-xs font-semibold text-text-light group-hover:text-emerald-700">Otros</div>
+                </a>
+                <a href="higiene.html" class="cat-card bg-white border-2 border-gray-100 rounded-2xl p-4 text-center group hover:border-teal-200">
+                    <div class="cat-emoji text-4xl mb-2">🧴</div>
+                    <div class="text-xs font-semibold text-text-light group-hover:text-teal-700">Higiene</div>
+                </a>
+                <a href="salud.html" class="cat-card bg-white border-2 border-gray-100 rounded-2xl p-4 text-center group hover:border-rose-200">
+                    <div class="cat-emoji text-4xl mb-2">❤️</div>
+                    <div class="text-xs font-semibold text-text-light group-hover:text-rose-700">Salud</div>
+                </a>
+                <a href="#" class="cat-card bg-secondary/5 border-2 border-secondary/20 rounded-2xl p-4 text-center group">
+                    <div class="cat-emoji text-4xl mb-2">🏷️</div>
+                    <div class="text-xs font-bold text-secondary-dark">Ofertas</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-banner text-white relative z-10">
+        <div class="max-w-7xl mx-auto px-4 py-8 lg:py-10">
+            <div class="flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
+                <!-- Text -->
+                <div class="flex-1 relative z-10">
+                    <div class="discount-badge inline-block text-xs font-extrabold text-primary-dark px-3 py-1 rounded-lg mb-3 tracking-wider">
+                        🔥 PROMOCIÓN DEL MES
                     </div>
-                    
-                    <div class="p-4 p-md-5">
-                        <div class="alert alert-light border text-center mb-4">
-                            <p class="mb-1 text-muted small">Tu número de orden es:</p>
-                            <h2 class="fw-bold text-primary mb-0" id="conf-numero-pedido">#---</h2>
-                        </div>
-
-                        <!-- SECCIÓN DE PAGO (QR Dinámico o Estático) -->
-                        <div id="contenedor-pago-final" class="card bg-light border-0 rounded-4 p-4 mb-4 text-center">
-                            <h6 class="fw-bold mb-2" id="titulo-qr-pago">Escanea para pagar</h6>
-                            
-                            <!-- Contenedor Imagen Estática (Nequi/Daviplata) -->
-                            <div id="qr-estatico-box" class="d-none mb-3">
-                                <div class="bg-white p-2 d-inline-block rounded shadow-sm">
-                                    <img id="img-qr-real" src="" alt="QR Pago" style="width: 160px; height: 160px; object-fit: contain;">
-                                </div>
-                            </div>
-
-                            <!-- Contenedor Canvas Dinámico (Bre-B) -->
-                            <div id="qr-dinamico-box" class="mb-3">
-                                <canvas id="canvas-qr-dinamico"></canvas>
-                            </div>
-
-                            <p class="small text-muted mb-2">Abre tu app bancaria y escanea.</p>
-                            <div class="badge bg-white text-dark border px-3 py-2 rounded-pill shadow-sm">
-                                <i class="fa fa-mobile-screen text-success me-1"></i> 
-                                <span id="texto-numero-pago" class="fw-bold">Llave: ...</span>
-                            </div>
-                        </div>
-
-                        <!-- Detalles -->
-                        <div class="row g-3 mb-4 text-center">
-                            <div class="col-6">
-                                <div class="p-2 border rounded bg-light h-100">
-                                    <i class="fa fa-map-marker-alt text-danger mb-1"></i>
-                                    <div class="small text-muted">Envío a</div>
-                                    <div class="fw-bold small text-truncate" id="conf-direccion">...</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="p-2 border rounded bg-light h-100">
-                                    <i class="fa fa-clock text-warning mb-1"></i>
-                                    <div class="small text-muted">Tiempo est.</div>
-                                    <div class="fw-bold small">3 a 5 días</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-4">
-                            <span class="text-muted">Total Pagado</span>
-                            <span class="fs-4 fw-bold text-primary" id="conf-total">$0</span>
-                        </div>
-
-                        <a href="#" target="_blank" id="btn-wa-confirmacion" class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow mb-3">
-                            <i class="fab fa-whatsapp me-2"></i>Enviar comprobante por WhatsApp
+                    <h2 class="text-2xl lg:text-3xl font-extrabold mb-2 leading-tight">
+                        10% de Descuento en
+                        <span class="text-accent">Baño y Estética</span>
+                    </h2>
+                    <p class="text-white/65 text-sm max-w-md mb-5 leading-relaxed">
+                        Reserva tu cita de baño, corte de uñas, peinado y estética completa para tu mascota. Válido hasta fin de mes.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="#servicios" class="inline-flex items-center gap-2 bg-accent hover:bg-yellow-400 text-primary-dark px-6 py-3 rounded-xl font-bold text-sm transition-all hover:shadow-lg">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            Reservar ahora
                         </a>
-                        
-                        <div class="d-flex gap-2">
-                            <button onclick="window.location.reload()" class="btn btn-outline-secondary flex-grow-1 rounded-pill">Seguir comprando</button>
-                            <button class="btn btn-outline-primary flex-grow-1 rounded-pill">Ver pedidos</button>
+                        <!-- Countdown -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-white/50 text-xs font-medium">Termina en:</span>
+                            <div class="flex gap-1.5">
+                                <div class="countdown-box px-2.5 py-1.5 rounded-lg text-center">
+                                    <div id="countDays" class="text-sm font-extrabold">07</div>
+                                    <div class="text-[9px] text-white/50">Días</div>
+                                </div>
+                                <div class="countdown-box px-2.5 py-1.5 rounded-lg text-center">
+                                    <div id="countHours" class="text-sm font-extrabold">14</div>
+                                    <div class="text-[9px] text-white/50">Hrs</div>
+                                </div>
+                                <div class="countdown-box px-2.5 py-1.5 rounded-lg text-center">
+                                    <div id="countMins" class="text-sm font-extrabold">32</div>
+                                    <div class="text-[9px] text-white/50">Min</div>
+                                </div>
+                                <div class="countdown-box px-2.5 py-1.5 rounded-lg text-center">
+                                    <div id="countSecs" class="text-sm font-extrabold">08</div>
+                                    <div class="text-[9px] text-white/50">Seg</div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <!-- Image -->
+                <div class="flex-shrink-0 relative">
+                    <div class="w-48 h-48 lg:w-56 lg:h-56 rounded-3xl overflow-hidden shadow-2xl float-el">
+                        <img src="https://picsum.photos/seed/dogspabath/400/400.jpg" alt="Baño y spa" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-3 -left-3 bg-accent text-primary-dark rounded-2xl px-4 py-2.5 shadow-lg">
+                        <div class="text-2xl font-black leading-none">-10%</div>
+                        <div class="text-[10px] font-bold">DESCUENTO</div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="productos" class="max-w-7xl mx-auto px-4 py-12">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="w-8 h-1 bg-primary rounded-full"></span>
+                    <span class="text-xs font-semibold text-primary uppercase tracking-widest">Seleccionados</span>
+                </div>
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-text">Productos Destacados</h2>
+            </div>
+            <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-dark transition-colors">
+                Ver todos
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+
+        <div id="productGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <!-- Injected by JS -->
+        </div>
+
+        <div class="text-center mt-8 sm:hidden">
+            <a href="index.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+                Ver todos los productos
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-12 lg:py-16">
+            <div class="text-center mb-10">
+                <div class="flex items-center justify-center gap-2 mb-1">
+                    <span class="w-8 h-1 bg-secondary rounded-full"></span>
+                    <span class="text-xs font-semibold text-secondary uppercase tracking-widest">Servicios</span>
+                    <span class="w-8 h-1 bg-secondary rounded-full"></span>
+                </div>
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-text mb-2">Cuidado Profesional</h2>
+                <p class="text-sm text-text-light max-w-md mx-auto">Servicios de belleza, salud y bienestar para tu mascota con profesionales certificados.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Baño y Spa -->
+                <div class="service-card bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100 cursor-pointer group">
+                    <div class="service-icon w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        🛁
+                    </div>
+                    <h3 class="text-base font-bold text-text mb-2">Baño y Spa</h3>
+                    <p class="text-xs text-text-light leading-relaxed mb-4">Baño completo con shampoo premium, secado, peinado y fragancia. Incluye limpieza de oídos.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-extrabold text-primary-dark">Desde $35.000</span>
+                        <span class="service-arrow text-primary">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </span>
+                    </div>
+                    <div class="mt-3 inline-block bg-secondary/10 text-secondary-dark text-[10px] font-bold px-2 py-0.5 rounded-md">10% OFF este mes</div>
+                </div>
+
+                <!-- Corte y Estética -->
+                <div class="service-card bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100 cursor-pointer group">
+                    <div class="service-icon w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        ✂️
+                    </div>
+                    <h3 class="text-base font-bold text-text mb-2">Corte y Estética</h3>
+                    <p class="text-xs text-text-light leading-relaxed mb-4">Corte de pelo profesional según raza, corte de uñas, limpieza dental y perfilado completo.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-extrabold text-purple-800">Desde $45.000</span>
+                        <span class="service-arrow text-purple-600">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Consulta Veterinaria -->
+                <div class="service-card bg-gradient-to-br from-rose-50 to-red-50 rounded-2xl p-6 border border-rose-100 cursor-pointer group">
+                    <div class="service-icon w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        🩺
+                    </div>
+                    <h3 class="text-base font-bold text-text mb-2">Consulta Veterinaria</h3>
+                    <p class="text-xs text-text-light leading-relaxed mb-4">Consulta general, vacunación, desparasitación y seguimiento de salud con veterinarios certificados.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-extrabold text-rose-800">Desde $25.000</span>
+                        <span class="service-arrow text-rose-600">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Hospedaje -->
+                <div class="service-card bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-6 border border-emerald-100 cursor-pointer group">
+                    <div class="service-icon w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        🏠
+                    </div>
+                    <h3 class="text-base font-bold text-text mb-2">Hospedaje</h3>
+                    <p class="text-xs text-text-light leading-relaxed mb-4">Hotel para mascotas con áreas de juego, alimentación personalizada y supervisión 24 horas.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-extrabold text-emerald-800">Desde $50.000</span>
+                        <span class="service-arrow text-emerald-600">
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </span>
+                    </div>
+                    <div class="mt-3 inline-block bg-green-500/10 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-md">Popular</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Strip -->
+    <section class="bg-bg">
+        <div class="max-w-7xl mx-auto px-4 py-10">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="truck" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold text-text">Envío Rápido</div>
+                        <div class="text-xs text-text-light">24-48 horas hábiles</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-secondary"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold text-text">100% Original</div>
+                        <div class="text-xs text-text-light">Productos garantizados</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="refresh-cw" class="w-5 h-5 text-green-600"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold text-text">Devolución</div>
+                        <div class="text-xs text-text-light">30 días para cambios</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="headphones" class="w-5 h-5 text-purple-600"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold text-text">Soporte 24/7</div>
+                        <div class="text-xs text-text-light">Siempre disponibles</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-10">
+            <div class="text-center mb-6">
+                <span class="text-xs font-semibold text-text-light uppercase tracking-widest">Marcas de Confianza</span>
+            </div>
+            <div class="flex items-center justify-center gap-8 lg:gap-16 flex-wrap opacity-60">
+                <span class="text-lg lg:text-xl font-extrabold text-text-light tracking-tight">Hill's</span>
+                <span class="text-lg lg:text-xl font-extrabold text-text-light tracking-tight">Royal Canin</span>
+                <span class="text-lg lg:text-xl font-extrabold text-text-light tracking-tight">Purina</span>
+                <span class="text-lg lg:text-xl font-extrabold text-text-light tracking-tight">Pedigree</span>
+                <span class="text-lg lg:text-xl font-extrabold text-text-light tracking-tight">Bayer</span>
+                <span class="text-lg lg:text-xl font-extrabold text-text-light tracking-tight">Eukanuba</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="bg-bg">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="bg-gradient-to-r from-primary-dark to-primary rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row items-center gap-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+                <div class="flex-1 relative z-10 text-white">
+                    <h3 class="text-2xl lg:text-3xl font-extrabold mb-2">¡Únete a la comunidad Via Canes!</h3>
+                    <p class="text-white/65 text-sm max-w-md">Recibe ofertas exclusivas, novedades y consejos para el cuidado de tu mascota directamente en tu correo.</p>
+                </div>
+                <div class="flex-shrink-0 w-full lg:w-auto relative z-10">
+                    <div class="flex gap-2">
+                        <input type="email" placeholder="Tu correo electrónico..." class="flex-1 lg:w-72 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-white/40 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all">
+                        <button onclick="showToast('¡Suscripción exitosa! Bienvenido 🐾')" class="px-6 py-3 bg-accent hover:bg-yellow-400 text-primary-dark rounded-xl text-sm font-bold transition-all hover:shadow-lg whitespace-nowrap">
+                            Suscribirse
+                        </button>
+                    </div>
+                    <p class="text-white/40 text-[11px] mt-2 ml-1">Sin spam. Puedes darte de baja en cualquier momento.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-dark text-white">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-6">
+                <!-- Brand -->
+                <div class="col-span-2 sm:col-span-2 lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center">
+                            <span class="text-xl">🐾</span>
+                        </div>
+                        <div>
+                            <span class="text-lg font-extrabold block leading-tight">Via Canes</span>
+                            <span class="text-[10px] text-white/50 uppercase tracking-widest">Pet Store</span>
+                        </div>
+                    </div>
+                    <p class="text-white/55 text-sm leading-relaxed mb-5 max-w-xs">
+                        Tu tienda de confianza para el bienestar de tus mascotas. Más de 5 años cuidando a los mejores amigos del hombre.
+                    </p>
+                    <div class="flex gap-2.5">
+                        <a href="#" class="w-9 h-9 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors">
+                            <i data-lucide="facebook" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors">
+                            <i data-lucide="instagram" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors">
+                            <i data-lucide="twitter" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors">
+                            <i data-lucide="youtube" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Compras -->
+                <div>
+                    <h4 class="font-bold text-sm mb-4 text-accent uppercase tracking-wider">Compras</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="index.html" class="footer-link text-sm text-white/55 inline-block">Alimentos Perros</a></li>
+                        <li><a href="gatos.html" class="footer-link text-sm text-white/55 inline-block">Alimentos Gatos</a></li>
+                        <li><a href="otros-animales.html" class="footer-link text-sm text-white/55 inline-block">Otros Animales</a></li>
+                        <li><a href="higiene.html" class="footer-link text-sm text-white/55 inline-block">Higiene y Cuidado</a></li>
+                        <li><a href="salud.html" class="footer-link text-sm text-white/55 inline-block">Salud y Bienestar</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Accesorios</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Juguetes</a></li>
+                    </ul>
+                </div>
+
+                <!-- Servicios -->
+                <div>
+                    <h4 class="font-bold text-sm mb-4 text-accent uppercase tracking-wider">Servicios</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Baño y Spa</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Corte y Estética</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Consulta Veterinaria</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Hospedaje</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Vacunación</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Desparasitación</a></li>
+                    </ul>
+                </div>
+
+                <!-- Soporte -->
+                <div>
+                    <h4 class="font-bold text-sm mb-4 text-accent uppercase tracking-wider">Soporte</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Centro de ayuda</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Política de envío</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Devoluciones</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Métodos de pago</a></li>
+                        <li><a href="#" class="footer-link text-sm text-white/55 inline-block">Preguntas frecuentes</a></li>
+                    </ul>
+                    <div class="mt-5 space-y-1.5">
+                        <div class="flex items-center gap-2 text-xs text-white/45">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            Caracas, Venezuela
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-white/45">
+                            <i data-lucide="phone" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            +58 412-1234567
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-white/45">
+                            <i data-lucide="mail" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            info@viacanes.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-white/10 my-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/35">
+                <p>© 2024 Via Canes. Todos los derechos reservados.</p>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="hover:text-white/60 transition-colors">Términos y Condiciones</a>
+                    <a href="#" class="hover:text-white/60 transition-colors">Privacidad</a>
+                    <a href="#" class="hover:text-white/60 transition-colors">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <i data-lucide="check-circle" class="w-5 h-5 text-accent"></i>
+        <span id="toastMsg">Producto agregado al carrito</span>
     </div>
 
-</main>
+    <script>
+        // === Featured Products Data (matching screenshot) ===
+        const featuredProducts = [
+            {
+                id: 1, name: "Hill's Science Diet - Perros Adulto 12kg",
+                brand: "Hill's",
+                price: 298000, priceFormatted: "$298.000",
+                originalPrice: 350000, originalPriceFormatted: "$350.000",
+                image: "https://picsum.photos/seed/hillssciencediet2024/400/400.jpg",
+                rating: 4.8, reviews: 124, badge: "-15%", inStock: true
+            },
+            {
+                id: 2, name: "Collar GPS Inteligente Rastreador en Tiempo Real",
+                brand: "TechPet",
+                price: 180000, priceFormatted: "$180.000",
+                originalPrice: null, originalPriceFormatted: null,
+                image: "https://picsum.photos/seed/smartpetcollar/400/400.jpg",
+                rating: 4.5, reviews: 67, badge: "Nuevo", inStock: true
+            },
+            {
+                id: 3, name: "Comedero Inteligente Automático WiFi 5L",
+                brand: "PetFeed",
+                price: 245000, priceFormatted: "$245.000",
+                originalPrice: 280000, originalPriceFormatted: "$280.000",
+                image: "https://picsum.photos/seed/smartpetfeeder/400/400.jpg",
+                rating: 4.7, reviews: 89, badge: "-12%", inStock: true
+            },
+            {
+                id: 4, name: "Juguete Interactivo Ball Dispenser Recargable",
+                brand: "FunPaws",
+                price: 65000, priceFormatted: "$65.000",
+                originalPrice: 78000, originalPriceFormatted: "$78.000",
+                image: "https://picsum.photos/seed/interactiveballtoy/400/400.jpg",
+                rating: 4.6, reviews: 143, badge: "-17%", inStock: true
+            }
+        ];
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        let cartItems = {};
 
-<!-- LOGICA JAVASCRIPT INTEGRADA -->
-<script>
-    // CONFIGURACIÓN
-    const CONFIG_TIENDA = {
-        celularDestino: "573016540576",
-        llaveBreB: "3016540576",
-        total: 230600,
-        orden: Math.floor(Math.random() * 899) + 100,
-        items: [{ nombre: "Alimento Premium Perros 10kg", cantidad: 1, precio: 230600 }],
-        // Rutas a tus imágenes reales de QR (Asegúrate que existan en tu carpeta)
-        qrNequi: "../img/qr-nequi.png", 
-        qrDaviplata: "../img/qr-daviplata.png"
-    };
+        // === Render Featured Products ===
+        function renderFeaturedProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = featuredProducts.map(p => {
+                const fullStars = Math.floor(p.rating);
+                const hasHalf = p.rating % 1 >= 0.5;
+                const starsHTML = `<span class="text-accent text-xs">${'★'.repeat(fullStars)}${hasHalf ? '½' : ''}</span>`;
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // 1. Cargar Resumen
-        const checkoutItems = document.getElementById("checkout-items");
-        if(checkoutItems) {
-            checkoutItems.innerHTML = CONFIG_TIENDA.items.map(i => `
-                <div class="d-flex justify-content-between align-items-center mb-2 small"> 
-                    <div><span class="fw-bold">${i.cantidad}x</span> ${i.nombre}</div> 
-                    <span class="fw-semibold">$${i.precio.toLocaleString('es-CO')}</span> 
-                </div>`).join('');
-            document.getElementById("subtotal-productos").innerText = `$${CONFIG_TIENDA.total.toLocaleString('es-CO')}`;
-            document.getElementById("checkout-total").innerText = `$${CONFIG_TIENDA.total.toLocaleString('es-CO')}`;
+                const badgeColor = p.badge && p.badge.startsWith('-')
+                    ? 'bg-red-500 text-white'
+                    : p.badge === 'Nuevo' ? 'bg-green-500 text-white'
+                    : ['Popular','Top venta'].includes(p.badge)
+                        ? 'bg-secondary text-white'
+                        : 'bg-primary text-white';
+
+                return `
+                <div class="product-card bg-white rounded-2xl border border-gray-100 overflow-hidden group">
+                    <div class="relative aspect-square overflow-hidden bg-gray-50">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                        ${p.badge ? `<span class="absolute top-3 left-3 ${badgeColor} text-[11px] font-bold px-2 py-0.5 rounded-lg">${p.badge}</span>` : ''}
+                        <button onclick="toggleWishlist(this)" class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-all hover:scale-110">
+                            <i data-lucide="heart" class="w-3.5 h-3.5 text-text-light"></i>
+                        </button>
+                    </div>
+                    <div class="p-3.5 lg:p-4">
+                        <span class="text-[11px] font-semibold text-primary bg-primary/8 px-2 py-0.5 rounded">${p.brand}</span>
+                        <h3 class="text-sm font-semibold text-text leading-snug mt-1.5 mb-2 line-clamp-2 min-h-[2.5rem]">${p.name}</h3>
+                        <div class="flex items-center gap-1.5 mb-2.5">
+                            ${starsHTML}
+                            <span class="text-[11px] text-text-light">(${p.reviews})</span>
+                        </div>
+                        <div class="flex items-end gap-2 mb-3">
+                            <span class="text-lg lg:text-xl font-extrabold text-primary-dark">${p.priceFormatted}</span>
+                            ${p.originalPrice ? `<span class="text-xs text-text-light line-through">${p.originalPriceFormatted}</span>` : ''}
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="btn-cart w-full bg-primary hover:bg-primary-dark text-white py-2 lg:py-2.5 rounded-xl text-xs lg:text-sm font-semibold flex items-center justify-center gap-1.5">
+                            <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
         }
 
-        // 2. Lógica de Selección de Pago (Mostrar/Ocultar avisos)
-        const radios = document.querySelectorAll('input[name="metodoPago"]');
-        const panelWa = document.getElementById("panel-pago-whatsapp");
-        
-        function actualizarUIPago(valor) {
-            // Mostrar aviso de WhatsApp para Nequi(1), Daviplata(2) y ContraEntrega(3)
-            if(["1", "2", "3"].includes(valor)) {
-                panelWa.classList.remove("d-none");
+        // === Cart ===
+        function addToCart(id) {
+            const p = featuredProducts.find(x => x.id === id);
+            if (!p) return;
+            cartItems[id] = cartItems[id] ? { ...cartItems[id], qty: cartItems[id].qty + 1 } : { ...p, qty: 1 };
+            const badge = document.getElementById('cartCount');
+            badge.textContent = Object.values(cartItems).reduce((s, i) => s + i.qty, 0);
+            badge.style.transform = 'scale(1.3)';
+            setTimeout(() => badge.style.transform = '', 200);
+            showToast(`"${p.name.substring(0, 30)}..." agregado al carrito`);
+        }
+
+        // === Wishlist ===
+        function toggleWishlist(btn) {
+            const icon = btn.querySelector('[data-lucide]');
+            if (btn.classList.contains('wishlisted')) {
+                btn.classList.remove('wishlisted');
+                icon.style.fill = 'none'; icon.style.color = '#64748b';
+                showToast('Eliminado de favoritos');
             } else {
-                panelWa.classList.add("d-none");
+                btn.classList.add('wishlisted');
+                icon.style.fill = '#ef4444'; icon.style.color = '#ef4444';
+                btn.style.transform = 'scale(1.2)';
+                setTimeout(() => btn.style.transform = '', 200);
+                showToast('Agregado a favoritos ❤️');
             }
         }
 
-        radios.forEach(r => {
-            r.addEventListener("change", (e) => actualizarUIPago(e.target.value));
-        });
-
-        // 3. Función Maestra para Actualizar QR en Pantalla Final
-        function configurarPantallaFinal(metodo, direccion) {
-            const tituloQr = document.getElementById("titulo-qr-pago");
-            const textoNum = document.getElementById("texto-numero-pago");
-            const boxEstatico = document.getElementById("qr-estatico-box");
-            const imgReal = document.getElementById("img-qr-real");
-            const boxDinamico = document.getElementById("qr-dinamico-box");
-            const canvas = document.getElementById("canvas-qr-dinamico");
-
-            // Resetear visibilidad
-            boxEstatico.classList.add("d-none");
-            boxDinamico.classList.remove("d-none"); // Por defecto mostramos canvas, luego decidimos
-
-            if (metodo === "1") { // Nequi
-                tituloQr.innerText = "Escanea para pagar con Nequi";
-                textoNum.innerHTML = `Nequi: <strong>${CONFIG_TIENDA.llaveBreB}</strong>`;
-                
-                boxDinamico.classList.add("d-none"); // Ocultar canvas
-                boxEstatico.classList.remove("d-none"); // Mostrar imagen
-                imgReal.src = CONFIG_TIENDA.qrNequi; // Cargar imagen real
-
-            } else if (metodo === "2") { // Daviplata
-                tituloQr.innerText = "Escanea para pagar con Daviplata";
-                textoNum.innerHTML = `Daviplata: <strong>${CONFIG_TIENDA.llaveBreB}</strong>`;
-                
-                boxDinamico.classList.add("d-none");
-                boxEstatico.classList.remove("d-none");
-                imgReal.src = CONFIG_TIENDA.qrDaviplata;
-
-            } else if (metodo === "5") { // Bre-B
-                tituloQr.innerText = "Escanea para pagar con Bre-B";
-                textoNum.innerHTML = `Llave Bre-B: <strong>${CONFIG_TIENDA.llaveBreB}</strong>`;
-                
-                // Generar QR Dinámico
-                try {
-                    new QRious({
-                        element: canvas,
-                        value: `pay://bre-b.com.co/transfer?to=${CONFIG_TIENDA.llaveBreB}&amount=${CONFIG_TIENDA.total}`,
-                        size: 160
-                    });
-                } catch(e) { console.error("Error QR", e); }
-
-            } else { // Efectivo / Tarjeta
-                tituloQr.innerText = "Pago Presencial / Tarjeta";
-                textoNum.innerHTML = "Paga al recibir o en pasarela";
-                boxDinamico.classList.add("d-none"); // No mostrar nada
-                boxEstatico.classList.add("d-none");
-            }
+        // === Toast ===
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // 4. Submit del Formulario
-        document.getElementById("formCheckout").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const form = e.target;
-            if (!form.checkValidity()) {
-                form.classList.add('was-validated');
-                return;
+        // === Countdown Timer ===
+        function startCountdown() {
+            // Set end date to ~7 days from now
+            const now = new Date();
+            const endDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000 + 14 * 60 * 60 * 1000 + 32 * 60 * 1000);
+
+            function update() {
+                const diff = endDate - new Date();
+                if (diff <= 0) return;
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('countDays').textContent = String(days).padStart(2, '0');
+                document.getElementById('countHours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('countMins').textContent = String(mins).padStart(2, '0');
+                document.getElementById('countSecs').textContent = String(secs).padStart(2, '0');
             }
+            update();
+            setInterval(update, 1000);
+        }
 
-            // Datos
-            const dir = document.getElementById("checkDireccion").value;
-            const metodo = document.querySelector('input[name="metodoPago"]:checked').value;
-
-            // Actualizar Stepper
-            document.getElementById("paso-2").className = "paso-circulo paso-completado";
-            document.getElementById("paso-2").innerHTML = '<i class="fa fa-check"></i>';
-            document.getElementById("paso-3").className = "paso-circulo paso-activo";
-            document.getElementById("texto-paso-3").className = "paso-texto paso-texto-activo";
-
-            // Cambiar Vista
-            document.getElementById("vista-checkout").classList.add("hidden");
-            document.getElementById("pantalla-confirmacion").classList.remove("hidden");
-            window.scrollTo(0,0);
-
-            // Llenar datos finales
-            document.getElementById("conf-numero-pedido").innerText = `#${CONFIG_TIENDA.orden}`;
-            document.getElementById("conf-direccion").innerText = dir;
-            document.getElementById("conf-total").innerText = `$${CONFIG_TIENDA.total.toLocaleString('es-CO')}`;
-
-            // Configurar QR y Métodos
-            configurarPantallaFinal(metodo, dir);
-
-            // Generar Link WhatsApp
-            let nombreMetodoTexto = document.querySelector(`label[for="${document.querySelector('input[name="metodoPago"]:checked').id}"]`).innerText.trim();
-            const msg = `🐾 *PEDIDO #${CONFIG_TIENDA.orden}*\nHola, adjunto comprobante.\nMétodo: ${nombreMetodoTexto}\nTotal: $${CONFIG_TIENDA.total.toLocaleString('es-CO')}`;
-            document.getElementById("btn-wa-confirmacion").href = `https://wa.me/${CONFIG_TIENDA.celularDestino}?text=${encodeURIComponent(msg)}`;
+        // === Mobile Menu ===
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.add('open');
+            document.getElementById('mobileMenuOverlay').classList.remove('hidden');
         });
-    });
-</script>
+        function closeMobileMenu() {
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.getElementById('mobileMenuOverlay').classList.add('hidden');
+        }
+
+        // === Scroll Reveal ===
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // === Init ===
+        renderFeaturedProducts();
+        lucide.createIcons();
+        startCountdown();
+        initScrollReveal();
+    </script>
 </body>
 </html>

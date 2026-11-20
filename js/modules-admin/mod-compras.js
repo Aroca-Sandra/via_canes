@@ -1,9 +1,8 @@
 // ================================================================
-// MÓDULO 4: COMPRAS (CON N° FACTURA Y AUTO-SAVE)
+// MÓDULO 4: COMPRAS (SIN AUTO-SAVE - GUARDADO MANUAL)
 // ================================================================
 let comprasData = [];
-let autoSaveTimer = null;
-const AUTO_SAVE_DELAY = 3000; // 3 segundos
+let productosCache = []; 
 
 window.cargarCompras = async function() {
     console.log("🔵 Iniciando cargarCompras...");
@@ -19,14 +18,22 @@ window.cargarCompras = async function() {
     }
 
     try {
-        const resCompras = await apiFetch('listar_compras', null, 'GET');
-        const resProv = await apiFetch('listar_proveedores', null, 'GET');
-        const resProd = await apiFetch('listar_productos', null, 'GET');
+        // Cargar datos en paralelo
+        const [resCompras, resProv, resProd] = await Promise.all([
+            apiFetch('listar_compras', null, 'GET'),
+            apiFetch('listar_proveedores', null, 'GET'),
+            apiFetch('listar_productos', null, 'GET')
+        ]);
 
         if (resCompras.success) {
             comprasData = resCompras.data || [];
         } else {
             comprasData = [];
+        }
+
+        // Actualizar cache de productos
+        if (resProd.success) {
+            productosCache = resProd.data || [];
         }
 
         // Llenar Proveedores
@@ -41,17 +48,9 @@ window.cargarCompras = async function() {
         }
 
         // Llenar Productos
-        selProd.innerHTML = '<option value="">Seleccionar...</option>';
-        if (resProd.success) {
-            resProd.data.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.id_producto;
-                opt.textContent = p.nombre;
-                selProd.appendChild(opt);
-            });
-        }
+        llenarSelectProductos();
 
-        // Poner fecha de hoy
+        // Poner fecha de hoy si está vacío
         const inputFecha = document.getElementById('compraFecha');
         if (inputFecha && !inputFecha.value) {
             inputFecha.value = new Date().toISOString().split('T')[0];
@@ -62,35 +61,48 @@ window.cargarCompras = async function() {
 
         renderCompras();
 
-        // Configurar botón guardar
+        // ✅ Configurar SOLO el botón guardar manual (sin auto-save)
         const newBtn = btnGuardar.cloneNode(true);
         btnGuardar.parentNode.replaceChild(newBtn, btnGuardar);
-        newBtn.addEventListener('click', () => guardarCompra(false));
+        newBtn.addEventListener('click', () => guardarCompra());
 
-        // 🆕 Configurar Auto-save en los campos (3 segundos) - INCLUYENDO FACTURA
-        ['compraProveedor', 'compraFactura', 'compraProducto', 'compraCantidad', 'compraCosto', 'compraFecha'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input', iniciarAutoSave);
-                el.addEventListener('change', iniciarAutoSave);
-            }
-        });
+        // ✅ Configurar listeners para el formulario de nuevo producto
+        configurarFormularioNuevoProducto();
 
     } catch (error) {
         console.error("🚨 ERROR FATAL EN CARGAR COMPRAS:", error);
     }
 };
 
-function iniciarAutoSave() {
-    clearTimeout(autoSaveTimer);
-    const indicador = document.getElementById('comprasEstadoIndicador');
-    if (indicador) indicador.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i> Guardando en 3s...';
+function llenarSelectProductos() {
+    const selProd = document.getElementById('compraProducto');
+    if (!selProd) return;
     
-    // true = es autoguardado
-    autoSaveTimer = setTimeout(() => guardarCompra(true), AUTO_SAVE_DELAY); 
+    const valorActual = selProd.value;
+    selProd.innerHTML = '<option value="">Seleccionar producto...</option>';
+    
+    productosCache.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id_producto;
+        opt.textContent = `${p.nombre} - Stock: ${p.stock}`;
+        selProd.appendChild(opt);
+    });
+
+    if (valorActual) selProd.value = valorActual;
 }
 
-async function guardarCompra(isAutoSave = false) {
+function configurarFormularioNuevoProducto() {
+    const btnNuevo = document.querySelector('[onclick="mostrarFormNuevoProducto()"]');
+    if (btnNuevo) {
+        btnNuevo.addEventListener('click', async () => {
+            mostrarFormNuevoProducto();
+            await cargarCategoriasNuevoProducto();
+        });
+    }
+}
+
+// ✅ Guardado 100% manual al hacer clic en el botón
+async function guardarCompra() {
     const idEdit = document.getElementById('compraIdEdit')?.value || null;
     const prov = document.getElementById('compraProveedor')?.value;
     const factura = document.getElementById('compraFactura')?.value.trim() || '';
@@ -99,11 +111,9 @@ async function guardarCompra(isAutoSave = false) {
     const costo = document.getElementById('compraCosto')?.value;
     const fecha = document.getElementById('compraFecha')?.value;
 
-    // Si es autoguardado y faltan campos, no hacemos nada (no molestamos al usuario)
-    if (isAutoSave && (!prov || !prod || !cant || !costo || !fecha)) return;
-
+    // Validación estricta de campos obligatorios
     if (!prov || !prod || !cant || !costo || !fecha) {
-        showToast('⚠️ Todos los campos con * son obligatorios', 'warning');
+        showToast('⚠️ Todos los campos son obligatorios', 'warning');
         return;
     }
 
@@ -119,35 +129,100 @@ async function guardarCompra(isAutoSave = false) {
     if (idEdit) data.id_compra = idEdit;
 
     const btnGuardar = document.getElementById('btnGuardarCompra');
-    if(btnGuardar && !isAutoSave) {
+    if(btnGuardar) {
         btnGuardar.disabled = true;
         btnGuardar.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i> Guardando...';
     }
-
-    const indicador = document.getElementById('comprasEstadoIndicador');
-    if (indicador && isAutoSave) indicador.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i> Guardando...';
 
     try {
         const res = await apiFetch('guardar_compra', data);
         
         if (res.success) {
-            if (!isAutoSave) showToast('✅ Compra guardada y stock actualizado');
-            if (indicador) indicador.innerHTML = '<i class="fa fa-check text-success me-1"></i> Guardado';
+            showToast('✅ Compra guardada y stock actualizado', 'success');
             limpiarFormCompra();
             cargarCompras(); 
         } else {
             showToast('❌ Error: ' + res.error, 'danger');
-            if (indicador) indicador.innerHTML = '<i class="fa fa-times text-danger me-1"></i> Error al guardar';
         }
     } catch (err) {
         console.error("Error al guardar:", err);
-        showToast('❌ Error crítico del servidor. Revisa la consola (F12)', 'danger');
-        if (indicador) indicador.innerHTML = '<i class="fa fa-times text-danger me-1"></i> Error';
+        showToast('❌ Error crítico del servidor', 'danger');
+    } finally {
+        if(btnGuardar) {
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = '<i class="fa fa-bolt me-1"></i> Guardar Compra';
+        }
+    }
+}
+
+// ✅ FUNCIONES PARA CREAR PRODUCTO NUEVO DESDE COMPRAS
+window.mostrarFormNuevoProducto = function() {
+    const container = document.getElementById('formNuevoProductoContainer');
+    if (container) {
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        document.getElementById('nuevoProdNombre').focus();
+    }
+};
+
+window.ocultarFormNuevoProducto = function() {
+    const container = document.getElementById('formNuevoProductoContainer');
+    if (container) container.style.display = 'none';
+    const form = document.getElementById('formProductoNuevo');
+    if (form) form.reset();
+};
+
+async function cargarCategoriasNuevoProducto() {
+    const select = document.getElementById('nuevoProdCategoria');
+    if (!select) {
+        console.error('❌ No existe el select nuevoProdCategoria');
+        return;
     }
 
-    if(btnGuardar) {
-        btnGuardar.disabled = false;
-        btnGuardar.innerHTML = '<i class="fa fa-bolt me-1"></i> Guardar Compra';
+    console.log('🔄 Cargando categorías para nuevo producto...');
+
+    try {
+        // Intentar con el endpoint listar_categorias
+        let res = await apiFetch('listar_categorias', null, 'GET');
+        
+        // Si falla, intentar con listar_categorias_producto
+        if (!res.success) {
+            console.warn('⚠️ listar_categorias falló, intentando listar_categorias_producto...');
+            res = await apiFetch('listar_categorias_producto', null, 'GET');
+        }
+
+        // Si falla, intentar con listar_categorias_servicio
+        if (!res.success) {
+            console.warn('⚠️ listar_categorias_producto falló, intentando listar_categorias_servicio...');
+            res = await apiFetch('listar_categorias_servicio', null, 'GET');
+        }
+
+        if (res.success && res.data && res.data.length > 0) {
+            select.innerHTML = '<option value="">Seleccionar categoría...</option>';
+            res.data.forEach(c => {
+                const id = c.id_categoria || c.id_categoria_producto || c.id_categoria_servicio;
+                const nombre = c.nombre || c.nombre_categoria;
+                if (id && nombre) {
+                    select.innerHTML += `<option value="${id}">${nombre}</option>`;
+                }
+            });
+            console.log(`✅ ${res.data.length} categorías cargadas`);
+        } else {
+            console.warn('⚠️ No se encontraron categorías en la API');
+            select.innerHTML = '<option value="">No hay categorías disponibles</option>';
+            
+            // Fallback: categorías hardcodeadas
+            select.innerHTML += `
+                <option value="1">Alimentación</option>
+                <option value="2">Accesorios</option>
+                <option value="3">Higiene</option>
+                <option value="4">Salud</option>
+                <option value="5">Juguetes</option>
+            `;
+        }
+    } catch (error) {
+        console.error('🚨 Error cargando categorías:', error);
+        select.innerHTML = '<option value="">Error al cargar categorías</option>';
     }
 }
 
@@ -156,7 +231,7 @@ function renderCompras() {
     if (!tbody) return;
     
     if (!comprasData.length) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No hay compras</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No hay compras registradas</td></tr>';
         return;
     }
     
@@ -206,13 +281,13 @@ window.limpiarFormCompra = function() {
 };
 
 window.eliminarCompra = async function(id) {
-    if (!confirm('¿Eliminar? Se revertirá el stock.')) return;
+    if (!confirm('¿Eliminar esta compra? Se revertirá el stock automáticamente.')) return;
     const res = await apiFetch('eliminar_compra', { id_compra: id });
     if (res.success) {
-        showToast(res.message || 'Eliminada');
+        showToast(res.message || 'Compra eliminada', 'success');
         limpiarFormCompra();
         cargarCompras();
     } else {
-        showToast(res.error || 'Error', 'danger');
+        showToast(res.error || 'Error al eliminar', 'danger');
     }
 };
